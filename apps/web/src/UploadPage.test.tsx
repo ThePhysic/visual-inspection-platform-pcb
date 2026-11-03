@@ -247,4 +247,67 @@ describe('explicit trained PCB mode', () => {
     expect(requests[0]?.[1]?.headers).toEqual(requests[1]?.[1]?.headers);
     expect(fetchMock.mock.calls.filter(([path]) => path === '/api/v1/assets')).toHaveLength(1);
   });
+  it('confirms an ambiguous trained submission during a later model outage with the same intent and no re-upload', async () => {
+    const fetchMock = trainedServer(); const implementation = fetchMock.getMockImplementation()!;
+    let creates = 0; let checks = 0;
+    fetchMock.mockImplementation(async (path, options) => {
+      if (path === '/api/v1/inference-modes' && ++checks > 1) {
+        return Response.json({ trained: { enabled: true, available: false, reason: 'The trained model is temporarily offline.' } });
+      }
+      if (path === '/api/v1/inspections' && ++creates === 1) throw new TypeError('accepted, but response was lost');
+      return implementation(path, options);
+    });
+    vi.stubGlobal('fetch', fetchMock); const user = userEvent.setup(); renderApp(); await selectTrained(user);
+    await user.click(screen.getByRole('checkbox', { name: /I confirm this is a real 300/ }));
+    await user.upload(screen.getByLabelText('Image file'), image());
+    await user.click(screen.getByRole('button', { name: 'Upload and inspect' }));
+    await screen.findByRole('alert');
+    await user.click(screen.getByRole('button', { name: 'Check trained model availability' }));
+    await screen.findByText('The trained model is temporarily offline.');
+    expect(screen.getByRole('radio', { name: 'Trained PCB detector' })).toBeChecked();
+    const retry = screen.getByRole('button', { name: 'Retry inspection submission' });
+    expect(retry).toBeEnabled();
+    await user.click(retry);
+    expect(await screen.findByRole('heading', { name: 'Completed' })).toBeVisible();
+    const requests = fetchMock.mock.calls.filter(([path]) => path === '/api/v1/inspections');
+    expect(requests).toHaveLength(2);
+    expect(requests[1]![1]!.body).toEqual(requests[0]![1]!.body);
+    expect(requests[1]![1]!.headers).toEqual(requests[0]![1]!.headers);
+    expect(fetchMock.mock.calls.filter(([path]) => path === '/api/v1/assets')).toHaveLength(1);
+  });
+  it('blocks a new trained submission if a later availability check reports an outage', async () => {
+    const fetchMock = trainedServer(); const implementation = fetchMock.getMockImplementation()!;
+    let checks = 0;
+    fetchMock.mockImplementation(async (path, options) => {
+      if (path === '/api/v1/inference-modes' && ++checks > 1) return Response.json({ trained: { enabled: true, available: false } });
+      return implementation(path, options);
+    });
+    vi.stubGlobal('fetch', fetchMock); const user = userEvent.setup(); renderApp(); await selectTrained(user);
+    await user.click(screen.getByRole('checkbox', { name: /I confirm this is a real 300/ }));
+    await user.upload(screen.getByLabelText('Image file'), image());
+    await user.click(screen.getByRole('button', { name: 'Check trained model availability' }));
+    await waitFor(() => { expect(screen.getByRole('radio', { name: 'Trained PCB detector' })).toBeDisabled(); });
+    const submit = screen.getByRole('button', { name: 'Upload and inspect' }); expect(submit).toBeDisabled();
+    fireEvent.submit(submit.closest('form')!);
+    expect(fetchMock.mock.calls.filter(([path]) => path === '/api/v1/assets' || path === '/api/v1/inspections')).toHaveLength(0);
+  });
+  it('does not advertise stale success or allow a new trained intent after the latest availability check fails', async () => {
+    const fetchMock = trainedServer(); const implementation = fetchMock.getMockImplementation()!;
+    let checks = 0;
+    fetchMock.mockImplementation(async (path, options) => {
+      if (path === '/api/v1/inference-modes' && ++checks > 1) throw new TypeError('latest check unavailable');
+      return implementation(path, options);
+    });
+    vi.stubGlobal('fetch', fetchMock); const user = userEvent.setup(); renderApp(); await selectTrained(user);
+    await user.click(screen.getByRole('checkbox', { name: /I confirm this is a real 300/ }));
+    await user.upload(screen.getByLabelText('Image file'), image());
+    await user.click(screen.getByRole('button', { name: 'Check trained model availability' }));
+    expect(await screen.findByText(/availability could not be verified/)).toBeVisible();
+    expect(screen.queryByText(/The pinned trained PCB model is ready/)).not.toBeInTheDocument();
+    expect(screen.getByRole('radio', { name: 'Trained PCB detector' })).toBeChecked();
+    expect(screen.getByRole('radio', { name: 'Trained PCB detector' })).toBeDisabled();
+    const submit = screen.getByRole('button', { name: 'Upload and inspect' }); expect(submit).toBeDisabled();
+    fireEvent.submit(submit.closest('form')!);
+    expect(fetchMock.mock.calls.filter(([path]) => path === '/api/v1/assets' || path === '/api/v1/inspections')).toHaveLength(0);
+  });
 });

@@ -1,4 +1,4 @@
-import { BoundingBoxSchema } from '@vip/contracts';
+import { BoundingBoxSchema, NORMALIZED_GEOMETRY_EPSILON } from '@vip/contracts';
 import { type Static } from 'typebox';
 import { Value } from 'typebox/value';
 
@@ -12,7 +12,8 @@ const clamp = (value: number, min: number, max: number) => Math.max(min, Math.mi
 
 export function validBox(value: unknown): value is Box {
   return Value.Check(BoundingBoxSchema, value) && Object.values(value).every(Number.isFinite)
-    && value.x + value.width <= 1 && value.y + value.height <= 1;
+    && value.x + value.width <= 1 + NORMALIZED_GEOMETRY_EPSILON
+    && value.y + value.height <= 1 + NORMALIZED_GEOMETRY_EPSILON;
 }
 function assertSize(size: Size) {
   if (!Number.isFinite(size.width) || !Number.isFinite(size.height) || size.width <= 0 || size.height <= 0) throw new Error('Invalid image viewport.');

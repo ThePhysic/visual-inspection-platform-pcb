@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { isInferenceResult, NORMALIZED_GEOMETRY_EPSILON } from '@vip/contracts';
+import { pcbResult } from '../test/fixtures';
 import { canvasViewport, clampPoint, constrainResize, dragBox, drawingPixels, finishDrawing, sameBox, toNormalized, toPixels, transformBox, validBox, type Box } from './geometry';
 
 const box = { x: 0.1, y: 0.2, width: 0.3, height: 0.4 };
@@ -18,6 +20,21 @@ describe('canonical annotation geometry', () => {
   });
   it('absorbs only boundary arithmetic noise while keeping boxes valid', () => {
     expect(toNormalized({ x: -1e-14, y: -1e-14, width: 100 + 1e-14, height: 100 + 1e-14 }, { width: 100, height: 100 })).toEqual({ x: 0, y: 0, width: 1, height: 1 });
+  });
+  it.each([Math.fround(1.3323e-13), 4.4952189919568735])('renders contract-valid unrounded right-edge geometry for pixel x_min=%s without mutating predictions', xMin => {
+    const boundary = { x: xMin / 300, y: 0, width: (300 - xMin) / 300, height: 100 / 300 };
+    expect(boundary.x + boundary.width).toBeGreaterThan(1);
+    const prediction = { ...pcbResult, detections: [{ ...pcbResult.detections[0]!, boundingBox: boundary }] };
+    const original = structuredClone(prediction);
+    expect(isInferenceResult(prediction)).toBe(true);
+    expect(validBox(boundary)).toBe(true);
+    expect(toPixels(boundary, { width: 600, height: 600 })).toEqual({
+      x: boundary.x * 600, y: 0, width: boundary.width * 600, height: boundary.height * 600,
+    });
+    expect(prediction).toEqual(original);
+    const invalid = { ...boundary, width: boundary.width + 16 * NORMALIZED_GEOMETRY_EPSILON };
+    expect(validBox(invalid)).toBe(false);
+    expect(() => toPixels(invalid, { width: 600, height: 600 })).toThrow('Invalid normalized box');
   });
   it.each([{ width: 640, height: 320 }, { width: 320, height: 640 }, { width: 287.375, height: 143.6875 }])('converts and round trips within $width × $height CSS pixels', size => {
     const pixels = toPixels(box, size);

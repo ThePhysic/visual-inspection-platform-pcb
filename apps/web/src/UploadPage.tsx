@@ -17,6 +17,7 @@ export default function UploadPage() {
   const [candidatePatch, setCandidatePatch] = useState(false);
   const modes = useQuery({ queryKey: ['inference-modes'], queryFn: ({ signal }) => fetchInferenceModes(signal),
     enabled: false, retry: false });
+  const trainedAvailable = modes.data?.trained.available === true && !modes.isError;
   const submission = useRef<Submission | undefined>(undefined);
   const busy = useRef(false);
   const mounted = useRef(false);
@@ -73,13 +74,16 @@ export default function UploadPage() {
     event.preventDefault();
     if (busy.current || validationError) return;
     if (!file) { setValidationError('Select an image first.'); return; }
-    if (mode === 'trained' && (!modes.data?.trained.available || !candidatePatch)) return;
+    // Confirmation can replay an already accepted intent during an outage. Only
+    // a new intent depends on the current availability observation.
+    if (mode === 'trained' && !submission.current?.asset && (!trainedAvailable || !candidatePatch)) return;
     submission.current ??= { file, key: crypto.randomUUID(), ...(mode === 'trained' ? { provider: PCB_CONFIGURATION, candidatePatch: true as const } : {}) };
     busy.current = true;
     mutation.mutate(submission.current);
   }
 
   const canRetry = !mutation.error || !(mutation.error instanceof ApiClientError) || mutation.error.retryable;
+  const confirmingSubmission = Boolean(uploaded);
   return <>
     <p className="eyebrow">Image inspection</p>
     <h1>Upload an image. See what’s detected.</h1>
@@ -92,11 +96,11 @@ export default function UploadPage() {
           <label><input type="radio" name="inference-mode" value="mock" checked={mode === 'mock'} onChange={() => {
             setMode('mock'); mutation.reset(); submission.current = undefined; setUploaded(undefined);
           }} /> Simulated demo</label>
-          <label><input type="radio" name="inference-mode" value="trained" checked={mode === 'trained'} disabled={!modes.data?.trained.available}
+          <label><input type="radio" name="inference-mode" value="trained" checked={mode === 'trained'} disabled={!trainedAvailable}
             onChange={() => { setMode('trained'); mutation.reset(); submission.current = undefined; setUploaded(undefined); }} /> Trained PCB detector</label>
-          <p className="muted">{modes.isFetching ? 'Checking trained model readiness…' : modes.data?.trained.available
-            ? 'The pinned trained PCB model is ready. Availability can change; accepted work uses bounded retries.'
+          <p className="muted">{modes.isFetching ? 'Checking trained model readiness…'
             : modes.error ? 'Trained model availability could not be verified. The simulated demo is available.'
+            : trainedAvailable ? 'The pinned trained PCB model is ready. Availability can change; accepted work uses bounded retries.'
             : modes.data?.trained.reason ?? 'Trained mode is unavailable until its readiness has been checked.'}</p>
           <button type="button" className="secondary" disabled={modes.isFetching} onClick={() => { void modes.refetch(); }}>Check trained model availability</button>
           {mode === 'trained' && <label className="candidate-attestation"><input type="checkbox" checked={candidatePatch}
@@ -120,7 +124,7 @@ export default function UploadPage() {
           {uploaded && canRetry && <p>Retry submits the same request using the saved image; it will not upload it again.</p>}
           {!uploaded && canRetry && <p>If the connection failed after saving, retrying may create another image asset.</p>}
         </div>}
-        <button type="submit" disabled={!file || Boolean(validationError) || mutation.isPending || !canRetry || (mode === 'trained' && (!candidatePatch || !modes.data?.trained.available))}>
+        <button type="submit" disabled={!file || Boolean(validationError) || mutation.isPending || !canRetry || (mode === 'trained' && !confirmingSubmission && (!candidatePatch || !trainedAvailable))}>
           {mutation.isPending ? phase === 'uploading' ? 'Uploading…' : 'Submitting…'
             : mutation.error ? uploaded ? 'Retry inspection submission' : 'Retry upload' : 'Upload and inspect'}
         </button>
@@ -133,6 +137,6 @@ export default function UploadPage() {
     </section>
     {mode === 'mock' ? <aside className="notice"><strong>Simulated demo</strong><p>The mock model demonstrates the inspection workflow. Its labels and confidence scores are not real model measurements.</p></aside>
       : <aside className="notice"><strong>Trained model · PCB candidate patches</strong><p>Use an identified 300 × 300 JPEG/PNG AOI candidate patch. This detector does not search complete boards. Scores are not calibrated probabilities of correctness; false alarms and missed defects remain.</p>
-        <p>For a repeatable demo, use <code>tests/fixtures/pcb-ind/5810_t_007.jpg</code> from the sibling visual-inspection-dl repository. This training-set smoke fixture is from PCB-IND v4, Hao Yan, Fujian Polytechnic Normal University, <a href="https://zenodo.org/records/19723114" target="_blank" rel="noreferrer">CC BY 4.0</a>. It demonstrates serving, not holdout generalization.</p></aside>}
+        <p>For a repeatable demo, use <code>fixtures/pcb/5810_t_007.jpg</code> from this repository. This training-set smoke fixture is from PCB-IND v4, Hao Yan, Fujian Polytechnic Normal University, <a href="https://zenodo.org/records/19723114" target="_blank" rel="noreferrer">CC BY 4.0</a>. It demonstrates serving, not holdout generalization.</p></aside>}
   </>;
 }

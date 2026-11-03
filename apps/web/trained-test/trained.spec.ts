@@ -5,7 +5,7 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { PCB_CONFIGURATION, PCB_LABELS, isResultForConfiguration } from '@vip/contracts';
 
 const platformRoot = fileURLToPath(new URL('../../../', import.meta.url));
-const patchPath = process.env.PCB_DEMO_PATCH ?? resolve(platformRoot, '../visual-inspection-dl/tests/fixtures/pcb-ind/5810_t_007.jpg');
+const patchPath = process.env.PCB_DEMO_PATCH ?? resolve(platformRoot, 'fixtures/pcb/5810_t_007.jpg');
 const evidenceDirectory = resolve(platformRoot, 'docs/real-inference');
 
 async function draw(page: Page, start: number, end: number) {
