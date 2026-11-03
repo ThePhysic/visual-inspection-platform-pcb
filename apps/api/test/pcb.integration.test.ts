@@ -30,7 +30,7 @@ describe('PCB admission and eight-class review with real MongoDB', () => {
 
   function startApp(enabled = true) {
     return buildApp({ assets: { model: assets, storage }, inspections: { assets, inspections, trainedEnabled: enabled },
-      trainedInference: { enabled, ready: async () => false } });
+      trainedInference: { enabled, available: () => false } });
   }
   async function connect() {
     connection = await connectDatabase(process.env.MONGODB_TEST_URI ?? 'mongodb://127.0.0.1:27017', databaseName);

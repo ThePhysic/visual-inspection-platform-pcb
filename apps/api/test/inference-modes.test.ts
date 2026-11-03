@@ -8,18 +8,18 @@ function app(options: Parameters<typeof buildApp>[0] = {}) {
 }
 describe('inference availability is distinct from API liveness', () => {
   it('defaults to mock without contacting any model service', async () => {
-    const ready = vi.fn(async () => true);
-    const response = await app({ trainedInference: { enabled: false, ready } }).inject('/api/v1/inference-modes');
+    const available = vi.fn(() => true);
+    const response = await app({ trainedInference: { enabled: false, available } }).inject('/api/v1/inference-modes');
     expect(response.statusCode).toBe(200);
     expect(response.json().trained).toMatchObject({ enabled: false, available: false });
-    expect(ready).not.toHaveBeenCalled();
+    expect(available).not.toHaveBeenCalled();
   });
   it('advertises trained mode only after validated readiness', async () => {
-    const instance = app({ trainedInference: { enabled: true, ready: async () => true } });
+    const instance = app({ trainedInference: { enabled: true, available: () => true } });
     expect((await instance.inject('/api/v1/inference-modes')).json()).toEqual({ trained: { enabled: true, available: true } });
   });
   it('reports model outage safely while keeping liveness available', async () => {
-    const instance = app({ trainedInference: { enabled: true, ready: async () => { throw new Error('private service detail'); } } });
+    const instance = app({ trainedInference: { enabled: true, available: () => { throw new Error('private service detail'); } } });
     const response = await instance.inject('/api/v1/inference-modes');
     expect(response.statusCode).toBe(200);
     expect(response.json().trained).toMatchObject({ enabled: true, available: false });

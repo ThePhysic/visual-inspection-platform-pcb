@@ -3,6 +3,7 @@ import { readConfig } from './config.js';
 import { connectDatabase, createAssetModel } from './database.js';
 import { LocalImageStorage } from './storage.js';
 import sharp from 'sharp';
+import { startInferenceAvailability } from './inference-availability.js';
 import { createInspectionModel, InspectionQueue, InspectionReconciler, OperationalMetrics, operatorPort, startOperatorServer, sampleQueue,
   readInferenceConfig, checkTrainedModelReadiness } from '@vip/backend';
 
@@ -26,14 +27,17 @@ async function main() {
     throw error;
   }
   const redisStatus: Pick<InspectionQueue, 'healthy'> = { healthy: () => queue.healthy() };
+  const availability = inference.enabled && inference.url
+    ? startInferenceAvailability(signal => checkTrainedModelReadiness(inference.url!, signal)) : undefined;
   const app = buildApp({ logger: true, metrics, allowedHosts: config.allowedHosts, assets: { model, storage, uploadConcurrency: config.uploadConcurrency },
     inspections: { inspections, assets: model, trainedEnabled: inference.enabled }, dispatchQueue: redisStatus,
-    trainedInference: { enabled: inference.enabled, ready: () => inference.url ? checkTrainedModelReadiness(inference.url) : Promise.resolve(false) },
+    trainedInference: { enabled: inference.enabled, available: () => availability?.available() ?? false },
     notifyAccepted: id => { reconciler.notify(id); } });
   const queue = new InspectionQueue(config.redisUrl, app.log);
   const reconciler = new InspectionReconciler(inspections, queue, app.log, undefined, metrics);
   let operations: Awaited<ReturnType<typeof startOperatorServer>> | undefined;
   app.addHook('onClose', async () => {
+    await availability?.close();
     await operations?.close();
     try { await reconciler.close(); } finally {
       try { await queue.close(); } finally { await connection.close(); }

@@ -72,7 +72,9 @@ continue to work only as simulated examples.
 Only the existing web frontend binds a loopback host port. Python has no host
 port mapping, runs as the DL Dockerfile's non-root user, uses CPU, and mounts its
 pinned release read-only. Neither the browser nor public request handling performs
-prediction. Availability checks call bounded readiness/model-identity endpoints;
+prediction. A background monitor polls bounded readiness/model-identity endpoints
+every five seconds and expires observations after ten seconds. Public requests
+read that cached observation and never await Python;
 the existing worker alone calls `/v1/predict` for inspections.
 
 ```powershell

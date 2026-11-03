@@ -25,7 +25,7 @@ export function buildApp(options: Pick<FastifyServerOptions, 'logger'> & {
   notifyAccepted?: (inspectionId: string) => void;
   metrics?: OperationalMetrics;
   allowedHosts?: readonly string[];
-  trainedInference?: { enabled: boolean; ready: () => Promise<boolean> };
+  trainedInference?: { enabled: boolean; available: () => boolean };
 } = {}) {
   const app = Fastify({
     logger: false,
@@ -88,10 +88,14 @@ export function buildApp(options: Pick<FastifyServerOptions, 'logger'> & {
   app.get(INFERENCE_MODES_PATH, {
     schema: { querystring: Type.Object({}, { additionalProperties: false }),
       response: { 200: InferenceModesSchema, 400: ApiErrorResponseSchema } },
-  }, async () => {
+  }, () => {
     const enabled = options.trainedInference?.enabled === true;
-    // Availability is an observation, not part of durable acceptance or API health.
-    const available = enabled && await options.trainedInference!.ready().catch(() => false);
+    // Public requests read only an expiring background observation. They never
+    // call Python, and availability cannot change durable acceptance/API health.
+    let available = false;
+    if (enabled) {
+      try { available = options.trainedInference!.available(); } catch { /* fail closed */ }
+    }
     return { trained: { enabled, available,
       ...(!available ? { reason: enabled
         ? 'The pinned trained PCB model is not ready. Check the inference service and retry the availability check.'

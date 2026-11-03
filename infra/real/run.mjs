@@ -110,6 +110,7 @@ try {
   report.checks.actualReleasedCpuInference = true;
   report.checks.busyResponse = true;
   await resourceSnapshot('after-provider-probe');
+  await until(async () => (await json('/api/v1/inference-modes')).trained.available, 'background trained availability observation');
   await pnpmCommand(['--filter', '@vip/web', 'test:trained'], { env: test.environment, echo: true, timeout: 360_000 });
   report.checks.actualBrowserReview = true;
   const browser = JSON.parse(await readFile(resolve(directory, 'browser-workflow.json'), 'utf8'));
