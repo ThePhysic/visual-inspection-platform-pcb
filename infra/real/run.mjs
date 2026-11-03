@@ -134,7 +134,7 @@ try {
         queueWaitMs: Date.parse(record.processingStartedAt) - Date.parse(record.createdAt),
         workerProcessingMs: record.processingDurationMs, providerHttpMs: record.result.durationMs,
         pythonTimingMs: record.result.providerTimingMs, detectionCount: record.result.detections.length,
-        requested: record.requested, completedAt: record.completedAt, attemptCount: record.attemptCount });
+        requested: record.requested, result: record.result, completedAt: record.completedAt, attemptCount: record.attemptCount });
     } catch (error) { report.errors.push({ phase: 'benchmark', index, message: String(error).slice(0, 300) }); throw error; }
     if (index === 14) resourceProbe = resourceSnapshot('benchmark-midpoint').then(() => undefined, error => error);
   }
