@@ -1,0 +1,176 @@
+{
+  "observedAt": "2026-11-03T03:55:59.695Z",
+  "publicRepository": "https://github.com/ThePhysic/visual-inspection-dl",
+  "anonymousClone": true,
+  "authenticationIsolation": [
+    "Git global/system configuration disabled",
+    "credential.helper empty",
+    "core.askpass empty",
+    "http.extraHeader empty",
+    "terminal prompt disabled",
+    "GCM interactive disabled",
+    "GH/GITHUB/auth configuration environment removed"
+  ],
+  "publicRevision": "399a8da7407689a0ffd7dc9bde074600dd8dcbcc",
+  "previousDeliveryRevision": "badae041458688f8743ce6d6f433f01a13451d0e",
+  "checks": {
+    "exactPublicCheckout": true,
+    "cleanCheckout": true,
+    "servingSourceIdentical": true,
+    "dockerBuildInputsIdentical": true,
+    "completeReleaseTreeIdentical": true,
+    "onlyDocumentationDiffers": true
+  },
+  "changedPathsBetweenRevisions": [
+    "README.md",
+    "docs/API.md"
+  ],
+  "comparedTrackedFiles": 158,
+  "sourceFiles": 10,
+  "releaseFiles": 3,
+  "explicitDockerBuildInputs": [
+    "Dockerfile",
+    ".dockerignore",
+    "pyproject.toml",
+    "requirements-cpu.txt",
+    "requirements-cpu.lock"
+  ],
+  "release": "pcb-ind-ssdlite-v1",
+  "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+  "taxonomy": "pcb-ind-v4-1",
+  "confidenceThreshold": 0.2,
+  "hashes": {
+    "weights.pt": "28271a688aa7335521bb7725423fd6ea6622f3d1964bfaed83dd97b4f0ff34d9",
+    "evaluation.json": "acc89d13a50caf389f74bc2cb200b0558fcbe6f6ead6e7f94f6e5ab5817b2dfd"
+  },
+  "commands": [
+    {
+      "executable": "git",
+      "args": [
+        "-c",
+        "credential.helper=",
+        "-c",
+        "core.askpass=",
+        "-c",
+        "http.extraHeader=",
+        "-c",
+        "credential.interactive=false",
+        "clone",
+        "https://github.com/ThePhysic/visual-inspection-dl.git",
+        "visual-inspection-dl"
+      ],
+      "cwd": "empty-clean-parent"
+    },
+    {
+      "executable": "git",
+      "args": [
+        "-c",
+        "credential.helper=",
+        "-c",
+        "core.askpass=",
+        "-c",
+        "http.extraHeader=",
+        "-c",
+        "credential.interactive=false",
+        "checkout",
+        "--detach",
+        "399a8da7407689a0ffd7dc9bde074600dd8dcbcc"
+      ],
+      "cwd": "anonymous-public-dl-clone"
+    },
+    {
+      "executable": "git",
+      "args": [
+        "-c",
+        "credential.helper=",
+        "-c",
+        "core.askpass=",
+        "-c",
+        "http.extraHeader=",
+        "-c",
+        "credential.interactive=false",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "anonymous-public-dl-clone"
+    },
+    {
+      "executable": "git",
+      "args": [
+        "-c",
+        "credential.helper=",
+        "-c",
+        "core.askpass=",
+        "-c",
+        "http.extraHeader=",
+        "-c",
+        "credential.interactive=false",
+        "status",
+        "--porcelain"
+      ],
+      "cwd": "anonymous-public-dl-clone"
+    },
+    {
+      "executable": "git",
+      "args": [
+        "-c",
+        "credential.helper=",
+        "-c",
+        "core.askpass=",
+        "-c",
+        "http.extraHeader=",
+        "-c",
+        "credential.interactive=false",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "existing-private-delivery-clone"
+    },
+    {
+      "executable": "git",
+      "args": [
+        "-c",
+        "credential.helper=",
+        "-c",
+        "core.askpass=",
+        "-c",
+        "http.extraHeader=",
+        "-c",
+        "credential.interactive=false",
+        "ls-tree",
+        "-r",
+        "--full-tree",
+        "399a8da7407689a0ffd7dc9bde074600dd8dcbcc"
+      ],
+      "cwd": "anonymous-public-dl-clone"
+    },
+    {
+      "executable": "git",
+      "args": [
+        "-c",
+        "credential.helper=",
+        "-c",
+        "core.askpass=",
+        "-c",
+        "http.extraHeader=",
+        "-c",
+        "credential.interactive=false",
+        "ls-tree",
+        "-r",
+        "--full-tree",
+        "badae041458688f8743ce6d6f433f01a13451d0e"
+      ],
+      "cwd": "existing-private-delivery-clone"
+    }
+  ],
+  "strictPreflight": {
+    "command": "node infra/real/verify-release.mjs",
+    "environment": "DL_REPOSITORY_DIR points to the anonymous public DL checkout",
+    "passed": true,
+    "dlRevision": "399a8da7407689a0ffd7dc9bde074600dd8dcbcc",
+    "model": "pcb-ind-ssdlite-v1",
+    "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+    "verifierSourceUnchanged": true
+  },
+  "limitation": "This static comparison and anonymous clone prove identical serving/build/release bytes, not a new model performance evaluation; live HTTP/Compose verification is recorded separately."
+}

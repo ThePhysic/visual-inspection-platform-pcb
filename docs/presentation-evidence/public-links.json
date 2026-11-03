@@ -1,0 +1,238 @@
+{
+  "observedAt": "2026-11-03T03:58:23.485924+00:00",
+  "method": "Anonymous direct HTTPS GET, no Authorization or Cookie headers, no GitHub token or credential helper; at most two attempts with 25-second request timeout, response bodies bounded to 512 KiB and not retained.",
+  "scope": "External public links only. HTTP reachability is not a license interpretation, a guarantee of future availability, or revalidation of scientific measurements. Fragment links may require browser-side rendering.",
+  "results": [
+    {
+      "name": "upstream-swe",
+      "url": "https://github.com/ThePhysic/visual-inspection-platform",
+      "anonymous": true,
+      "attempts": [
+        {
+          "number": 1,
+          "status": 200,
+          "durationMs": 1279.56
+        }
+      ],
+      "status": 200,
+      "finalUrl": "https://github.com/ThePhysic/visual-inspection-platform",
+      "contentType": "text/html",
+      "reachable": true
+    },
+    {
+      "name": "integrated-app",
+      "url": "https://github.com/ThePhysic/visual-inspection-platform-pcb",
+      "anonymous": true,
+      "attempts": [
+        {
+          "number": 1,
+          "status": 200,
+          "durationMs": 1077.63
+        }
+      ],
+      "status": 200,
+      "finalUrl": "https://github.com/ThePhysic/visual-inspection-platform-pcb",
+      "contentType": "text/html",
+      "reachable": true
+    },
+    {
+      "name": "public-dl",
+      "url": "https://github.com/ThePhysic/visual-inspection-dl",
+      "anonymous": true,
+      "attempts": [
+        {
+          "number": 1,
+          "status": 200,
+          "durationMs": 1025.15
+        }
+      ],
+      "status": 200,
+      "finalUrl": "https://github.com/ThePhysic/visual-inspection-dl",
+      "contentType": "text/html",
+      "reachable": true
+    },
+    {
+      "name": "integration-ci-badge",
+      "url": "https://github.com/ThePhysic/visual-inspection-platform-pcb/actions/workflows/ci.yml/badge.svg?branch=integration%2Freal-pcb",
+      "anonymous": true,
+      "attempts": [
+        {
+          "number": 1,
+          "status": 200,
+          "durationMs": 701.75
+        }
+      ],
+      "status": 200,
+      "finalUrl": "https://github.com/ThePhysic/visual-inspection-platform-pcb/actions/workflows/ci.yml/badge.svg?branch=integration%2Freal-pcb",
+      "contentType": "image/svg+xml",
+      "reachable": true,
+      "badgeTitle": "CI - passing"
+    },
+    {
+      "name": "integration-ci-workflow",
+      "url": "https://github.com/ThePhysic/visual-inspection-platform-pcb/actions/workflows/ci.yml?query=branch%3Aintegration%2Freal-pcb",
+      "anonymous": true,
+      "attempts": [
+        {
+          "number": 1,
+          "status": 200,
+          "durationMs": 1276.37
+        }
+      ],
+      "status": 200,
+      "finalUrl": "https://github.com/ThePhysic/visual-inspection-platform-pcb/actions/workflows/ci.yml?query=branch%3Aintegration%2Freal-pcb",
+      "contentType": "text/html",
+      "reachable": true
+    },
+    {
+      "name": "pcb-ind-v4-source",
+      "url": "https://zenodo.org/records/19723114",
+      "anonymous": true,
+      "attempts": [
+        {
+          "number": 1,
+          "status": 200,
+          "durationMs": 1127.24
+        }
+      ],
+      "status": 200,
+      "finalUrl": "https://zenodo.org/records/19723114",
+      "contentType": "text/html",
+      "reachable": true
+    },
+    {
+      "name": "pcb-fixture-license",
+      "url": "https://creativecommons.org/licenses/by/4.0/",
+      "anonymous": true,
+      "attempts": [
+        {
+          "number": 1,
+          "status": 200,
+          "durationMs": 574.09
+        }
+      ],
+      "status": 200,
+      "finalUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "contentType": "text/html",
+      "reachable": true
+    },
+    {
+      "name": "pinned-dl-third-party",
+      "url": "https://github.com/ThePhysic/visual-inspection-dl/blob/399a8da7407689a0ffd7dc9bde074600dd8dcbcc/docs/THIRD_PARTY.md",
+      "anonymous": true,
+      "attempts": [
+        {
+          "number": 1,
+          "status": 200,
+          "durationMs": 699.34
+        }
+      ],
+      "status": 200,
+      "finalUrl": "https://github.com/ThePhysic/visual-inspection-dl/blob/399a8da7407689a0ffd7dc9bde074600dd8dcbcc/docs/THIRD_PARTY.md",
+      "contentType": "text/html",
+      "reachable": true
+    },
+    {
+      "name": "pinned-dl-model-card",
+      "url": "https://github.com/ThePhysic/visual-inspection-dl/blob/399a8da7407689a0ffd7dc9bde074600dd8dcbcc/docs/MODEL_CARD.md",
+      "anonymous": true,
+      "attempts": [
+        {
+          "number": 1,
+          "status": 200,
+          "durationMs": 936.56
+        }
+      ],
+      "status": 200,
+      "finalUrl": "https://github.com/ThePhysic/visual-inspection-dl/blob/399a8da7407689a0ffd7dc9bde074600dd8dcbcc/docs/MODEL_CARD.md",
+      "contentType": "text/html",
+      "reachable": true
+    },
+    {
+      "name": "pytorch-framework-license",
+      "url": "https://github.com/pytorch/pytorch/blob/v2.7.1/LICENSE",
+      "anonymous": true,
+      "attempts": [
+        {
+          "number": 1,
+          "status": 200,
+          "durationMs": 886.76
+        }
+      ],
+      "status": 200,
+      "finalUrl": "https://github.com/pytorch/pytorch/blob/v2.7.1/LICENSE",
+      "contentType": "text/html",
+      "reachable": true
+    },
+    {
+      "name": "torchvision-code-license",
+      "url": "https://github.com/pytorch/vision/blob/v0.22.1/LICENSE",
+      "anonymous": true,
+      "attempts": [
+        {
+          "number": 1,
+          "status": 200,
+          "durationMs": 572.85
+        }
+      ],
+      "status": 200,
+      "finalUrl": "https://github.com/pytorch/vision/blob/v0.22.1/LICENSE",
+      "contentType": "text/html",
+      "reachable": true
+    },
+    {
+      "name": "torchvision-initialization",
+      "url": "https://docs.pytorch.org/vision/0.22/models/generated/torchvision.models.detection.ssdlite320_mobilenet_v3_large.html",
+      "anonymous": true,
+      "attempts": [
+        {
+          "number": 1,
+          "status": 200,
+          "durationMs": 662.99
+        }
+      ],
+      "status": 200,
+      "finalUrl": "https://docs.pytorch.org/vision/0.22/models/generated/torchvision.models.detection.ssdlite320_mobilenet_v3_large.html",
+      "contentType": "text/html",
+      "reachable": true
+    },
+    {
+      "name": "torchvision-pretrained-terms",
+      "url": "https://github.com/pytorch/vision/blob/v0.22.1/README.md#pre-trained-model-license",
+      "anonymous": true,
+      "attempts": [
+        {
+          "number": 1,
+          "status": 200,
+          "durationMs": 710.89
+        }
+      ],
+      "status": 200,
+      "finalUrl": "https://github.com/pytorch/vision/blob/v0.22.1/README.md#pre-trained-model-license",
+      "contentType": "text/html",
+      "reachable": true
+    },
+    {
+      "name": "coco-terms",
+      "url": "https://cocodataset.org/#termsofuse",
+      "anonymous": true,
+      "attempts": [
+        {
+          "number": 1,
+          "status": 200,
+          "durationMs": 424.0
+        }
+      ],
+      "status": 200,
+      "finalUrl": "https://cocodataset.org/#termsofuse",
+      "contentType": "text/html",
+      "reachable": true
+    }
+  ],
+  "summary": {
+    "targets": 14,
+    "reachable": 14,
+    "broken": 0,
+    "inaccessibleOrTransient": 0
+  }
+}

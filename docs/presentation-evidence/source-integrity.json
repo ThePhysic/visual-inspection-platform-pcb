@@ -1,0 +1,28 @@
+{
+  "sourceRevision": "fdcd8cc3dd38104fd6044ee7d75734de6069df85",
+  "baseline": "848c57b23656d7cd6dc5a113ba39d94cc1ac4a1c",
+  "applicationAndExistingComposeVerifierCiDiffPaths": [],
+  "preservedTag": {
+    "name": "pcb-integration-v1.1",
+    "commit": "848c57b23656d7cd6dc5a113ba39d94cc1ac4a1c"
+  },
+  "preservedHistoricalEvidence": [
+    "acceptance.json",
+    "browser-warmed.json",
+    "browser-workflow.json",
+    "python-response.json",
+    "python-response-image.json",
+    "publication-scan.json",
+    "trained-upload.png",
+    "trained-result.png",
+    "trained-review.png",
+    "trained-history.png",
+    "alternate-checkout.json"
+  ],
+  "secretScan": {
+    "tool": "Gitleaks cached network-disabled container; read-only repository mount; --redact --log-opts=--all",
+    "commitsScanned": 36,
+    "rawFindings": 0
+  },
+  "scope": "History scan covers source candidate before this documentation/evidence commit. Final selected files are inspected separately. Application code, existing CI/Compose and strict verifier are unchanged; only the public dependency pin, optional smoke tooling and presentation are revised."
+}

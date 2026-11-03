@@ -1,0 +1,693 @@
+{
+  "startedAt": "2026-11-03T04:04:43.960Z",
+  "passed": true,
+  "anonymous": true,
+  "platformRevision": "fdcd8cc3dd38104fd6044ee7d75734de6069df85",
+  "checks": {
+    "mockWithoutDlClone": true,
+    "anonymousExactPublicClones": true,
+    "verifiedContextAndReadonlyBundleMatch": true,
+    "actualTrainedCpuWorkerInference": true,
+    "eightClassReviewSaveReopenAndImmutableOriginal": true
+  },
+  "commands": [
+    {
+      "executable": "docker",
+      "args": [
+        "ps",
+        "-aq",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-mock"
+      ],
+      "cwd": "clean-parent"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "volume",
+        "ls",
+        "-q",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-mock"
+      ],
+      "cwd": "clean-parent"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "network",
+        "ls",
+        "-q",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-mock"
+      ],
+      "cwd": "clean-parent"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "ps",
+        "-aq",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-real"
+      ],
+      "cwd": "clean-parent"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "volume",
+        "ls",
+        "-q",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-real"
+      ],
+      "cwd": "clean-parent"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "network",
+        "ls",
+        "-q",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-real"
+      ],
+      "cwd": "clean-parent"
+    },
+    {
+      "executable": "git",
+      "args": [
+        "-c",
+        "credential.helper=",
+        "-c",
+        "core.askpass=",
+        "-c",
+        "http.extraHeader=",
+        "-c",
+        "credential.interactive=false",
+        "clone",
+        "https://github.com/ThePhysic/visual-inspection-platform-pcb.git",
+        "visual-inspection-platform"
+      ],
+      "cwd": "clean-parent"
+    },
+    {
+      "executable": "git",
+      "args": [
+        "-c",
+        "credential.helper=",
+        "-c",
+        "core.askpass=",
+        "-c",
+        "http.extraHeader=",
+        "-c",
+        "credential.interactive=false",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "git",
+      "args": [
+        "-c",
+        "credential.helper=",
+        "-c",
+        "core.askpass=",
+        "-c",
+        "http.extraHeader=",
+        "-c",
+        "credential.interactive=false",
+        "branch",
+        "--show-current"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "git",
+      "args": [
+        "-c",
+        "credential.helper=",
+        "-c",
+        "core.askpass=",
+        "-c",
+        "http.extraHeader=",
+        "-c",
+        "credential.interactive=false",
+        "status",
+        "--porcelain"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "compose",
+        "-p",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-mock",
+        "config",
+        "--quiet"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "compose",
+        "-p",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-mock",
+        "up",
+        "-d",
+        "--build",
+        "--wait",
+        "--wait-timeout",
+        "120"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "ps",
+        "-aq",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-mock"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "inspect",
+        "dcd1262d0dce",
+        "d559cb598f1d",
+        "81d3fb6ddf41",
+        "ab3ee2fa5c54",
+        "c49750f51f29"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "volume",
+        "ls",
+        "-q",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-mock"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "volume",
+        "inspect",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-mock_images",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-mock_mongodb-data",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-mock_redis-data"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "network",
+        "ls",
+        "-q",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-mock"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "network",
+        "inspect",
+        "c1e452473df4"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "ps",
+        "-aq",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-mock"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "inspect",
+        "dcd1262d0dce",
+        "d559cb598f1d",
+        "81d3fb6ddf41",
+        "ab3ee2fa5c54",
+        "c49750f51f29"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "volume",
+        "ls",
+        "-q",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-mock"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "volume",
+        "inspect",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-mock_images",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-mock_mongodb-data",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-mock_redis-data"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "network",
+        "ls",
+        "-q",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-mock"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "network",
+        "inspect",
+        "c1e452473df4"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "compose",
+        "-p",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-mock",
+        "down"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "git",
+      "args": [
+        "-c",
+        "credential.helper=",
+        "-c",
+        "core.askpass=",
+        "-c",
+        "http.extraHeader=",
+        "-c",
+        "credential.interactive=false",
+        "clone",
+        "https://github.com/ThePhysic/visual-inspection-dl.git",
+        "visual-inspection-dl"
+      ],
+      "cwd": "clean-parent"
+    },
+    {
+      "executable": "git",
+      "args": [
+        "-c",
+        "credential.helper=",
+        "-c",
+        "core.askpass=",
+        "-c",
+        "http.extraHeader=",
+        "-c",
+        "credential.interactive=false",
+        "checkout",
+        "--detach",
+        "399a8da7407689a0ffd7dc9bde074600dd8dcbcc"
+      ],
+      "cwd": "dl-clone"
+    },
+    {
+      "executable": "git",
+      "args": [
+        "-c",
+        "credential.helper=",
+        "-c",
+        "core.askpass=",
+        "-c",
+        "http.extraHeader=",
+        "-c",
+        "credential.interactive=false",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "dl-clone"
+    },
+    {
+      "executable": "git",
+      "args": [
+        "-c",
+        "credential.helper=",
+        "-c",
+        "core.askpass=",
+        "-c",
+        "http.extraHeader=",
+        "-c",
+        "credential.interactive=false",
+        "status",
+        "--porcelain"
+      ],
+      "cwd": "dl-clone"
+    },
+    {
+      "executable": "node",
+      "args": [
+        "infra/real/verify-release.mjs"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "compose",
+        "-p",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-real",
+        "-f",
+        "compose.yaml",
+        "-f",
+        "compose.real.yaml",
+        "config",
+        "--format",
+        "json"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "compose",
+        "-p",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-real",
+        "-f",
+        "compose.yaml",
+        "-f",
+        "compose.real.yaml",
+        "up",
+        "-d",
+        "--build",
+        "--wait",
+        "--wait-timeout",
+        "180"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "ps",
+        "-aq",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-real"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "inspect",
+        "dd330da306f1",
+        "7540847b27a8",
+        "8a26b7ae677c",
+        "245109abd930",
+        "627e39892b5b",
+        "239f610e2b78"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "volume",
+        "ls",
+        "-q",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-real"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "volume",
+        "inspect",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-real_images",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-real_mongodb-data",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-real_redis-data"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "network",
+        "ls",
+        "-q",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-real"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "network",
+        "inspect",
+        "1589ef2b22d9"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "ps",
+        "-aq",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-real"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "inspect",
+        "dd330da306f1",
+        "7540847b27a8",
+        "8a26b7ae677c",
+        "245109abd930",
+        "627e39892b5b",
+        "239f610e2b78"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "volume",
+        "ls",
+        "-q",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-real"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "volume",
+        "inspect",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-real_images",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-real_mongodb-data",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-real_redis-data"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "network",
+        "ls",
+        "-q",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-real"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "network",
+        "inspect",
+        "1589ef2b22d9"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "compose",
+        "-p",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-real",
+        "-f",
+        "compose.yaml",
+        "-f",
+        "compose.real.yaml",
+        "down",
+        "--volumes",
+        "--remove-orphans"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "ps",
+        "-aq",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-mock"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "volume",
+        "ls",
+        "-q",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-mock"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "volume",
+        "inspect",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-mock_images",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-mock_mongodb-data",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-mock_redis-data"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "network",
+        "ls",
+        "-q",
+        "--filter",
+        "label=com.docker.compose.project=vip-public-e813d9a4c35343b6aec314414f69c8e2-mock"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "compose",
+        "-p",
+        "vip-public-e813d9a4c35343b6aec314414f69c8e2-mock",
+        "down",
+        "--volumes",
+        "--remove-orphans"
+      ],
+      "cwd": "platform-clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "volume",
+        "ls",
+        "-q",
+        "--filter",
+        "name=^1b2851f5a98620c87a5edba6f50e34a63c46a0c02d03a4476b8f8e73d3c52eb7$"
+      ],
+      "cwd": "clean-parent"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "ps",
+        "-aq",
+        "--filter",
+        "volume=1b2851f5a98620c87a5edba6f50e34a63c46a0c02d03a4476b8f8e73d3c52eb7"
+      ],
+      "cwd": "clean-parent"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "volume",
+        "rm",
+        "1b2851f5a98620c87a5edba6f50e34a63c46a0c02d03a4476b8f8e73d3c52eb7"
+      ],
+      "cwd": "clean-parent"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "volume",
+        "ls",
+        "-q",
+        "--filter",
+        "name=^3f4434773f4ee05abdfd9b9686983c8f31ee65660604db0ca14c4c6e07edf305$"
+      ],
+      "cwd": "clean-parent"
+    }
+  ],
+  "errors": [],
+  "scope": "Anonymous clean public clones; README startup commands with unique project names and a free documented WEB_PORT for isolation. No benchmark or new accuracy claim.",
+  "mock": {
+    "inspectionId": "6ae95d8e5eb94404e9a2f543",
+    "providerId": "mock",
+    "simulated": true
+  },
+  "compatibility": {
+    "dlRevision": "399a8da7407689a0ffd7dc9bde074600dd8dcbcc",
+    "servingSourceRevision": "399a8da7407689a0ffd7dc9bde074600dd8dcbcc",
+    "release": "pcb-ind-ssdlite-v1",
+    "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+    "weightsSha256": "28271a688aa7335521bb7725423fd6ea6622f3d1964bfaed83dd97b4f0ff34d9",
+    "evaluationSha256": "acc89d13a50caf389f74bc2cb200b0558fcbe6f6ead6e7f94f6e5ab5817b2dfd",
+    "taxonomy": "pcb-ind-v4-1",
+    "threshold": 0.2
+  },
+  "trained": {
+    "inspectionId": "6ae95daf93f782e1c521c0b6",
+    "providerId": "visual-inspection-dl",
+    "backend": "trained",
+    "simulated": false,
+    "modelVersion": "pcb-ind-ssdlite-v1",
+    "taxonomyVersion": "pcb-ind-v4-1",
+    "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+    "detectionCount": 2
+  },
+  "cleanedUp": true,
+  "finishedAt": "2026-11-03T04:06:13.299Z",
+  "authenticationIsolation": [
+    "Git global/system configuration disabled",
+    "Git credential helper, askpass and HTTP extra headers disabled",
+    "Git terminal prompts disabled",
+    "GH/GITHUB/auth configuration environment removed"
+  ]
+}

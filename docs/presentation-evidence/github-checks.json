@@ -1,0 +1,55 @@
+{
+  "checkedAt": "2026-11-03T04:10:09.051099+00:00",
+  "sourceRevision": "fdcd8cc3dd38104fd6044ee7d75734de6069df85",
+  "repository": "https://github.com/ThePhysic/visual-inspection-platform-pcb",
+  "scope": "Exact source candidate checks; the following evidence-only commit does not change application or smoke behavior.",
+  "ordinaryCi": {
+    "conclusion": "success",
+    "createdAt": "2026-11-03T04:04:39Z",
+    "event": "push",
+    "headBranch": "integration/real-pcb",
+    "headSha": "fdcd8cc3dd38104fd6044ee7d75734de6069df85",
+    "jobs": [
+      {
+        "name": "containers",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "validate (ubuntu-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "integration",
+        "status": "completed",
+        "conclusion": "success"
+      },
+      {
+        "name": "validate (windows-latest)",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "status": "completed",
+    "updatedAt": "2026-11-03T04:09:11Z",
+    "url": "https://github.com/ThePhysic/visual-inspection-platform-pcb/actions/runs/41575947730"
+  },
+  "manualRealCpuSmoke": {
+    "conclusion": "success",
+    "createdAt": "2026-11-03T04:04:58Z",
+    "event": "workflow_dispatch",
+    "headBranch": "integration/real-pcb",
+    "headSha": "fdcd8cc3dd38104fd6044ee7d75734de6069df85",
+    "jobs": [
+      {
+        "name": "released-model",
+        "status": "completed",
+        "conclusion": "success"
+      }
+    ],
+    "status": "completed",
+    "updatedAt": "2026-11-03T04:06:59Z",
+    "url": "https://github.com/ThePhysic/visual-inspection-platform-pcb/actions/runs/41575978539"
+  }
+}

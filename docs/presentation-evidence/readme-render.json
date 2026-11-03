@@ -1,0 +1,53 @@
+{
+  "observedAt": "2026-11-03T04:06:12.470Z",
+  "url": "https://github.com/ThePhysic/visual-inspection-platform-pcb",
+  "expectedPublishedRevision": "fdcd8cc3dd38104fd6044ee7d75734de6069df85",
+  "method": "Fresh unauthenticated Playwright Chromium context, no stored state, credentials, Authorization headers or imported cookies; actual public GitHub rendering.",
+  "viewport": {
+    "width": 1440,
+    "height": 1100
+  },
+  "checks": {
+    "distinctIntegratedTitle": true,
+    "explicitModesAndTrainingFixtureAttribution": true,
+    "visibleAuthenticTrainedImageLoadsOutsideDetails": true,
+    "currentRepositoryAndBranchCiBadge": true,
+    "reviewUploadHistoryLinksPresent": true,
+    "noPrivateDlDependencyLink": true,
+    "primaryCloneIsIntegratedRepositoryAndConsistentFolder": true,
+    "noUnfinishedRecordingPlaceholder": true
+  },
+  "passed": true,
+  "scope": "Rendered README content and link/image structure. CI badge URL is verified; its displayed state is not evidence that a pending workflow has passed.",
+  "responseStatus": 200,
+  "renderedTitle": "Visual Inspection Platform — Real PCB Inference Integration",
+  "trainedImage": {
+    "src": "https://github.com/ThePhysic/visual-inspection-platform-pcb/raw/integration/real-pcb/docs/real-inference/trained-result.png",
+    "alt": "Actual trained PCB inspection showing original image, defect boxes, model version and release digest",
+    "naturalWidth": 1280,
+    "naturalHeight": 1883,
+    "insideDetails": false,
+    "loaded": true
+  },
+  "badge": {
+    "source": "https://github.com/ThePhysic/visual-inspection-platform-pcb/actions/workflows/ci.yml/badge.svg?branch=integration%2Freal-pcb",
+    "href": "https://github.com/ThePhysic/visual-inspection-platform-pcb/actions/workflows/ci.yml?query=branch%3Aintegration%2Freal-pcb"
+  },
+  "captureLinks": [
+    {
+      "text": "Saved eight-class review",
+      "href": "https://github.com/ThePhysic/visual-inspection-platform-pcb/blob/integration/real-pcb/docs/real-inference/trained-review.png"
+    },
+    {
+      "text": "Mode selection and upload",
+      "href": "https://github.com/ThePhysic/visual-inspection-platform-pcb/blob/integration/real-pcb/docs/real-inference/trained-upload.png"
+    },
+    {
+      "text": "History and reopening",
+      "href": "https://github.com/ThePhysic/visual-inspection-platform-pcb/blob/integration/real-pcb/docs/real-inference/trained-history.png"
+    }
+  ],
+  "firstCommandBlock": "git clone https://github.com/ThePhysic/visual-inspection-platform-pcb.git visual-inspection-platform\ncd visual-inspection-platform\ndocker compose -p vip-demo up -d --build --wait --wait-timeout 120",
+  "finishedAt": "2026-11-03T04:06:18.704Z",
+  "captureNote": "A real public GitHub viewport was inspected locally; product screenshots remain the original committed captures."
+}

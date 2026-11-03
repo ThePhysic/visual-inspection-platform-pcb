@@ -1,0 +1,148 @@
+{
+  "startedAt": "2026-11-03T03:58:17.615Z",
+  "passed": true,
+  "compatibility": {
+    "dlRevision": "399a8da7407689a0ffd7dc9bde074600dd8dcbcc",
+    "servingSourceRevision": "399a8da7407689a0ffd7dc9bde074600dd8dcbcc",
+    "release": "pcb-ind-ssdlite-v1",
+    "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+    "weightsSha256": "28271a688aa7335521bb7725423fd6ea6622f3d1964bfaed83dd97b4f0ff34d9",
+    "evaluationSha256": "acc89d13a50caf389f74bc2cb200b0558fcbe6f6ead6e7f94f6e5ab5817b2dfd",
+    "taxonomy": "pcb-ind-v4-1",
+    "threshold": 0.2
+  },
+  "checks": {
+    "verifiedBuildAndBundleSources": true,
+    "privateCpuTopology": true,
+    "pinnedTrainedReadiness": true,
+    "actualTrainedWorkerInference": true,
+    "eightClassReviewSaveReopen": true,
+    "explicitMockIdentityPreserved": true,
+    "realTimeoutRecovery": true
+  },
+  "errors": [],
+  "project": "vip-real-61c54326e46e4e9389d0a3618ee4fcee",
+  "owner": "61c54326e46e4e9389d0a3618ee4fcee",
+  "scope": "Bounded CPU correctness smoke; not an accuracy evaluation, latency benchmark or full real-model acceptance run.",
+  "fixture": "PCB-IND v4 5810_t_007.jpg training-set serving fixture; fixtures/pcb/README.md contains attribution and provenance.",
+  "platformRevisionAtRun": "848c57b23656d7cd6dc5a113ba39d94cc1ac4a1c",
+  "platformTrackedChangesAtRun": 8,
+  "inference": {
+    "device": "cpu",
+    "user": "inspection",
+    "backend": "trained",
+    "hostPublishedPorts": 0,
+    "readOnlyBundle": true
+  },
+  "trained": {
+    "inspectionId": "6ae95c1e2f258abdf6129cce",
+    "attemptCount": 1,
+    "result": {
+      "contractVersion": "v1",
+      "durationMs": 228.63448099999914,
+      "detections": [
+        {
+          "id": "pcb-v1-ff49bed5e493bc332fd80bf06565b317-0",
+          "classId": "missing_copper",
+          "label": "missing_copper",
+          "confidence": 0.3231322467327118,
+          "boundingBox": {
+            "x": 0.3862583160400391,
+            "y": 0.5226535034179688,
+            "width": 0.21819160461425782,
+            "height": 0.11240010579427083
+          }
+        },
+        {
+          "id": "pcb-v1-da42e3947f498d5238ac2a3feeab6f30-1",
+          "classId": "spurious_copper",
+          "label": "spurious_copper",
+          "confidence": 0.3841091990470886,
+          "boundingBox": {
+            "x": 0.39005147298177084,
+            "y": 0.361910400390625,
+            "width": 0.22919082641601562,
+            "height": 0.2504643249511719
+          }
+        }
+      ],
+      "providerId": "visual-inspection-dl",
+      "modelId": "pcb-ind-ssdlite",
+      "modelVersion": "pcb-ind-ssdlite-v1",
+      "taxonomyVersion": "pcb-ind-v4-1",
+      "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+      "confidenceThreshold": 0.2,
+      "backend": "trained",
+      "simulated": false,
+      "providerTimingMs": {
+        "decodePreprocess": 46.48632300450117,
+        "modelInference": 167.96283599978779,
+        "responsePostprocess": 1.1144840027554892,
+        "requestTotal": 216.0112890014716
+      }
+    }
+  },
+  "review": {
+    "inspectionId": "6ae95c1e2f258abdf6129cce",
+    "revision": 1,
+    "classes": [
+      "mouse_bite",
+      "missing_copper",
+      "scratch",
+      "spurious_copper",
+      "copper_burr",
+      "stain",
+      "short",
+      "open"
+    ],
+    "originalResultUnchanged": true,
+    "scope": "API save/reopen with all eight manual classes; illustrative annotations, not expert corrections or a browser test."
+  },
+  "mock": {
+    "inspectionId": "6ae95c1f2f258abdf6129ccf",
+    "providerId": "mock",
+    "taxonomyVersion": "mock-v1",
+    "simulated": true
+  },
+  "recovery": {
+    "scope": "Real application worker HTTP timeout while its owned trained Python container was paused, then restoration and retry. Separate from benchmark samples; no exact latency guarantee.",
+    "inspectionId": "6ae95c212f258abdf6129cd0",
+    "timeout": {
+      "status": "queued",
+      "code": "PROVIDER_TIMEOUT",
+      "attemptCount": 1,
+      "resultAbsent": true,
+      "observationWindowMs": 20000,
+      "observationSource": "Read-only Mongo observation inside the owned API container; queued REST responses omit failure metadata"
+    },
+    "recovery": {
+      "status": "completed",
+      "attemptCount": 3,
+      "maxAttempts": 3,
+      "restoredSameContainer": true,
+      "unpauseThroughFreshHealthAndObservedResultMs": 6363.6342,
+      "providerId": "visual-inspection-dl",
+      "backend": "trained",
+      "simulated": false,
+      "modelVersion": "pcb-ind-ssdlite-v1",
+      "taxonomyVersion": "pcb-ind-v4-1",
+      "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+      "detectionCount": 2,
+      "unchangedOnSubsequentRead": true
+    },
+    "observedProbeDurationMs": 17581.432100000005,
+    "limitation": "The cancelled Python request may finish after disconnect. Its internal completion was not individually observed; this probe verifies the durable timeout, bounded application retry, and stable persisted completion."
+  },
+  "kept": false,
+  "finishedAt": "2026-11-03T03:59:45.597Z",
+  "cleanedUp": true,
+  "browserVerification": {
+    "passed": true,
+    "tests": 1,
+    "scope": "Existing released CPU model browser scenario, no warmed benchmark; historical captures and workflow JSON restored byte-for-byte."
+  },
+  "command": "pnpm test:real:smoke --ci-mongodb --recovery --keep",
+  "captureContext": "Precommit local working tree based on 848c57b with eight tracked changes and the new smoke runner; exact committed public reproduction is separately recorded in anonymous-checkout.json.",
+  "postRunCleanup": "Retained stack was ownership-verified and cleaned after the single existing trained browser scenario. Historical screenshots and browser-workflow JSON were restored byte-for-byte.",
+  "cleanupObservedAt": "2026-11-03T04:01:54.428438+00:00"
+}
