@@ -9,9 +9,6 @@ services:
     environment:
       PCB_INFERENCE_ENABLED: "true"
       PCB_INFERENCE_URL: http://inference:8000
-    depends_on:
-      inference:
-        condition: service_healthy
   inference:
     build:
       context: ${DL_REPOSITORY_DIR:-../visual-inspection-dl}

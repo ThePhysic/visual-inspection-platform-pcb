@@ -7,7 +7,7 @@ import { setTimeout as pause } from 'node:timers/promises';
 import { command, pnpmCommand, root } from '../docker/disposable.mjs';
 import { compatibility, verifyRelease } from './verify-release.mjs';
 import { runProviderProbe } from './provider-probe.mjs';
-import { realEnvironment } from './environment.mjs';
+import { realEnvironment, waitForFreshHealthyService } from './environment.mjs';
 
 const flags = new Set(process.argv.slice(2));
 assert.ok([...flags].every(flag => ['--ci-mongodb', '--keep'].includes(flag)), 'Use optional --ci-mongodb / --keep');
@@ -191,6 +191,7 @@ try {
   assert.equal((await submit(outageAsset.id, outageKey)).id, redisHeld.id);
   assert.equal((await submit(outageAsset.id, heldKey)).id, held.id);
   await test.disruptive(['start', 'redis']);
+  await waitForFreshHealthyService(test, 'redis');
   await test.disruptive(['start', 'worker']);
   const recovered = await completed(held.id); const redisRecovered = await completed(redisHeld.id);
   report.redisWorkerInterruption = { heldInspectionId: recovered.id, acceptedDuringRedisOutageId: redisRecovered.id,
@@ -217,12 +218,14 @@ try {
     // Never leave the test project with a paused model if an assertion fails.
     await test.disruptive(['unpause', 'inference']);
   }
+  const recoveredModelHealth = await waitForFreshHealthyService(test, 'inference');
   await test.disruptive(['start', 'worker']);
   const crashRecovered = await completed(crashed.id);
   assert.ok(crashRecovered.attemptCount >= 2 && crashRecovered.attemptCount <= 3);
   const recoveredResult = structuredClone(crashRecovered.result);
   assert.deepEqual((await getInspection(crashed.id)).result, recoveredResult);
   report.workerCrash = { inspectionId: crashed.id, observedClaimAttempt: crashed.attemptCount,
+    freshModelHealthProbeAt: recoveredModelHealth.Log.at(-1).End,
     recoveredAttemptCount: crashRecovered.attemptCount, preservedProvider: true, immutableCompletedResult: true,
     scope: 'SIGKILL after processing claim with the real model process paused; lease recovery completed a later attempt. Python may finish a disconnected request after unpause; no claim that its internal completion was individually observed.' };
   report.checks.inFlightWorkerCrashAndLeaseRecovery = true;

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { assertRealContainer } from './environment.mjs';
+import { assertRealContainer, waitForFreshHealthyService } from './environment.mjs';
 
 const owner = 'a'.repeat(32);
 const project = `vip-real-${owner}`;
@@ -28,4 +28,21 @@ test('requires inference release bind to be read-only and owned by the exact pro
   assert.throws(() => assertRealContainer(container('inference', [{ ...release, Source: '/unexpected/bundle' }]), project, owner));
   const foreign = container('inference', [release]); foreign.Config.Labels['io.vip.disposable-owner'] = 'b'.repeat(32);
   assert.throws(() => assertRealContainer(foreign, project, owner));
+});
+
+test('recovery waits past cached healthy and failing probes for a new successful observation', async () => {
+  const owned = { ...container('inference', []), Id: 'a'.repeat(64) };
+  const observations = [
+    { Status: 'healthy', Log: [{ End: 'before-outage', ExitCode: 0 }] },
+    { Status: 'healthy', Log: [{ End: 'before-outage', ExitCode: 0 }] },
+    { Status: 'unhealthy', Log: [{ End: 'failed-during-outage', ExitCode: 1 }] },
+    { Status: 'healthy', Log: [{ End: 'new-success-after-recovery', ExitCode: 0 }] },
+  ];
+  let reads = 0; let polls = 0;
+  const health = await waitForFreshHealthyService({ verifyOwnership: async () => [owned] }, 'inference', {
+    inspect: async id => { assert.equal(id, owned.Id); return observations[reads++]; },
+    poll: async () => { polls++; },
+  });
+  assert.equal(reads, 4); assert.equal(polls, 2);
+  assert.equal(health.Log.at(-1).End, 'new-success-after-recovery');
 });

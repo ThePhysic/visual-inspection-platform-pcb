@@ -3,11 +3,36 @@ import { randomUUID } from 'node:crypto';
 import { mkdir, writeFile, unlink } from 'node:fs/promises';
 import { createServer } from 'node:net';
 import { resolve } from 'node:path';
+import { setTimeout as pause } from 'node:timers/promises';
 import { command, root } from '../docker/disposable.mjs';
 
 const label = 'io.vip.disposable-owner';
 const services = ['web', 'api', 'worker', 'mongodb', 'redis', 'inference'];
 const volumes = ['images', 'mongodb-data', 'mongodb-config-data', 'redis-data'];
+
+// Compose can reject a start immediately against cached dependency health after
+// an outage. Observe a NEW successful probe without restarting the dependency.
+export async function waitForFreshHealthyService(environment, service, {
+  timeout = 45_000,
+  inspect = async id => JSON.parse(await command('docker', ['inspect', '--format', '{{json .State.Health}}', id], { timeout: 5000 })),
+  poll = () => pause(250),
+} = {}) {
+  assert.ok(services.includes(service));
+  const matches = (await environment.verifyOwnership()).filter(container => container.Config.Labels['com.docker.compose.service'] === service);
+  assert.equal(matches.length, 1, 'Expected one owned dependency container');
+  const id = matches[0].Id;
+  assert.match(id, /^[a-f0-9]{64}$/);
+  const initial = await inspect(id);
+  const previousProbe = initial?.Log?.at(-1)?.End;
+  const deadline = Date.now() + timeout;
+  while (Date.now() < deadline) {
+    const health = await inspect(id);
+    const probe = health?.Log?.at(-1);
+    if (health?.Status === 'healthy' && probe?.ExitCode === 0 && probe.End && probe.End !== previousProbe) return health;
+    await poll();
+  }
+  throw new Error(`Owned ${service} did not produce a fresh successful Docker health probe after recovery`);
+}
 
 export function assertRealContainer(container, project, owner) {
   assert.match(owner, /^[a-f0-9]{32}$/);
