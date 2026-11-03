@@ -21,6 +21,7 @@
     "test:e2e": "pnpm build && pnpm --filter @vip/web test:e2e",
     "test:reliability": "node infra/docker/test-reliability.mjs",
     "test:real": "node infra/real/run.mjs",
+    "test:real:smoke": "node infra/real/smoke.mjs",
     "test:ci:integration": "node infra/docker/test-native.mjs",
     "storage:maintenance": "node infra/docker/storage-maintenance.mjs",
     "benchmark": "node infra/benchmark/run.mjs",

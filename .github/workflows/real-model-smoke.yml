@@ -1,0 +1,46 @@
+name: Real model CPU smoke
+
+# Deliberately manual: ordinary CI does not claim to execute trained inference.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  released-model:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .node-version
+      - name: Clone the public, exact compatible DL revision without credentials
+        env:
+          GIT_TERMINAL_PROMPT: '0'
+          GIT_CONFIG_NOSYSTEM: '1'
+          GIT_CONFIG_GLOBAL: /dev/null
+          GH_TOKEN: ''
+          GITHUB_TOKEN: ''
+        run: |
+          DL_REVISION=$(node --input-type=module -e "import fs from 'node:fs'; const pin=JSON.parse(fs.readFileSync('infra/real/compatibility.json','utf8')).dlRevision; if(!/^[a-f0-9]{40}$/.test(pin)) throw new Error('Invalid DL revision'); console.log(pin)")
+          git -c credential.helper= -c http.extraHeader= clone --no-checkout https://github.com/ThePhysic/visual-inspection-dl.git ../visual-inspection-dl
+          git -C ../visual-inspection-dl -c credential.helper= -c http.extraHeader= checkout --detach "$DL_REVISION"
+      - name: Verify pin, private CPU topology and actual worker inference
+        # The runner also checks explicit mock identity and eight-class API review.
+        # No benchmark loops, browser captures or historical evidence rewriting.
+        run: node infra/real/smoke.mjs --ci-mongodb
+      - name: Summarize observed smoke scope
+        if: always()
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const file='.tools/real-model-smoke.json';
+          if (!fs.existsSync(file)) process.exit(0);
+          const report=JSON.parse(fs.readFileSync(file,'utf8'));
+          const lines=['## Released-model CPU smoke', `Passed: ${report.passed}`, `DL revision: ${report.compatibility.dlRevision}`, `Artifact digest: ${report.compatibility.artifactDigest}`, '', ...Object.entries(report.checks).map(([name, passed])=>`- ${name}: ${passed}`), '', report.scope];
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, lines.join('\n')+'\n');
+          NODE
