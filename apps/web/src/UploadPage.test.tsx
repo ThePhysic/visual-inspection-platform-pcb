@@ -310,4 +310,48 @@ describe('explicit trained PCB mode', () => {
     fireEvent.submit(submit.closest('form')!);
     expect(fetchMock.mock.calls.filter(([path]) => path === '/api/v1/assets' || path === '/api/v1/inspections')).toHaveLength(0);
   });
+  it.each([true, false])('clears an ambiguous submission and its saved-asset display when attestation changes (available=%s)', async availableAfter => {
+    const fetchMock = trainedServer(); const implementation = fetchMock.getMockImplementation()!;
+    let available = true; let creates = 0;
+    fetchMock.mockImplementation(async (path, options) => {
+      if (path === '/api/v1/inference-modes') return Response.json({ trained: { enabled: true, available,
+        ...(!available ? { reason: 'The trained model is temporarily offline.' } : {}) } });
+      if (path === '/api/v1/inspections' && ++creates === 1) throw new TypeError('accepted, but response was lost');
+      return implementation(path, options);
+    });
+    vi.stubGlobal('fetch', fetchMock); const user = userEvent.setup(); renderApp(); await selectTrained(user);
+    const attestation = screen.getByRole('checkbox', { name: /I confirm this is a real 300/ });
+    await user.click(attestation);
+    await user.upload(screen.getByLabelText('Image file'), image());
+    await user.click(screen.getByRole('button', { name: 'Upload and inspect' }));
+    await screen.findByRole('alert');
+    expect(screen.getByText(/Image uploaded: 300/)).toBeVisible();
+    available = availableAfter;
+    await user.click(screen.getByRole('button', { name: 'Check trained model availability' }));
+    if (!availableAfter) await screen.findByText('The trained model is temporarily offline.');
+    await user.click(attestation);
+    expect(screen.queryByText(/Image uploaded:/)).not.toBeInTheDocument();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    const submit = screen.getByRole('button', { name: 'Upload and inspect' });
+    expect(submit).toBeDisabled();
+    fireEvent.submit(submit.closest('form')!);
+    expect(fetchMock.mock.calls.filter(([path]) => path === '/api/v1/assets')).toHaveLength(1);
+    expect(fetchMock.mock.calls.filter(([path]) => path === '/api/v1/inspections')).toHaveLength(1);
+    await user.click(attestation);
+    if (!availableAfter) {
+      expect(submit).toBeDisabled();
+      fireEvent.submit(submit.closest('form')!);
+      expect(fetchMock.mock.calls.filter(([path]) => path === '/api/v1/assets')).toHaveLength(1);
+      expect(fetchMock.mock.calls.filter(([path]) => path === '/api/v1/inspections')).toHaveLength(1);
+    } else {
+      expect(submit).toBeEnabled();
+      await user.click(submit);
+      expect(await screen.findByRole('heading', { name: 'Completed' })).toBeVisible();
+      expect(fetchMock.mock.calls.filter(([path]) => path === '/api/v1/assets')).toHaveLength(2);
+      const requests = fetchMock.mock.calls.filter(([path]) => path === '/api/v1/inspections');
+      expect(requests).toHaveLength(2);
+      expect((requests[1]![1]!.headers as Record<string, string>)['Idempotency-Key'])
+        .not.toBe((requests[0]![1]!.headers as Record<string, string>)['Idempotency-Key']);
+    }
+  });
 });

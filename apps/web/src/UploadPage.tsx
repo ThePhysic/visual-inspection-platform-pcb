@@ -104,7 +104,7 @@ export default function UploadPage() {
             : modes.data?.trained.reason ?? 'Trained mode is unavailable until its readiness has been checked.'}</p>
           <button type="button" className="secondary" disabled={modes.isFetching} onClick={() => { void modes.refetch(); }}>Check trained model availability</button>
           {mode === 'trained' && <label className="candidate-attestation"><input type="checkbox" checked={candidatePatch}
-            onChange={event => { setCandidatePatch(event.target.checked); submission.current = undefined; mutation.reset(); }} />
+            onChange={event => { setCandidatePatch(event.target.checked); submission.current = undefined; setUploaded(undefined); mutation.reset(); }} />
             I confirm this is a real 300 × 300 PCB candidate patch, not a full-board image or synthetic demo.</label>}
         </fieldset>
         <label htmlFor="image">Image file</label>
