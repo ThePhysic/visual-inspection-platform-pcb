@@ -1,0 +1,11 @@
+{
+  "observedAt": "2026-11-03T02:32:52.056Z",
+  "sampleCount": 1,
+  "observedUploadToHeadingMs": 2959.2440999999994,
+  "inspectionId": "6ae947d1b9f40ed9b8efd46e",
+  "measurement": "Playwright click dispatch on Upload and inspect through visible Completed heading; includes upload, durable creation, queue, trained HTTP inference, commit, browser polling and automation observation overhead.",
+  "pollingMs": 2000,
+  "temperature": "Uncontrolled initial service state; not a cold-start claim.",
+  "fixture": "PCB-IND v4 5810_t_007.jpg, training-set serving smoke fixture; not holdout evaluation.",
+  "baseURL": "http://127.0.0.1:58820"
+}

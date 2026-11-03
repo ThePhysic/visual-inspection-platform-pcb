@@ -1,0 +1,2592 @@
+{
+  "schemaVersion": "v1",
+  "startedAt": "2026-11-03T02:31:53.373Z",
+  "project": "vip-real-3fa30d762c834abb9f6e1917b3a48947",
+  "passed": true,
+  "compatibility": {
+    "dlRevision": "e1e84e2eac9c91e5bd8021aea20a6ec712616285",
+    "servingSourceRevision": "399a8da7407689a0ffd7dc9bde074600dd8dcbcc",
+    "release": "pcb-ind-ssdlite-v1",
+    "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+    "weightsSha256": "28271a688aa7335521bb7725423fd6ea6622f3d1964bfaed83dd97b4f0ff34d9",
+    "evaluationSha256": "acc89d13a50caf389f74bc2cb200b0558fcbe6f6ead6e7f94f6e5ab5817b2dfd",
+    "taxonomy": "pcb-ind-v4-1",
+    "threshold": 0.2
+  },
+  "host": {
+    "os": "win32",
+    "release": "10.0.26200",
+    "node": "v24.22.1",
+    "cpu": "AMD Ryzen 9 7940HS w/ Radeon 780M Graphics     ",
+    "logicalCPUs": 16,
+    "memoryBytes": 33515835392
+  },
+  "methodology": {
+    "samples": 30,
+    "concurrency": 1,
+    "observationPollingMs": 100,
+    "scope": "Sequential full application HTTP workflow: upload through durable create, worker/model execution and GET-observed completion. Browser-visible measurements are separate artifacts with 2000ms UI polling.",
+    "workloads": "Four attributed 300×300 PCB-IND patches cycled; three frozen holdout examples and one training-set serving smoke. This is performance sampling, not model evaluation.",
+    "percentiles": "Nearest rank p50/p95; no p99/SLA claim from 30 samples.",
+    "temperature": "Warmed after provider busy probe and real browser workflow."
+  },
+  "checks": {
+    "actualReleasedCpuInference": true,
+    "busyResponse": true,
+    "actualBrowserReview": true,
+    "existingContainerBrowser": true,
+    "thirtyRepresentativeWorkflows": true,
+    "outageExhaustionAndLinkedRetry": true,
+    "workerRedisDurableRecovery": true,
+    "inFlightWorkerCrashAndLeaseRecovery": true,
+    "downUpPersistence": true
+  },
+  "samples": [
+    {
+      "index": 0,
+      "fixture": "5810_t_007.jpg",
+      "inspectionId": "6ae9481ab9f40ed9b8efd4b5",
+      "uploadAcceptedMs": 31.050600000002305,
+      "creationAcceptedMs": 12.657099999996717,
+      "uploadThroughObservedResultMs": 180.2381999999925,
+      "queueWaitMs": 8,
+      "workerProcessingMs": 69,
+      "providerHttpMs": 61.18634899999597,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.7838020012277411,
+        "modelInference": 52.279039000495686,
+        "responsePostprocess": 0.8491330008837394,
+        "requestTotal": 55.40872999881685
+      },
+      "detectionCount": 2,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 61.18634899999597,
+        "detections": [
+          {
+            "id": "pcb-v1-ff49bed5e493bc332fd80bf06565b317-0",
+            "classId": "missing_copper",
+            "label": "missing_copper",
+            "confidence": 0.3231322467327118,
+            "boundingBox": {
+              "x": 0.3862583160400391,
+              "y": 0.5226535034179688,
+              "width": 0.21819160461425782,
+              "height": 0.11240010579427083
+            }
+          },
+          {
+            "id": "pcb-v1-da42e3947f498d5238ac2a3feeab6f30-1",
+            "classId": "spurious_copper",
+            "label": "spurious_copper",
+            "confidence": 0.3841091990470886,
+            "boundingBox": {
+              "x": 0.39005147298177084,
+              "y": 0.361910400390625,
+              "width": 0.22919082641601562,
+              "height": 0.2504643249511719
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.7838020012277411,
+          "modelInference": 52.279039000495686,
+          "responsePostprocess": 0.8491330008837394,
+          "requestTotal": 55.40872999881685
+        }
+      },
+      "completedAt": "2026-11-03T02:34:02.141Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.340632999999798
+    },
+    {
+      "index": 1,
+      "fixture": "6581_b_043.jpg",
+      "inspectionId": "6ae9481ab9f40ed9b8efd4b7",
+      "uploadAcceptedMs": 24.89990000000398,
+      "creationAcceptedMs": 10.653999999994994,
+      "uploadThroughObservedResultMs": 153.51740000001155,
+      "queueWaitMs": 7,
+      "workerProcessingMs": 80,
+      "providerHttpMs": 70.57993900000292,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.8536169991421048,
+        "modelInference": 63.42742500055465,
+        "responsePostprocess": 0.8247149999078829,
+        "requestTotal": 66.81530799869506
+      },
+      "detectionCount": 1,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 70.57993900000292,
+        "detections": [
+          {
+            "id": "pcb-v1-78578a02faccc1703c4ceed674b2e9e7-0",
+            "classId": "scratch",
+            "label": "scratch",
+            "confidence": 0.9478718638420105,
+            "boundingBox": {
+              "x": 0.025987720489501952,
+              "y": 0.00515599250793457,
+              "width": 0.9558637809753417,
+              "height": 0.9743567434946696
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.8536169991421048,
+          "modelInference": 63.42742500055465,
+          "responsePostprocess": 0.8247149999078829,
+          "requestTotal": 66.81530799869506
+        }
+      },
+      "completedAt": "2026-11-03T02:34:02.324Z",
+      "attemptCount": 1,
+      "commitDurationMs": 1.9016840000113007
+    },
+    {
+      "index": 2,
+      "fixture": "6529_t_006.jpg",
+      "inspectionId": "6ae9481ab9f40ed9b8efd4b9",
+      "uploadAcceptedMs": 20.699699999997392,
+      "creationAcceptedMs": 14.78839999999036,
+      "uploadThroughObservedResultMs": 149.59749999998894,
+      "queueWaitMs": 6,
+      "workerProcessingMs": 65,
+      "providerHttpMs": 58.864191000000574,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.2595360003615497,
+        "modelInference": 53.28354500124988,
+        "responsePostprocess": 1.0305369996785885,
+        "requestTotal": 56.02453100073035
+      },
+      "detectionCount": 1,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 58.864191000000574,
+        "detections": [
+          {
+            "id": "pcb-v1-7684637c7bd2e786c604c85c1bbe351d-0",
+            "classId": "spurious_copper",
+            "label": "spurious_copper",
+            "confidence": 0.969638466835022,
+            "boundingBox": {
+              "x": 0.41661120096842447,
+              "y": 0.35860987345377604,
+              "width": 0.17383344014485677,
+              "height": 0.17729787190755208
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.2595360003615497,
+          "modelInference": 53.28354500124988,
+          "responsePostprocess": 1.0305369996785885,
+          "requestTotal": 56.02453100073035
+        }
+      },
+      "completedAt": "2026-11-03T02:34:02.461Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.6683840000041528
+    },
+    {
+      "index": 3,
+      "fixture": "6040_b_034.jpg",
+      "inspectionId": "6ae9481ab9f40ed9b8efd4bb",
+      "uploadAcceptedMs": 20.11699999999837,
+      "creationAcceptedMs": 11.924299999998766,
+      "uploadThroughObservedResultMs": 153.87099999999919,
+      "queueWaitMs": 8,
+      "workerProcessingMs": 59,
+      "providerHttpMs": 53.9297579999984,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.4414919987757457,
+        "modelInference": 48.633100999722956,
+        "responsePostprocess": 0.6004450006003026,
+        "requestTotal": 50.96175400103675
+      },
+      "detectionCount": 2,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 53.9297579999984,
+        "detections": [
+          {
+            "id": "pcb-v1-899fc8560bc124c3b5adff650d4c30b4-0",
+            "classId": "mouse_bite",
+            "label": "mouse_bite",
+            "confidence": 0.2942906320095062,
+            "boundingBox": {
+              "x": 0.4533699035644531,
+              "y": 0.4617068481445312,
+              "width": 0.11007003784179688,
+              "height": 0.07920613606770834
+            }
+          },
+          {
+            "id": "pcb-v1-5655e9414d8b0060f4b8b1d15015c732-1",
+            "classId": "scratch",
+            "label": "scratch",
+            "confidence": 0.3598823845386505,
+            "boundingBox": {
+              "x": 0.048236058553059895,
+              "y": 0.42190523783365885,
+              "width": 0.6839413706461589,
+              "height": 0.5631241607666015
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.4414919987757457,
+          "modelInference": 48.633100999722956,
+          "responsePostprocess": 0.6004450006003026,
+          "requestTotal": 50.96175400103675
+        }
+      },
+      "completedAt": "2026-11-03T02:34:02.602Z",
+      "attemptCount": 1,
+      "commitDurationMs": 4.182692000002135
+    },
+    {
+      "index": 4,
+      "fixture": "5810_t_007.jpg",
+      "inspectionId": "6ae9481ab9f40ed9b8efd4bd",
+      "uploadAcceptedMs": 22.359000000011292,
+      "creationAcceptedMs": 10.634699999995064,
+      "uploadThroughObservedResultMs": 152.05590000000666,
+      "queueWaitMs": 8,
+      "workerProcessingMs": 65,
+      "providerHttpMs": 59.952533000003314,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.6824230006022844,
+        "modelInference": 53.38871200001449,
+        "responsePostprocess": 1.001190999886603,
+        "requestTotal": 56.350070000917185
+      },
+      "detectionCount": 2,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 59.952533000003314,
+        "detections": [
+          {
+            "id": "pcb-v1-ff49bed5e493bc332fd80bf06565b317-0",
+            "classId": "missing_copper",
+            "label": "missing_copper",
+            "confidence": 0.3231322467327118,
+            "boundingBox": {
+              "x": 0.3862583160400391,
+              "y": 0.5226535034179688,
+              "width": 0.21819160461425782,
+              "height": 0.11240010579427083
+            }
+          },
+          {
+            "id": "pcb-v1-da42e3947f498d5238ac2a3feeab6f30-1",
+            "classId": "spurious_copper",
+            "label": "spurious_copper",
+            "confidence": 0.3841091990470886,
+            "boundingBox": {
+              "x": 0.39005147298177084,
+              "y": 0.361910400390625,
+              "width": 0.22919082641601562,
+              "height": 0.2504643249511719
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.6824230006022844,
+          "modelInference": 53.38871200001449,
+          "responsePostprocess": 1.001190999886603,
+          "requestTotal": 56.350070000917185
+        }
+      },
+      "completedAt": "2026-11-03T02:34:02.764Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.1895470000017667
+    },
+    {
+      "index": 5,
+      "fixture": "6581_b_043.jpg",
+      "inspectionId": "6ae9481ab9f40ed9b8efd4bf",
+      "uploadAcceptedMs": 19.030899999997928,
+      "creationAcceptedMs": 9.488400000002002,
+      "uploadThroughObservedResultMs": 154.71269999998913,
+      "queueWaitMs": 6,
+      "workerProcessingMs": 59,
+      "providerHttpMs": 53.37028499999724,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.2966480007889913,
+        "modelInference": 46.90175199903024,
+        "responsePostprocess": 1.6256020007858751,
+        "requestTotal": 50.187974999062135
+      },
+      "detectionCount": 1,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 53.37028499999724,
+        "detections": [
+          {
+            "id": "pcb-v1-78578a02faccc1703c4ceed674b2e9e7-0",
+            "classId": "scratch",
+            "label": "scratch",
+            "confidence": 0.9478718638420105,
+            "boundingBox": {
+              "x": 0.025987720489501952,
+              "y": 0.00515599250793457,
+              "width": 0.9558637809753417,
+              "height": 0.9743567434946696
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.2966480007889913,
+          "modelInference": 46.90175199903024,
+          "responsePostprocess": 1.6256020007858751,
+          "requestTotal": 50.187974999062135
+        }
+      },
+      "completedAt": "2026-11-03T02:34:02.904Z",
+      "attemptCount": 1,
+      "commitDurationMs": 1.9235270000062883
+    },
+    {
+      "index": 6,
+      "fixture": "6529_t_006.jpg",
+      "inspectionId": "6ae9481ab9f40ed9b8efd4c1",
+      "uploadAcceptedMs": 19.758399999991525,
+      "creationAcceptedMs": 11.223299999997835,
+      "uploadThroughObservedResultMs": 151.64800000000105,
+      "queueWaitMs": 9,
+      "workerProcessingMs": 60,
+      "providerHttpMs": 54.10508500000287,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.3300150003487943,
+        "modelInference": 49.073734000558034,
+        "responsePostprocess": 0.8984889991552336,
+        "requestTotal": 51.52434200135758
+      },
+      "detectionCount": 1,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 54.10508500000287,
+        "detections": [
+          {
+            "id": "pcb-v1-7684637c7bd2e786c604c85c1bbe351d-0",
+            "classId": "spurious_copper",
+            "label": "spurious_copper",
+            "confidence": 0.969638466835022,
+            "boundingBox": {
+              "x": 0.41661120096842447,
+              "y": 0.35860987345377604,
+              "width": 0.17383344014485677,
+              "height": 0.17729787190755208
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.3300150003487943,
+          "modelInference": 49.073734000558034,
+          "responsePostprocess": 0.8984889991552336,
+          "requestTotal": 51.52434200135758
+        }
+      },
+      "completedAt": "2026-11-03T02:34:03.064Z",
+      "attemptCount": 1,
+      "commitDurationMs": 1.9862890000076732
+    },
+    {
+      "index": 7,
+      "fixture": "6040_b_034.jpg",
+      "inspectionId": "6ae9481bb9f40ed9b8efd4c3",
+      "uploadAcceptedMs": 21.518899999995483,
+      "creationAcceptedMs": 14.191900000005262,
+      "uploadThroughObservedResultMs": 152.44460000000254,
+      "queueWaitMs": 7,
+      "workerProcessingMs": 87,
+      "providerHttpMs": 78.21432600000117,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.4653400012321072,
+        "modelInference": 68.64030100041418,
+        "responsePostprocess": 1.4400390009541297,
+        "requestTotal": 71.79505699969013
+      },
+      "detectionCount": 2,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 78.21432600000117,
+        "detections": [
+          {
+            "id": "pcb-v1-899fc8560bc124c3b5adff650d4c30b4-0",
+            "classId": "mouse_bite",
+            "label": "mouse_bite",
+            "confidence": 0.2942906320095062,
+            "boundingBox": {
+              "x": 0.4533699035644531,
+              "y": 0.4617068481445312,
+              "width": 0.11007003784179688,
+              "height": 0.07920613606770834
+            }
+          },
+          {
+            "id": "pcb-v1-5655e9414d8b0060f4b8b1d15015c732-1",
+            "classId": "scratch",
+            "label": "scratch",
+            "confidence": 0.3598823845386505,
+            "boundingBox": {
+              "x": 0.048236058553059895,
+              "y": 0.42190523783365885,
+              "width": 0.6839413706461589,
+              "height": 0.5631241607666015
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.4653400012321072,
+          "modelInference": 68.64030100041418,
+          "responsePostprocess": 1.4400390009541297,
+          "requestTotal": 71.79505699969013
+        }
+      },
+      "completedAt": "2026-11-03T02:34:03.245Z",
+      "attemptCount": 1,
+      "commitDurationMs": 3.395076999993762
+    },
+    {
+      "index": 8,
+      "fixture": "5810_t_007.jpg",
+      "inspectionId": "6ae9481bb9f40ed9b8efd4c5",
+      "uploadAcceptedMs": 22.07699999999022,
+      "creationAcceptedMs": 14.096999999994296,
+      "uploadThroughObservedResultMs": 163.96339999999327,
+      "queueWaitMs": 11,
+      "workerProcessingMs": 86,
+      "providerHttpMs": 79.36153299998841,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.4857600017421646,
+        "modelInference": 73.29019799908565,
+        "responsePostprocess": 0.9367340007884195,
+        "requestTotal": 75.9476690000156
+      },
+      "detectionCount": 2,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 79.36153299998841,
+        "detections": [
+          {
+            "id": "pcb-v1-ff49bed5e493bc332fd80bf06565b317-0",
+            "classId": "missing_copper",
+            "label": "missing_copper",
+            "confidence": 0.3231322467327118,
+            "boundingBox": {
+              "x": 0.3862583160400391,
+              "y": 0.5226535034179688,
+              "width": 0.21819160461425782,
+              "height": 0.11240010579427083
+            }
+          },
+          {
+            "id": "pcb-v1-da42e3947f498d5238ac2a3feeab6f30-1",
+            "classId": "spurious_copper",
+            "label": "spurious_copper",
+            "confidence": 0.3841091990470886,
+            "boundingBox": {
+              "x": 0.39005147298177084,
+              "y": 0.361910400390625,
+              "width": 0.22919082641601562,
+              "height": 0.2504643249511719
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.4857600017421646,
+          "modelInference": 73.29019799908565,
+          "responsePostprocess": 0.9367340007884195,
+          "requestTotal": 75.9476690000156
+        }
+      },
+      "completedAt": "2026-11-03T02:34:03.399Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.3556119999993825
+    },
+    {
+      "index": 9,
+      "fixture": "6581_b_043.jpg",
+      "inspectionId": "6ae9481bb9f40ed9b8efd4c7",
+      "uploadAcceptedMs": 20.193899999998393,
+      "creationAcceptedMs": 12.084400000007008,
+      "uploadThroughObservedResultMs": 152.79189999999653,
+      "queueWaitMs": 6,
+      "workerProcessingMs": 48,
+      "providerHttpMs": 42.67012599999725,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.166695001302287,
+        "modelInference": 37.424879001264344,
+        "responsePostprocess": 0.5353279993869364,
+        "requestTotal": 39.364616000966635
+      },
+      "detectionCount": 1,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 42.67012599999725,
+        "detections": [
+          {
+            "id": "pcb-v1-78578a02faccc1703c4ceed674b2e9e7-0",
+            "classId": "scratch",
+            "label": "scratch",
+            "confidence": 0.9478718638420105,
+            "boundingBox": {
+              "x": 0.025987720489501952,
+              "y": 0.00515599250793457,
+              "width": 0.9558637809753417,
+              "height": 0.9743567434946696
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.166695001302287,
+          "modelInference": 37.424879001264344,
+          "responsePostprocess": 0.5353279993869364,
+          "requestTotal": 39.364616000966635
+        }
+      },
+      "completedAt": "2026-11-03T02:34:03.520Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.1693280000035884
+    },
+    {
+      "index": 10,
+      "fixture": "6529_t_006.jpg",
+      "inspectionId": "6ae9481bb9f40ed9b8efd4c9",
+      "uploadAcceptedMs": 22.14190000000235,
+      "creationAcceptedMs": 10.08629999999539,
+      "uploadThroughObservedResultMs": 152.6152000000002,
+      "queueWaitMs": 6,
+      "workerProcessingMs": 58,
+      "providerHttpMs": 51.98239900000044,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.1724249998223968,
+        "modelInference": 47.068277999642305,
+        "responsePostprocess": 0.6033009995007887,
+        "requestTotal": 49.07190099947911
+      },
+      "detectionCount": 1,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 51.98239900000044,
+        "detections": [
+          {
+            "id": "pcb-v1-7684637c7bd2e786c604c85c1bbe351d-0",
+            "classId": "spurious_copper",
+            "label": "spurious_copper",
+            "confidence": 0.969638466835022,
+            "boundingBox": {
+              "x": 0.41661120096842447,
+              "y": 0.35860987345377604,
+              "width": 0.17383344014485677,
+              "height": 0.17729787190755208
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.1724249998223968,
+          "modelInference": 47.068277999642305,
+          "responsePostprocess": 0.6033009995007887,
+          "requestTotal": 49.07190099947911
+        }
+      },
+      "completedAt": "2026-11-03T02:34:03.682Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.8220860000001267
+    },
+    {
+      "index": 11,
+      "fixture": "6040_b_034.jpg",
+      "inspectionId": "6ae9481bb9f40ed9b8efd4cb",
+      "uploadAcceptedMs": 21.58169999999518,
+      "creationAcceptedMs": 9.638399999996182,
+      "uploadThroughObservedResultMs": 152.51570000000356,
+      "queueWaitMs": 10,
+      "workerProcessingMs": 70,
+      "providerHttpMs": 64.96755199998734,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.2562400006572716,
+        "modelInference": 59.80555499991169,
+        "responsePostprocess": 0.514887999088387,
+        "requestTotal": 61.84354600009101
+      },
+      "detectionCount": 2,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 64.96755199998734,
+        "detections": [
+          {
+            "id": "pcb-v1-899fc8560bc124c3b5adff650d4c30b4-0",
+            "classId": "mouse_bite",
+            "label": "mouse_bite",
+            "confidence": 0.2942906320095062,
+            "boundingBox": {
+              "x": 0.4533699035644531,
+              "y": 0.4617068481445312,
+              "width": 0.11007003784179688,
+              "height": 0.07920613606770834
+            }
+          },
+          {
+            "id": "pcb-v1-5655e9414d8b0060f4b8b1d15015c732-1",
+            "classId": "scratch",
+            "label": "scratch",
+            "confidence": 0.3598823845386505,
+            "boundingBox": {
+              "x": 0.048236058553059895,
+              "y": 0.42190523783365885,
+              "width": 0.6839413706461589,
+              "height": 0.5631241607666015
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.2562400006572716,
+          "modelInference": 59.80555499991169,
+          "responsePostprocess": 0.514887999088387,
+          "requestTotal": 61.84354600009101
+        }
+      },
+      "completedAt": "2026-11-03T02:34:03.850Z",
+      "attemptCount": 1,
+      "commitDurationMs": 3.3343480000039563
+    },
+    {
+      "index": 12,
+      "fixture": "5810_t_007.jpg",
+      "inspectionId": "6ae9481bb9f40ed9b8efd4cd",
+      "uploadAcceptedMs": 19.63369999997667,
+      "creationAcceptedMs": 12.209299999987707,
+      "uploadThroughObservedResultMs": 154.66599999999744,
+      "queueWaitMs": 7,
+      "workerProcessingMs": 56,
+      "providerHttpMs": 49.83779000000504,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.7835319977166364,
+        "modelInference": 43.70159799873363,
+        "responsePostprocess": 0.6543409999721916,
+        "requestTotal": 46.45848499967542
+      },
+      "detectionCount": 2,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 49.83779000000504,
+        "detections": [
+          {
+            "id": "pcb-v1-ff49bed5e493bc332fd80bf06565b317-0",
+            "classId": "missing_copper",
+            "label": "missing_copper",
+            "confidence": 0.3231322467327118,
+            "boundingBox": {
+              "x": 0.3862583160400391,
+              "y": 0.5226535034179688,
+              "width": 0.21819160461425782,
+              "height": 0.11240010579427083
+            }
+          },
+          {
+            "id": "pcb-v1-da42e3947f498d5238ac2a3feeab6f30-1",
+            "classId": "spurious_copper",
+            "label": "spurious_copper",
+            "confidence": 0.3841091990470886,
+            "boundingBox": {
+              "x": 0.39005147298177084,
+              "y": 0.361910400390625,
+              "width": 0.22919082641601562,
+              "height": 0.2504643249511719
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.7835319977166364,
+          "modelInference": 43.70159799873363,
+          "responsePostprocess": 0.6543409999721916,
+          "requestTotal": 46.45848499967542
+        }
+      },
+      "completedAt": "2026-11-03T02:34:03.986Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.408404999994673
+    },
+    {
+      "index": 13,
+      "fixture": "6581_b_043.jpg",
+      "inspectionId": "6ae9481cb9f40ed9b8efd4cf",
+      "uploadAcceptedMs": 19.51390000001993,
+      "creationAcceptedMs": 10.357300000003306,
+      "uploadThroughObservedResultMs": 152.0867000000144,
+      "queueWaitMs": 6,
+      "workerProcessingMs": 47,
+      "providerHttpMs": 40.83802199999627,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.8991889992321376,
+        "modelInference": 34.71009399981995,
+        "responsePostprocess": 0.7812089988874504,
+        "requestTotal": 37.63356799936446
+      },
+      "detectionCount": 1,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 40.83802199999627,
+        "detections": [
+          {
+            "id": "pcb-v1-78578a02faccc1703c4ceed674b2e9e7-0",
+            "classId": "scratch",
+            "label": "scratch",
+            "confidence": 0.9478718638420105,
+            "boundingBox": {
+              "x": 0.025987720489501952,
+              "y": 0.00515599250793457,
+              "width": 0.9558637809753417,
+              "height": 0.9743567434946696
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.8991889992321376,
+          "modelInference": 34.71009399981995,
+          "responsePostprocess": 0.7812089988874504,
+          "requestTotal": 37.63356799936446
+        }
+      },
+      "completedAt": "2026-11-03T02:34:04.128Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.521215000000666
+    },
+    {
+      "index": 14,
+      "fixture": "6529_t_006.jpg",
+      "inspectionId": "6ae9481cb9f40ed9b8efd4d1",
+      "uploadAcceptedMs": 23.310700000001816,
+      "creationAcceptedMs": 12.308300000004238,
+      "uploadThroughObservedResultMs": 151.49190000002272,
+      "queueWaitMs": 9,
+      "workerProcessingMs": 68,
+      "providerHttpMs": 64.38992899999721,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.162865997685003,
+        "modelInference": 58.274768000046606,
+        "responsePostprocess": 0.9629449996282347,
+        "requestTotal": 60.693302999425214
+      },
+      "detectionCount": 1,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 64.38992899999721,
+        "detections": [
+          {
+            "id": "pcb-v1-7684637c7bd2e786c604c85c1bbe351d-0",
+            "classId": "spurious_copper",
+            "label": "spurious_copper",
+            "confidence": 0.969638466835022,
+            "boundingBox": {
+              "x": 0.41661120096842447,
+              "y": 0.35860987345377604,
+              "width": 0.17383344014485677,
+              "height": 0.17729787190755208
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.162865997685003,
+          "modelInference": 58.274768000046606,
+          "responsePostprocess": 0.9629449996282347,
+          "requestTotal": 60.693302999425214
+        }
+      },
+      "completedAt": "2026-11-03T02:34:04.309Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.2087050000118325
+    },
+    {
+      "index": 15,
+      "fixture": "6040_b_034.jpg",
+      "inspectionId": "6ae9481cb9f40ed9b8efd4d3",
+      "uploadAcceptedMs": 23.226599999994505,
+      "creationAcceptedMs": 13.441800000000512,
+      "uploadThroughObservedResultMs": 162.2548999999999,
+      "queueWaitMs": 13,
+      "workerProcessingMs": 76,
+      "providerHttpMs": 68.1356070000038,
+      "pythonTimingMs": {
+        "decodePreprocess": 3.021675998752471,
+        "modelInference": 59.27656600033515,
+        "responsePostprocess": 0.8985580006992677,
+        "requestTotal": 63.67775199942116
+      },
+      "detectionCount": 2,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 68.1356070000038,
+        "detections": [
+          {
+            "id": "pcb-v1-899fc8560bc124c3b5adff650d4c30b4-0",
+            "classId": "mouse_bite",
+            "label": "mouse_bite",
+            "confidence": 0.2942906320095062,
+            "boundingBox": {
+              "x": 0.4533699035644531,
+              "y": 0.4617068481445312,
+              "width": 0.11007003784179688,
+              "height": 0.07920613606770834
+            }
+          },
+          {
+            "id": "pcb-v1-5655e9414d8b0060f4b8b1d15015c732-1",
+            "classId": "scratch",
+            "label": "scratch",
+            "confidence": 0.3598823845386505,
+            "boundingBox": {
+              "x": 0.048236058553059895,
+              "y": 0.42190523783365885,
+              "width": 0.6839413706461589,
+              "height": 0.5631241607666015
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 3.021675998752471,
+          "modelInference": 59.27656600033515,
+          "responsePostprocess": 0.8985580006992677,
+          "requestTotal": 63.67775199942116
+        }
+      },
+      "completedAt": "2026-11-03T02:34:04.482Z",
+      "attemptCount": 1,
+      "commitDurationMs": 3.069565000012517
+    },
+    {
+      "index": 16,
+      "fixture": "5810_t_007.jpg",
+      "inspectionId": "6ae9481cb9f40ed9b8efd4d5",
+      "uploadAcceptedMs": 18.728900000016438,
+      "creationAcceptedMs": 11.517699999996694,
+      "uploadThroughObservedResultMs": 152.2601999999897,
+      "queueWaitMs": 8,
+      "workerProcessingMs": 60,
+      "providerHttpMs": 54.74544899999455,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.2471509999159025,
+        "modelInference": 49.21581599955971,
+        "responsePostprocess": 0.951721998717403,
+        "requestTotal": 51.76518500047678
+      },
+      "detectionCount": 2,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 54.74544899999455,
+        "detections": [
+          {
+            "id": "pcb-v1-ff49bed5e493bc332fd80bf06565b317-0",
+            "classId": "missing_copper",
+            "label": "missing_copper",
+            "confidence": 0.3231322467327118,
+            "boundingBox": {
+              "x": 0.3862583160400391,
+              "y": 0.5226535034179688,
+              "width": 0.21819160461425782,
+              "height": 0.11240010579427083
+            }
+          },
+          {
+            "id": "pcb-v1-da42e3947f498d5238ac2a3feeab6f30-1",
+            "classId": "spurious_copper",
+            "label": "spurious_copper",
+            "confidence": 0.3841091990470886,
+            "boundingBox": {
+              "x": 0.39005147298177084,
+              "y": 0.361910400390625,
+              "width": 0.22919082641601562,
+              "height": 0.2504643249511719
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.2471509999159025,
+          "modelInference": 49.21581599955971,
+          "responsePostprocess": 0.951721998717403,
+          "requestTotal": 51.76518500047678
+        }
+      },
+      "completedAt": "2026-11-03T02:34:04.616Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.8729309999907855
+    },
+    {
+      "index": 17,
+      "fixture": "6581_b_043.jpg",
+      "inspectionId": "6ae9481cb9f40ed9b8efd4d7",
+      "uploadAcceptedMs": 20.914199999999255,
+      "creationAcceptedMs": 9.531099999992875,
+      "uploadThroughObservedResultMs": 144.24770000000717,
+      "queueWaitMs": 6,
+      "workerProcessingMs": 58,
+      "providerHttpMs": 52.71095700000296,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.3071579996903893,
+        "modelInference": 47.73073199976352,
+        "responsePostprocess": 0.5615289992420003,
+        "requestTotal": 49.8567529994034
+      },
+      "detectionCount": 1,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 52.71095700000296,
+        "detections": [
+          {
+            "id": "pcb-v1-78578a02faccc1703c4ceed674b2e9e7-0",
+            "classId": "scratch",
+            "label": "scratch",
+            "confidence": 0.9478718638420105,
+            "boundingBox": {
+              "x": 0.025987720489501952,
+              "y": 0.00515599250793457,
+              "width": 0.9558637809753417,
+              "height": 0.9743567434946696
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.3071579996903893,
+          "modelInference": 47.73073199976352,
+          "responsePostprocess": 0.5615289992420003,
+          "requestTotal": 49.8567529994034
+        }
+      },
+      "completedAt": "2026-11-03T02:34:04.767Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.5258219999959692
+    },
+    {
+      "index": 18,
+      "fixture": "6529_t_006.jpg",
+      "inspectionId": "6ae9481cb9f40ed9b8efd4d9",
+      "uploadAcceptedMs": 18.90119999999297,
+      "creationAcceptedMs": 10.02160000000731,
+      "uploadThroughObservedResultMs": 146.01459999999497,
+      "queueWaitMs": 9,
+      "workerProcessingMs": 58,
+      "providerHttpMs": 52.40848199999891,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.3218859985499876,
+        "modelInference": 46.41016599998693,
+        "responsePostprocess": 0.5793229993287241,
+        "requestTotal": 48.886250000578
+      },
+      "detectionCount": 1,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 52.40848199999891,
+        "detections": [
+          {
+            "id": "pcb-v1-7684637c7bd2e786c604c85c1bbe351d-0",
+            "classId": "spurious_copper",
+            "label": "spurious_copper",
+            "confidence": 0.969638466835022,
+            "boundingBox": {
+              "x": 0.41661120096842447,
+              "y": 0.35860987345377604,
+              "width": 0.17383344014485677,
+              "height": 0.17729787190755208
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.3218859985499876,
+          "modelInference": 46.41016599998693,
+          "responsePostprocess": 0.5793229993287241,
+          "requestTotal": 48.886250000578
+        }
+      },
+      "completedAt": "2026-11-03T02:34:04.911Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.799698000002536
+    },
+    {
+      "index": 19,
+      "fixture": "6040_b_034.jpg",
+      "inspectionId": "6ae9481cb9f40ed9b8efd4db",
+      "uploadAcceptedMs": 22.36830000000191,
+      "creationAcceptedMs": 11.67129999998724,
+      "uploadThroughObservedResultMs": 166.31540000002133,
+      "queueWaitMs": 8,
+      "workerProcessingMs": 74,
+      "providerHttpMs": 67.96374900000228,
+      "pythonTimingMs": {
+        "decodePreprocess": 2.2478789996966952,
+        "modelInference": 61.83904300087306,
+        "responsePostprocess": 0.5089160003990401,
+        "requestTotal": 64.98354699942865
+      },
+      "detectionCount": 2,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 67.96374900000228,
+        "detections": [
+          {
+            "id": "pcb-v1-899fc8560bc124c3b5adff650d4c30b4-0",
+            "classId": "mouse_bite",
+            "label": "mouse_bite",
+            "confidence": 0.2942906320095062,
+            "boundingBox": {
+              "x": 0.4533699035644531,
+              "y": 0.4617068481445312,
+              "width": 0.11007003784179688,
+              "height": 0.07920613606770834
+            }
+          },
+          {
+            "id": "pcb-v1-5655e9414d8b0060f4b8b1d15015c732-1",
+            "classId": "scratch",
+            "label": "scratch",
+            "confidence": 0.3598823845386505,
+            "boundingBox": {
+              "x": 0.048236058553059895,
+              "y": 0.42190523783365885,
+              "width": 0.6839413706461589,
+              "height": 0.5631241607666015
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 2.2478789996966952,
+          "modelInference": 61.83904300087306,
+          "responsePostprocess": 0.5089160003990401,
+          "requestTotal": 64.98354699942865
+        }
+      },
+      "completedAt": "2026-11-03T02:34:05.077Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.9405040000128793
+    },
+    {
+      "index": 20,
+      "fixture": "5810_t_007.jpg",
+      "inspectionId": "6ae9481db9f40ed9b8efd4dd",
+      "uploadAcceptedMs": 20.84220000001369,
+      "creationAcceptedMs": 10.11799999998766,
+      "uploadThroughObservedResultMs": 152.23140000001877,
+      "queueWaitMs": 6,
+      "workerProcessingMs": 56,
+      "providerHttpMs": 51.225058000010904,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.4146780013106763,
+        "modelInference": 46.225404999859165,
+        "responsePostprocess": 0.6623360004596179,
+        "requestTotal": 48.55725800007349
+      },
+      "detectionCount": 2,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 51.225058000010904,
+        "detections": [
+          {
+            "id": "pcb-v1-ff49bed5e493bc332fd80bf06565b317-0",
+            "classId": "missing_copper",
+            "label": "missing_copper",
+            "confidence": 0.3231322467327118,
+            "boundingBox": {
+              "x": 0.3862583160400391,
+              "y": 0.5226535034179688,
+              "width": 0.21819160461425782,
+              "height": 0.11240010579427083
+            }
+          },
+          {
+            "id": "pcb-v1-da42e3947f498d5238ac2a3feeab6f30-1",
+            "classId": "spurious_copper",
+            "label": "spurious_copper",
+            "confidence": 0.3841091990470886,
+            "boundingBox": {
+              "x": 0.39005147298177084,
+              "y": 0.361910400390625,
+              "width": 0.22919082641601562,
+              "height": 0.2504643249511719
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.4146780013106763,
+          "modelInference": 46.225404999859165,
+          "responsePostprocess": 0.6623360004596179,
+          "requestTotal": 48.55725800007349
+        }
+      },
+      "completedAt": "2026-11-03T02:34:05.221Z",
+      "attemptCount": 1,
+      "commitDurationMs": 1.9802839999902062
+    },
+    {
+      "index": 21,
+      "fixture": "6581_b_043.jpg",
+      "inspectionId": "6ae9481db9f40ed9b8efd4df",
+      "uploadAcceptedMs": 22.12029999998049,
+      "creationAcceptedMs": 11.76009999998496,
+      "uploadThroughObservedResultMs": 150.92089999999735,
+      "queueWaitMs": 6,
+      "workerProcessingMs": 77,
+      "providerHttpMs": 70.58563899999717,
+      "pythonTimingMs": {
+        "decodePreprocess": 2.299128000231576,
+        "modelInference": 63.06964200121001,
+        "responsePostprocess": 0.8179699998436263,
+        "requestTotal": 66.70215999838547
+      },
+      "detectionCount": 1,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 70.58563899999717,
+        "detections": [
+          {
+            "id": "pcb-v1-78578a02faccc1703c4ceed674b2e9e7-0",
+            "classId": "scratch",
+            "label": "scratch",
+            "confidence": 0.9478718638420105,
+            "boundingBox": {
+              "x": 0.025987720489501952,
+              "y": 0.00515599250793457,
+              "width": 0.9558637809753417,
+              "height": 0.9743567434946696
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 2.299128000231576,
+          "modelInference": 63.06964200121001,
+          "responsePostprocess": 0.8179699998436263,
+          "requestTotal": 66.70215999838547
+        }
+      },
+      "completedAt": "2026-11-03T02:34:05.397Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.3966399999917485
+    },
+    {
+      "index": 22,
+      "fixture": "6529_t_006.jpg",
+      "inspectionId": "6ae9481db9f40ed9b8efd4e1",
+      "uploadAcceptedMs": 18.949800000002142,
+      "creationAcceptedMs": 10.950400000001537,
+      "uploadThroughObservedResultMs": 155.39380000001984,
+      "queueWaitMs": 6,
+      "workerProcessingMs": 72,
+      "providerHttpMs": 65.29961600000388,
+      "pythonTimingMs": {
+        "decodePreprocess": 3.005549999215873,
+        "modelInference": 57.74634800036438,
+        "responsePostprocess": 0.527812999280286,
+        "requestTotal": 61.59723199925793
+      },
+      "detectionCount": 1,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 65.29961600000388,
+        "detections": [
+          {
+            "id": "pcb-v1-7684637c7bd2e786c604c85c1bbe351d-0",
+            "classId": "spurious_copper",
+            "label": "spurious_copper",
+            "confidence": 0.969638466835022,
+            "boundingBox": {
+              "x": 0.41661120096842447,
+              "y": 0.35860987345377604,
+              "width": 0.17383344014485677,
+              "height": 0.17729787190755208
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 3.005549999215873,
+          "modelInference": 57.74634800036438,
+          "responsePostprocess": 0.527812999280286,
+          "requestTotal": 61.59723199925793
+        }
+      },
+      "completedAt": "2026-11-03T02:34:05.540Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.3893650000100024
+    },
+    {
+      "index": 23,
+      "fixture": "6040_b_034.jpg",
+      "inspectionId": "6ae9481db9f40ed9b8efd4e3",
+      "uploadAcceptedMs": 24.0910000000149,
+      "creationAcceptedMs": 13.235399999975925,
+      "uploadThroughObservedResultMs": 154.83809999999357,
+      "queueWaitMs": 7,
+      "workerProcessingMs": 46,
+      "providerHttpMs": 41.62474500000826,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.1734470008377684,
+        "modelInference": 36.55675899972266,
+        "responsePostprocess": 0.4899790001218207,
+        "requestTotal": 38.44765800022287
+      },
+      "detectionCount": 2,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 41.62474500000826,
+        "detections": [
+          {
+            "id": "pcb-v1-899fc8560bc124c3b5adff650d4c30b4-0",
+            "classId": "mouse_bite",
+            "label": "mouse_bite",
+            "confidence": 0.2942906320095062,
+            "boundingBox": {
+              "x": 0.4533699035644531,
+              "y": 0.4617068481445312,
+              "width": 0.11007003784179688,
+              "height": 0.07920613606770834
+            }
+          },
+          {
+            "id": "pcb-v1-5655e9414d8b0060f4b8b1d15015c732-1",
+            "classId": "scratch",
+            "label": "scratch",
+            "confidence": 0.3598823845386505,
+            "boundingBox": {
+              "x": 0.048236058553059895,
+              "y": 0.42190523783365885,
+              "width": 0.6839413706461589,
+              "height": 0.5631241607666015
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.1734470008377684,
+          "modelInference": 36.55675899972266,
+          "responsePostprocess": 0.4899790001218207,
+          "requestTotal": 38.44765800022287
+        }
+      },
+      "completedAt": "2026-11-03T02:34:05.677Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.571791000009398
+    },
+    {
+      "index": 24,
+      "fixture": "5810_t_007.jpg",
+      "inspectionId": "6ae9481db9f40ed9b8efd4e5",
+      "uploadAcceptedMs": 20.304200000013225,
+      "creationAcceptedMs": 9.281099999992875,
+      "uploadThroughObservedResultMs": 152.97140000000945,
+      "queueWaitMs": 5,
+      "workerProcessingMs": 51,
+      "providerHttpMs": 45.95217999999295,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.1717020006472012,
+        "modelInference": 40.91865299960773,
+        "responsePostprocess": 0.5410390003817156,
+        "requestTotal": 42.85472999981721
+      },
+      "detectionCount": 2,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 45.95217999999295,
+        "detections": [
+          {
+            "id": "pcb-v1-ff49bed5e493bc332fd80bf06565b317-0",
+            "classId": "missing_copper",
+            "label": "missing_copper",
+            "confidence": 0.3231322467327118,
+            "boundingBox": {
+              "x": 0.3862583160400391,
+              "y": 0.5226535034179688,
+              "width": 0.21819160461425782,
+              "height": 0.11240010579427083
+            }
+          },
+          {
+            "id": "pcb-v1-da42e3947f498d5238ac2a3feeab6f30-1",
+            "classId": "spurious_copper",
+            "label": "spurious_copper",
+            "confidence": 0.3841091990470886,
+            "boundingBox": {
+              "x": 0.39005147298177084,
+              "y": 0.361910400390625,
+              "width": 0.22919082641601562,
+              "height": 0.2504643249511719
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.1717020006472012,
+          "modelInference": 40.91865299960773,
+          "responsePostprocess": 0.5410390003817156,
+          "requestTotal": 42.85472999981721
+        }
+      },
+      "completedAt": "2026-11-03T02:34:05.828Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.311803000004147
+    },
+    {
+      "index": 25,
+      "fixture": "6581_b_043.jpg",
+      "inspectionId": "6ae9481db9f40ed9b8efd4e7",
+      "uploadAcceptedMs": 20.488299999997253,
+      "creationAcceptedMs": 9.210599999991246,
+      "uploadThroughObservedResultMs": 154.7215000000142,
+      "queueWaitMs": 6,
+      "workerProcessingMs": 57,
+      "providerHttpMs": 49.94616399999359,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.2873269988631364,
+        "modelInference": 45.005388999925344,
+        "responsePostprocess": 0.6710429988743272,
+        "requestTotal": 47.214170001097955
+      },
+      "detectionCount": 1,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 49.94616399999359,
+        "detections": [
+          {
+            "id": "pcb-v1-78578a02faccc1703c4ceed674b2e9e7-0",
+            "classId": "scratch",
+            "label": "scratch",
+            "confidence": 0.9478718638420105,
+            "boundingBox": {
+              "x": 0.025987720489501952,
+              "y": 0.00515599250793457,
+              "width": 0.9558637809753417,
+              "height": 0.9743567434946696
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.2873269988631364,
+          "modelInference": 45.005388999925344,
+          "responsePostprocess": 0.6710429988743272,
+          "requestTotal": 47.214170001097955
+        }
+      },
+      "completedAt": "2026-11-03T02:34:05.987Z",
+      "attemptCount": 1,
+      "commitDurationMs": 1.8055920000042534
+    },
+    {
+      "index": 26,
+      "fixture": "6529_t_006.jpg",
+      "inspectionId": "6ae9481eb9f40ed9b8efd4e9",
+      "uploadAcceptedMs": 17.036299999977928,
+      "creationAcceptedMs": 8.947899999999208,
+      "uploadThroughObservedResultMs": 141.52880000000005,
+      "queueWaitMs": 7,
+      "workerProcessingMs": 44,
+      "providerHttpMs": 38.62054600000556,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.392023999869707,
+        "modelInference": 33.23046799960139,
+        "responsePostprocess": 0.5663080009981059,
+        "requestTotal": 35.40465399964887
+      },
+      "detectionCount": 1,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 38.62054600000556,
+        "detections": [
+          {
+            "id": "pcb-v1-7684637c7bd2e786c604c85c1bbe351d-0",
+            "classId": "spurious_copper",
+            "label": "spurious_copper",
+            "confidence": 0.969638466835022,
+            "boundingBox": {
+              "x": 0.41661120096842447,
+              "y": 0.35860987345377604,
+              "width": 0.17383344014485677,
+              "height": 0.17729787190755208
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.392023999869707,
+          "modelInference": 33.23046799960139,
+          "responsePostprocess": 0.5663080009981059,
+          "requestTotal": 35.40465399964887
+        }
+      },
+      "completedAt": "2026-11-03T02:34:06.126Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.710873999996693
+    },
+    {
+      "index": 27,
+      "fixture": "6040_b_034.jpg",
+      "inspectionId": "6ae9481eb9f40ed9b8efd4eb",
+      "uploadAcceptedMs": 20.36559999999008,
+      "creationAcceptedMs": 10.228899999987334,
+      "uploadThroughObservedResultMs": 153.13300000000163,
+      "queueWaitMs": 6,
+      "workerProcessingMs": 49,
+      "providerHttpMs": 42.483181999996305,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.3543200002459344,
+        "modelInference": 36.91410499959602,
+        "responsePostprocess": 0.7789139999658801,
+        "requestTotal": 39.268130998607376
+      },
+      "detectionCount": 2,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 42.483181999996305,
+        "detections": [
+          {
+            "id": "pcb-v1-899fc8560bc124c3b5adff650d4c30b4-0",
+            "classId": "mouse_bite",
+            "label": "mouse_bite",
+            "confidence": 0.2942906320095062,
+            "boundingBox": {
+              "x": 0.4533699035644531,
+              "y": 0.4617068481445312,
+              "width": 0.11007003784179688,
+              "height": 0.07920613606770834
+            }
+          },
+          {
+            "id": "pcb-v1-5655e9414d8b0060f4b8b1d15015c732-1",
+            "classId": "scratch",
+            "label": "scratch",
+            "confidence": 0.3598823845386505,
+            "boundingBox": {
+              "x": 0.048236058553059895,
+              "y": 0.42190523783365885,
+              "width": 0.6839413706461589,
+              "height": 0.5631241607666015
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.3543200002459344,
+          "modelInference": 36.91410499959602,
+          "responsePostprocess": 0.7789139999658801,
+          "requestTotal": 39.268130998607376
+        }
+      },
+      "completedAt": "2026-11-03T02:34:06.276Z",
+      "attemptCount": 1,
+      "commitDurationMs": 3.572941999998875
+    },
+    {
+      "index": 28,
+      "fixture": "5810_t_007.jpg",
+      "inspectionId": "6ae9481eb9f40ed9b8efd4ed",
+      "uploadAcceptedMs": 20.074900000006892,
+      "creationAcceptedMs": 11.625599999999395,
+      "uploadThroughObservedResultMs": 155.25279999998747,
+      "queueWaitMs": 8,
+      "workerProcessingMs": 53,
+      "providerHttpMs": 47.39412300000549,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.4400580002984498,
+        "modelInference": 41.46992000096361,
+        "responsePostprocess": 0.6340310010273242,
+        "requestTotal": 43.93061500013573
+      },
+      "detectionCount": 2,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 47.39412300000549,
+        "detections": [
+          {
+            "id": "pcb-v1-ff49bed5e493bc332fd80bf06565b317-0",
+            "classId": "missing_copper",
+            "label": "missing_copper",
+            "confidence": 0.3231322467327118,
+            "boundingBox": {
+              "x": 0.3862583160400391,
+              "y": 0.5226535034179688,
+              "width": 0.21819160461425782,
+              "height": 0.11240010579427083
+            }
+          },
+          {
+            "id": "pcb-v1-da42e3947f498d5238ac2a3feeab6f30-1",
+            "classId": "spurious_copper",
+            "label": "spurious_copper",
+            "confidence": 0.3841091990470886,
+            "boundingBox": {
+              "x": 0.39005147298177084,
+              "y": 0.361910400390625,
+              "width": 0.22919082641601562,
+              "height": 0.2504643249511719
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.4400580002984498,
+          "modelInference": 41.46992000096361,
+          "responsePostprocess": 0.6340310010273242,
+          "requestTotal": 43.93061500013573
+        }
+      },
+      "completedAt": "2026-11-03T02:34:06.436Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.993587999997544
+    },
+    {
+      "index": 29,
+      "fixture": "6581_b_043.jpg",
+      "inspectionId": "6ae9481eb9f40ed9b8efd4ef",
+      "uploadAcceptedMs": 19.980699999985518,
+      "creationAcceptedMs": 10.241199999989476,
+      "uploadThroughObservedResultMs": 152.54209999999148,
+      "queueWaitMs": 10,
+      "workerProcessingMs": 55,
+      "providerHttpMs": 49.19173900000169,
+      "pythonTimingMs": {
+        "decodePreprocess": 1.5870239985815715,
+        "modelInference": 43.55938900152978,
+        "responsePostprocess": 0.5630110008496558,
+        "requestTotal": 46.02839000108361
+      },
+      "detectionCount": 1,
+      "requested": {
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2
+      },
+      "result": {
+        "contractVersion": "v1",
+        "durationMs": 49.19173900000169,
+        "detections": [
+          {
+            "id": "pcb-v1-78578a02faccc1703c4ceed674b2e9e7-0",
+            "classId": "scratch",
+            "label": "scratch",
+            "confidence": 0.9478718638420105,
+            "boundingBox": {
+              "x": 0.025987720489501952,
+              "y": 0.00515599250793457,
+              "width": 0.9558637809753417,
+              "height": 0.9743567434946696
+            }
+          }
+        ],
+        "providerId": "visual-inspection-dl",
+        "modelId": "pcb-ind-ssdlite",
+        "modelVersion": "pcb-ind-ssdlite-v1",
+        "taxonomyVersion": "pcb-ind-v4-1",
+        "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+        "confidenceThreshold": 0.2,
+        "backend": "trained",
+        "simulated": false,
+        "providerTimingMs": {
+          "decodePreprocess": 1.5870239985815715,
+          "modelInference": 43.55938900152978,
+          "responsePostprocess": 0.5630110008496558,
+          "requestTotal": 46.02839000108361
+        }
+      },
+      "completedAt": "2026-11-03T02:34:06.594Z",
+      "attemptCount": 1,
+      "commitDurationMs": 2.384284999992815
+    }
+  ],
+  "errors": [],
+  "resourceSamples": [
+    {
+      "phase": "after-provider-probe",
+      "observedAt": "2026-11-03T02:32:44.041Z",
+      "containers": [
+        {
+          "BlockIO": "0B / 8.19kB",
+          "CPUPerc": "0.17%",
+          "Container": "efd6e88d07fb6d72c800a3820b5b678145a147a6a461e23c0b03e2d3d4070a4d",
+          "ID": "efd6e88d07fb",
+          "MemPerc": "0.54%",
+          "MemUsage": "84.66MiB / 15.23GiB",
+          "Name": "vip-real-3fa30d762c834abb9f6e1917b3a48947-worker-1",
+          "NetIO": "42.8kB / 30.6kB",
+          "PIDs": "12"
+        },
+        {
+          "BlockIO": "246kB / 0B",
+          "CPUPerc": "0.00%",
+          "Container": "87bce89f611617d566aa86e2ee39f104071e384bc22f05240b1fdddabf462978",
+          "ID": "87bce89f6116",
+          "MemPerc": "0.08%",
+          "MemUsage": "12.83MiB / 15.23GiB",
+          "Name": "vip-real-3fa30d762c834abb9f6e1917b3a48947-web-1",
+          "NetIO": "1.12kB / 126B",
+          "PIDs": "17"
+        },
+        {
+          "BlockIO": "0B / 0B",
+          "CPUPerc": "0.40%",
+          "Container": "1cf0402e1da22d7687a00e399ada1598bc1a67cf906cd05e003f67c8c73f6b82",
+          "ID": "1cf0402e1da2",
+          "MemPerc": "0.49%",
+          "MemUsage": "76.84MiB / 15.23GiB",
+          "Name": "vip-real-3fa30d762c834abb9f6e1917b3a48947-api-1",
+          "NetIO": "43.9kB / 50.7kB",
+          "PIDs": "12"
+        },
+        {
+          "BlockIO": "1.51MB / 16.4kB",
+          "CPUPerc": "0.43%",
+          "Container": "e50bb62f2342841bbaf3608bd5d163d9ff43dc88fb3dec8ee2df05398be3bf73",
+          "ID": "e50bb62f2342",
+          "MemPerc": "0.05%",
+          "MemUsage": "7.102MiB / 15.23GiB",
+          "Name": "vip-real-3fa30d762c834abb9f6e1917b3a48947-redis-1",
+          "NetIO": "23.6kB / 41.1kB",
+          "PIDs": "6"
+        },
+        {
+          "BlockIO": "299kB / 319kB",
+          "CPUPerc": "20.39%",
+          "Container": "13dfe4b4ffe29c3b300e7bc14d993f803f9737cab1a67119c7bdc88dbadb2e7f",
+          "ID": "13dfe4b4ffe2",
+          "MemPerc": "0.66%",
+          "MemUsage": "103.4MiB / 15.23GiB",
+          "Name": "vip-real-3fa30d762c834abb9f6e1917b3a48947-mongodb-1",
+          "NetIO": "18.6kB / 11.4kB",
+          "PIDs": "59"
+        },
+        {
+          "BlockIO": "164kB / 0B",
+          "CPUPerc": "0.23%",
+          "Container": "46c468b0eec42db6232c75bcadcaaa3409c0c9350c40491b0afbc357d6f7bd7a",
+          "ID": "46c468b0eec4",
+          "MemPerc": "1.75%",
+          "MemUsage": "273.7MiB / 15.23GiB",
+          "Name": "vip-real-3fa30d762c834abb9f6e1917b3a48947-inference-1",
+          "NetIO": "45.9kB / 32.3kB",
+          "PIDs": "27"
+        }
+      ]
+    },
+    {
+      "phase": "benchmark-midpoint",
+      "observedAt": "2026-11-03T02:34:06.390Z",
+      "containers": [
+        {
+          "BlockIO": "0B / 73.7kB",
+          "CPUPerc": "9.71%",
+          "Container": "efd6e88d07fb6d72c800a3820b5b678145a147a6a461e23c0b03e2d3d4070a4d",
+          "ID": "efd6e88d07fb",
+          "MemPerc": "0.46%",
+          "MemUsage": "71.65MiB / 15.23GiB",
+          "Name": "vip-real-3fa30d762c834abb9f6e1917b3a48947-worker-1",
+          "NetIO": "349kB / 904kB",
+          "PIDs": "12"
+        },
+        {
+          "BlockIO": "246kB / 4.1kB",
+          "CPUPerc": "1.73%",
+          "Container": "87bce89f611617d566aa86e2ee39f104071e384bc22f05240b1fdddabf462978",
+          "ID": "87bce89f6116",
+          "MemPerc": "0.10%",
+          "MemUsage": "15.19MiB / 15.23GiB",
+          "Name": "vip-real-3fa30d762c834abb9f6e1917b3a48947-web-1",
+          "NetIO": "2.1MB / 4.94MB",
+          "PIDs": "17"
+        },
+        {
+          "BlockIO": "0B / 98.3kB",
+          "CPUPerc": "22.77%",
+          "Container": "1cf0402e1da22d7687a00e399ada1598bc1a67cf906cd05e003f67c8c73f6b82",
+          "ID": "1cf0402e1da2",
+          "MemPerc": "0.74%",
+          "MemUsage": "116.1MiB / 15.23GiB",
+          "Name": "vip-real-3fa30d762c834abb9f6e1917b3a48947-api-1",
+          "NetIO": "1.43MB / 1.72MB",
+          "PIDs": "16"
+        },
+        {
+          "BlockIO": "1.74MB / 430kB",
+          "CPUPerc": "1.38%",
+          "Container": "e50bb62f2342841bbaf3608bd5d163d9ff43dc88fb3dec8ee2df05398be3bf73",
+          "ID": "e50bb62f2342",
+          "MemPerc": "0.06%",
+          "MemUsage": "8.66MiB / 15.23GiB",
+          "Name": "vip-real-3fa30d762c834abb9f6e1917b3a48947-redis-1",
+          "NetIO": "370kB / 141kB",
+          "PIDs": "6"
+        },
+        {
+          "BlockIO": "299kB / 1.84MB",
+          "CPUPerc": "5.55%",
+          "Container": "13dfe4b4ffe29c3b300e7bc14d993f803f9737cab1a67119c7bdc88dbadb2e7f",
+          "ID": "13dfe4b4ffe2",
+          "MemPerc": "0.67%",
+          "MemUsage": "104.7MiB / 15.23GiB",
+          "Name": "vip-real-3fa30d762c834abb9f6e1917b3a48947-mongodb-1",
+          "NetIO": "487kB / 543kB",
+          "PIDs": "58"
+        },
+        {
+          "BlockIO": "164kB / 4.1kB",
+          "CPUPerc": "125.88%",
+          "Container": "46c468b0eec42db6232c75bcadcaaa3409c0c9350c40491b0afbc357d6f7bd7a",
+          "ID": "46c468b0eec4",
+          "MemPerc": "1.76%",
+          "MemUsage": "274MiB / 15.23GiB",
+          "Name": "vip-real-3fa30d762c834abb9f6e1917b3a48947-inference-1",
+          "NetIO": "517kB / 193kB",
+          "PIDs": "27"
+        }
+      ]
+    },
+    {
+      "phase": "after-benchmark",
+      "observedAt": "2026-11-03T02:34:09.694Z",
+      "containers": [
+        {
+          "BlockIO": "0B / 77.8kB",
+          "CPUPerc": "6.98%",
+          "Container": "efd6e88d07fb6d72c800a3820b5b678145a147a6a461e23c0b03e2d3d4070a4d",
+          "ID": "efd6e88d07fb",
+          "MemPerc": "0.46%",
+          "MemUsage": "71.95MiB / 15.23GiB",
+          "Name": "vip-real-3fa30d762c834abb9f6e1917b3a48947-worker-1",
+          "NetIO": "359kB / 942kB",
+          "PIDs": "12"
+        },
+        {
+          "BlockIO": "246kB / 4.1kB",
+          "CPUPerc": "0.00%",
+          "Container": "87bce89f611617d566aa86e2ee39f104071e384bc22f05240b1fdddabf462978",
+          "ID": "87bce89f6116",
+          "MemPerc": "0.09%",
+          "MemUsage": "13.95MiB / 15.23GiB",
+          "Name": "vip-real-3fa30d762c834abb9f6e1917b3a48947-web-1",
+          "NetIO": "2.12MB / 4.96MB",
+          "PIDs": "17"
+        },
+        {
+          "BlockIO": "0B / 98.3kB",
+          "CPUPerc": "0.17%",
+          "Container": "1cf0402e1da22d7687a00e399ada1598bc1a67cf906cd05e003f67c8c73f6b82",
+          "ID": "1cf0402e1da2",
+          "MemPerc": "0.74%",
+          "MemUsage": "115.2MiB / 15.23GiB",
+          "Name": "vip-real-3fa30d762c834abb9f6e1917b3a48947-api-1",
+          "NetIO": "1.46MB / 1.74MB",
+          "PIDs": "16"
+        },
+        {
+          "BlockIO": "1.74MB / 451kB",
+          "CPUPerc": "0.33%",
+          "Container": "e50bb62f2342841bbaf3608bd5d163d9ff43dc88fb3dec8ee2df05398be3bf73",
+          "ID": "e50bb62f2342",
+          "MemPerc": "0.05%",
+          "MemUsage": "7.809MiB / 15.23GiB",
+          "Name": "vip-real-3fa30d762c834abb9f6e1917b3a48947-redis-1",
+          "NetIO": "378kB / 144kB",
+          "PIDs": "6"
+        },
+        {
+          "BlockIO": "299kB / 1.87MB",
+          "CPUPerc": "0.69%",
+          "Container": "13dfe4b4ffe29c3b300e7bc14d993f803f9737cab1a67119c7bdc88dbadb2e7f",
+          "ID": "13dfe4b4ffe2",
+          "MemPerc": "0.67%",
+          "MemUsage": "104.4MiB / 15.23GiB",
+          "Name": "vip-real-3fa30d762c834abb9f6e1917b3a48947-mongodb-1",
+          "NetIO": "499kB / 556kB",
+          "PIDs": "58"
+        },
+        {
+          "BlockIO": "164kB / 4.1kB",
+          "CPUPerc": "0.23%",
+          "Container": "46c468b0eec42db6232c75bcadcaaa3409c0c9350c40491b0afbc357d6f7bd7a",
+          "ID": "46c468b0eec4",
+          "MemPerc": "1.74%",
+          "MemUsage": "271.8MiB / 15.23GiB",
+          "Name": "vip-real-3fa30d762c834abb9f6e1917b3a48947-inference-1",
+          "NetIO": "545kB / 201kB",
+          "PIDs": "27"
+        }
+      ]
+    }
+  ],
+  "platformRevisionAtRun": "664e9b09d16c956f51103bd2c2b4b14ddba80a36",
+  "platformTrackedChangesAtRun": 1,
+  "dockerEnvironment": {
+    "NCPU": 16,
+    "MemTotal": 16353488896,
+    "OperatingSystem": "Docker Desktop",
+    "KernelVersion": "6.18.54.1-microsoft-standard-WSL2",
+    "Architecture": "x86_64",
+    "OSType": "linux",
+    "ServerVersion": "29.9.1"
+  },
+  "buildMs": 23214.9916,
+  "stackCreationThroughHealthMs": 19496.6983,
+  "inferenceContainer": {
+    "user": "inspection",
+    "device": "cpu",
+    "hostPublishedPorts": 0,
+    "readOnlyBundle": true
+  },
+  "providerProbe": {
+    "response": {
+      "schema_version": "1",
+      "provider": "visual-inspection-dl",
+      "backend": "trained",
+      "simulated": false,
+      "model_version": "pcb-ind-ssdlite-v1",
+      "taxonomy_version": "pcb-ind-v4-1",
+      "artifact_digest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+      "image": {
+        "width": 300,
+        "height": 300
+      },
+      "coordinate_system": "xyxy_pixels_original_image",
+      "confidence_threshold": 0.2,
+      "nms_threshold": 0.55,
+      "invalid_predictions_rejected": 0,
+      "detections": [
+        {
+          "class_id": 4,
+          "label": "spurious_copper",
+          "confidence": 0.3841091990470886,
+          "box": {
+            "x_min": 117.01544189453125,
+            "y_min": 108.5731201171875,
+            "x_max": 185.77268981933594,
+            "y_max": 183.71241760253906
+          }
+        },
+        {
+          "class_id": 2,
+          "label": "missing_copper",
+          "confidence": 0.3231322467327118,
+          "box": {
+            "x_min": 115.87749481201172,
+            "y_min": 156.79605102539062,
+            "x_max": 181.33497619628906,
+            "y_max": 190.51608276367188
+          }
+        }
+      ],
+      "timing_ms": {
+        "decode_preprocess": 10.680593999495613,
+        "model_inference": 64.47813999875507,
+        "response_postprocess": 0.7556999989901669,
+        "request_total": 76.32857399948989
+      }
+    },
+    "translated": {
+      "contractVersion": "v1",
+      "providerId": "visual-inspection-dl",
+      "modelId": "pcb-ind-ssdlite",
+      "modelVersion": "pcb-ind-ssdlite-v1",
+      "taxonomyVersion": "pcb-ind-v4-1",
+      "simulated": false,
+      "backend": "trained",
+      "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+      "confidenceThreshold": 0.2,
+      "durationMs": 82.850595,
+      "providerTimingMs": {
+        "decodePreprocess": 10.680593999495613,
+        "modelInference": 64.47813999875507,
+        "responsePostprocess": 0.7556999989901669,
+        "requestTotal": 76.32857399948989
+      },
+      "detections": [
+        {
+          "classId": "missing_copper",
+          "label": "missing_copper",
+          "confidence": 0.3231322467327118,
+          "boundingBox": {
+            "x": 0.3862583160400391,
+            "y": 0.5226535034179688,
+            "width": 0.21819160461425782,
+            "height": 0.11240010579427083
+          },
+          "id": "pcb-v1-ff49bed5e493bc332fd80bf06565b317-0"
+        },
+        {
+          "classId": "spurious_copper",
+          "label": "spurious_copper",
+          "confidence": 0.3841091990470886,
+          "boundingBox": {
+            "x": 0.39005147298177084,
+            "y": 0.361910400390625,
+            "width": 0.22919082641601562,
+            "height": 0.2504643249511719
+          },
+          "id": "pcb-v1-da42e3947f498d5238ac2a3feeab6f30-1"
+        }
+      ]
+    },
+    "canonicalImage": {
+      "mimeType": "image/jpeg",
+      "extension": "jpg",
+      "width": 300,
+      "height": 300,
+      "byteLength": 7497,
+      "sha256": "1aace0662027ba848c79b4a210cd60c4daf2a91dfc23993f2a8549a501529248"
+    },
+    "firstRequest": {
+      "httpMs": 82.850595,
+      "scope": "First predict after readiness; raw image transfer through JSON decode; excludes bundle/process startup and application queue"
+    },
+    "busy": {
+      "concurrency": 3,
+      "total": 3,
+      "success": 1,
+      "busy": 2,
+      "transportCapacity": 0,
+      "outcomes": [
+        {
+          "status": 200,
+          "code": "trained",
+          "mediaType": "application/json",
+          "httpMs": 66.32232299999998
+        },
+        {
+          "status": 503,
+          "code": "inference_busy",
+          "mediaType": "application/json",
+          "httpMs": 7.407573999999954
+        },
+        {
+          "status": 503,
+          "code": "inference_busy",
+          "mediaType": "application/json",
+          "httpMs": 8.694743000000017
+        }
+      ]
+    }
+  },
+  "browserWorkflow": {
+    "observedAt": "2026-11-03T02:32:52.056Z",
+    "sampleCount": 1,
+    "observedUploadToHeadingMs": 2959.2440999999994,
+    "inspectionId": "6ae947d1b9f40ed9b8efd46e",
+    "measurement": "Playwright click dispatch on Upload and inspect through visible Completed heading; includes upload, durable creation, queue, trained HTTP inference, commit, browser polling and automation observation overhead.",
+    "pollingMs": 2000,
+    "temperature": "Uncontrolled initial service state; not a cold-start claim.",
+    "fixture": "PCB-IND v4 5810_t_007.jpg, training-set serving smoke fixture; not holdout evaluation.",
+    "baseURL": "http://127.0.0.1:58820"
+  },
+  "browserWarmed": {
+    "observedAt": "2026-11-03T02:33:49.554Z",
+    "sampleCount": 20,
+    "samplesMs": [
+      2426.9692000000014,
+      2436.9130999999998,
+      2431.064099999998,
+      2415.5240000000013,
+      2431.2569000000003,
+      2404.5145999999986,
+      2413.7742,
+      2438.8073000000004,
+      2428.4316000000035,
+      2416.5812000000005,
+      2452.000699999997,
+      2421.0483999999997,
+      2420.4730999999956,
+      2413.2021999999997,
+      2416.9474000000046,
+      2427.4958000000042,
+      2413.821800000005,
+      2409.176299999999,
+      2424.6165000000037,
+      2428.500700000004
+    ],
+    "p50Ms": 2421.0483999999997,
+    "p95Ms": 2438.8073000000004,
+    "percentileMethod": "Nearest rank; p95 is descriptive of these 20 samples, not an SLA; no p99 claim.",
+    "measurement": "Playwright click dispatch on Upload and inspect through visible Completed heading, including upload, durable creation, queue, trained HTTP inference, commit, browser polling and automation observation overhead. File selection and readiness check excluded.",
+    "pollingMs": 2000,
+    "concurrency": 1,
+    "temperature": "Warmed service after preceding trained review workflow.",
+    "fixture": "Same 300×300 PCB-IND v4 5810_t_007.jpg training-set smoke patch repeated; differing input distribution and workload from mock benchmark.",
+    "baseURL": "http://127.0.0.1:58820",
+    "failures": 0
+  },
+  "batchMs": 4630.8011000000115,
+  "requestsPerSecond": 6.47836073114864,
+  "latencySummaryMs": {
+    "uploadAcceptedMs": {
+      "count": 30,
+      "min": 17.036299999977928,
+      "p50": 20.488299999997253,
+      "p95": 24.89990000000398,
+      "max": 31.050600000002305
+    },
+    "creationAcceptedMs": {
+      "count": 30,
+      "min": 8.947899999999208,
+      "p50": 10.950400000001537,
+      "p95": 14.191900000005262,
+      "max": 14.78839999999036
+    },
+    "queueWaitMs": {
+      "count": 30,
+      "min": 5,
+      "p50": 7,
+      "p95": 11,
+      "max": 13
+    },
+    "workerProcessingMs": {
+      "count": 30,
+      "min": 44,
+      "p50": 59,
+      "p95": 86,
+      "max": 87
+    },
+    "providerHttpMs": {
+      "count": 30,
+      "min": 38.62054600000556,
+      "p50": 53.37028499999724,
+      "p95": 78.21432600000117,
+      "max": 79.36153299998841
+    },
+    "commitDurationMs": {
+      "count": 30,
+      "min": 1.8055920000042534,
+      "p50": 2.408404999994673,
+      "p95": 3.572941999998875,
+      "max": 4.182692000002135
+    },
+    "uploadThroughObservedResultMs": {
+      "count": 30,
+      "min": 141.52880000000005,
+      "p50": 152.6152000000002,
+      "p95": 166.31540000002133,
+      "max": 180.2381999999925
+    }
+  },
+  "pythonLatencySummaryMs": {
+    "decodePreprocess": {
+      "count": 30,
+      "min": 1.162865997685003,
+      "p50": 1.392023999869707,
+      "p95": 3.005549999215873,
+      "max": 3.021675998752471
+    },
+    "modelInference": {
+      "count": 30,
+      "min": 33.23046799960139,
+      "p50": 47.73073199976352,
+      "p95": 68.64030100041418,
+      "max": 73.29019799908565
+    },
+    "responsePostprocess": {
+      "count": 30,
+      "min": 0.4899790001218207,
+      "p50": 0.6623360004596179,
+      "p95": 1.4400390009541297,
+      "max": 1.6256020007858751
+    },
+    "requestTotal": {
+      "count": 30,
+      "min": 35.40465399964887,
+      "p50": 50.187974999062135,
+      "p95": 71.79505699969013,
+      "max": 75.9476690000156
+    }
+  },
+  "benchmarkErrorRate": 0,
+  "benchmarkBusyRate": 0,
+  "outage": {
+    "failedInspectionId": "6ae94825b9f40ed9b8efd4f1",
+    "failure": {
+      "code": "PROVIDER_UNAVAILABLE",
+      "message": "The inference provider is temporarily unavailable."
+    },
+    "attempts": 3,
+    "apiStayedReady": true,
+    "acceptedWhileUnavailable": true,
+    "retryInspectionId": "6ae9483cb9f40ed9b8efd4f2"
+  },
+  "redisWorkerInterruption": {
+    "heldInspectionId": "6ae94840b9f40ed9b8efd4f3",
+    "acceptedDuringRedisOutageId": "6ae94841b9f40ed9b8efd4f4",
+    "replayKeptOneIntent": true,
+    "recovered": true
+  },
+  "workerCrash": {
+    "inspectionId": "6ae9484cb9f40ed9b8efd4f5",
+    "observedClaimAttempt": 1,
+    "freshModelHealthProbeAt": "2026-11-03T02:34:59.658399292Z",
+    "recoveredAttemptCount": 2,
+    "preservedProvider": true,
+    "immutableCompletedResult": true,
+    "scope": "SIGKILL after processing claim with the real model process paused; lease recovery completed a later attempt. Python may finish a disconnected request after unpause; no claim that its internal completion was individually observed."
+  },
+  "persistence": {
+    "inspectionId": "6ae947d1b9f40ed9b8efd46e",
+    "reviewRevision": 2,
+    "immutablePredictions": true,
+    "sameSavedReview": true,
+    "modelIdentityPreserved": true
+  },
+  "finishedAt": "2026-11-03T02:35:53.587Z"
+}

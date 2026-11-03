@@ -41,6 +41,24 @@ These are candidate-patch predictions, not full-board diagnoses. Scores are
 uncalibrated and false positives and missed defects remain. This project is
 unaffiliated with Matroid and is not validated for production visual inspection.
 
+<details>
+<summary>Actual trained inference and persisted review</summary>
+
+![Actual released CPU model predictions, version and digest in the application](docs/real-inference/trained-result.png)
+
+![Saved eight-class human review with a rejected prediction and a manual addition](docs/real-inference/trained-review.png)
+
+[Upload selection](docs/real-inference/trained-upload.png) ·
+[History reopening](docs/real-inference/trained-history.png) ·
+[Executed acceptance and measurements](docs/real-inference/REPORT.md).
+These are authentic browser captures from the CPU stack. The displayed PCB-IND v4
+image is an attributed **training-set serving fixture**, not holdout quality
+evidence. Human edits illustrate review operations and are not expert ground truth.
+Image: Hao Yan, Fujian Polytechnic Normal University, CC BY 4.0;
+[source, hashes and split provenance](fixtures/pcb/README.md).
+
+</details>
+
 ## See the workflow
 
 ![Actual application showing simulated detections over an original illustrated metal panel](docs/screenshots/inspection.png)

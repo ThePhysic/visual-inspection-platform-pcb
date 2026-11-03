@@ -1,0 +1,97 @@
+{
+  "tool": "Gitleaks cached container, network disabled, read-only repository mounts, --redact --log-opts=--all",
+  "platform": {
+    "commitsScanned": 28,
+    "rawFindings": 0
+  },
+  "dl": {
+    "commitsScanned": 61,
+    "rawFindings": 10,
+    "verifiedPublicSourceChecksums": 10,
+    "unresolvedFindings": 0,
+    "classifiedFindings": [
+      {
+        "file": "reports/validation/bug-audit-api.json",
+        "line": 16,
+        "commit": "ed864f444ad4d31083108ff890b4f1d885bd0d09",
+        "rule": "generic-api-key",
+        "classification": "Public SHA-256 of actual historical inspection_dl/api.py source bytes",
+        "verifiedAgainstGitSourceBlob": true
+      },
+      {
+        "file": "reports/validation/bug-audit-api.json",
+        "line": 26,
+        "commit": "ed864f444ad4d31083108ff890b4f1d885bd0d09",
+        "rule": "generic-api-key",
+        "classification": "Public SHA-256 of actual historical inspection_dl/api.py source bytes",
+        "verifiedAgainstGitSourceBlob": true
+      },
+      {
+        "file": "reports/validation/bug-audit-container.json",
+        "line": 16,
+        "commit": "ed864f444ad4d31083108ff890b4f1d885bd0d09",
+        "rule": "generic-api-key",
+        "classification": "Public SHA-256 of actual historical inspection_dl/api.py source bytes",
+        "verifiedAgainstGitSourceBlob": true
+      },
+      {
+        "file": "reports/validation/bug-audit-container.json",
+        "line": 359,
+        "commit": "ed864f444ad4d31083108ff890b4f1d885bd0d09",
+        "rule": "generic-api-key",
+        "classification": "Public SHA-256 of actual historical inspection_dl/api.py source bytes",
+        "verifiedAgainstGitSourceBlob": true
+      },
+      {
+        "file": "reports/rtx4060-study-v2/documentation-inputs.json",
+        "line": 6,
+        "commit": "3e34a8cd92968af2505bc0792b46b28d4ca8cfb9",
+        "rule": "generic-api-key",
+        "classification": "Public SHA-256 of actual historical inspection_dl/api.py source bytes",
+        "verifiedAgainstGitSourceBlob": true
+      },
+      {
+        "file": "reports/rtx4060-study-v2/documentation-inputs.json",
+        "line": 69,
+        "commit": "c26af3d027b9c1da954f2da48b394f923fc06e50",
+        "rule": "generic-api-key",
+        "classification": "Public SHA-256 of actual historical inspection_dl/api.py source bytes",
+        "verifiedAgainstGitSourceBlob": true
+      },
+      {
+        "file": "reports/rtx4060-study-v2/documentation-inputs.json",
+        "line": 90,
+        "commit": "c26af3d027b9c1da954f2da48b394f923fc06e50",
+        "rule": "generic-api-key",
+        "classification": "Public SHA-256 of actual historical inspection_dl/api.py source bytes",
+        "verifiedAgainstGitSourceBlob": true
+      },
+      {
+        "file": "reports/validation/real-api.json",
+        "line": 16,
+        "commit": "ab6f8b7ec4e05a9e130fc602cf113732117d2dff",
+        "rule": "generic-api-key",
+        "classification": "Public SHA-256 of actual historical inspection_dl/api.py source bytes",
+        "verifiedAgainstGitSourceBlob": true
+      },
+      {
+        "file": "reports/validation/real-container.json",
+        "line": 16,
+        "commit": "ab6f8b7ec4e05a9e130fc602cf113732117d2dff",
+        "rule": "generic-api-key",
+        "classification": "Public SHA-256 of actual historical inspection_dl/api.py source bytes",
+        "verifiedAgainstGitSourceBlob": true
+      },
+      {
+        "file": "reports/validation/real-container.json",
+        "line": 230,
+        "commit": "ab6f8b7ec4e05a9e130fc602cf113732117d2dff",
+        "rule": "generic-api-key",
+        "classification": "Public SHA-256 of actual historical inspection_dl/api.py source bytes",
+        "verifiedAgainstGitSourceBlob": true
+      }
+    ]
+  },
+  "trackedFileInspection": "Only .env.example tracked; no .env, credential, private key or unrelated workspace artifacts selected for publication.",
+  "scope": "History scan performed before the final documentation/evidence commit. The final staged file list is inspected separately before publication."
+}
