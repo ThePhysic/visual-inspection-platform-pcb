@@ -130,7 +130,10 @@ export function createInspectionProcessor(dependencies: ExecutionDependencies) {
         ...(record.retriedFrom ? { retriedFrom: record.retriedFrom.toString() } : {}), attemptId, attemptCount: record.attemptCount };
       logger.info({ ...context, from: 'queued', to: 'processing' }, 'Inspection claimed');
       const owned = () => ({ _id: record._id, status: 'processing' as const, attemptId,
-        dispatchGeneration: job.data.generation, leaseExpiresAt: { $gt: new Date() } });
+        dispatchGeneration: job.data.generation,
+        // Evaluate expiry when MongoDB executes the write. A client timestamp
+        // captured before a delayed command can authorize an already-expired lease.
+        $expr: { $gt: ['$leaseExpiresAt', '$$NOW'] } });
       let result: unknown;
       try {
         result = await withDeadline(async signal => {

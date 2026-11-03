@@ -35,7 +35,7 @@ describe('immutable requested-provider dispatch', () => {
     await createInspectionProcessor({ ...state.dependencies, providers: { 'visual-inspection-dl': { infer } } })(state.job);
     expect(infer).toHaveBeenCalledTimes(1); expect(state.mock.infer).not.toHaveBeenCalled();
     expect(state.updateOne).toHaveBeenCalledWith(expect.objectContaining({ status: 'processing', attemptId: expect.any(String),
-      dispatchGeneration: 0, result: { $exists: false }, leaseExpiresAt: { $gt: expect.any(Date) } }), expect.objectContaining({
+      dispatchGeneration: 0, result: { $exists: false }, $expr: { $gt: ['$leaseExpiresAt', '$$NOW'] } }), expect.objectContaining({
       $set: expect.objectContaining({ status: 'completed', result: state.realResult }),
     }), { runValidators: true });
   });

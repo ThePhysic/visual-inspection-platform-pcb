@@ -10,7 +10,7 @@ import { Worker, type ConnectionOptions } from 'bullmq';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { Value } from 'typebox/value';
 import {
-  InspectionResponseSchema, isInferenceResult, MOCK_CONFIGURATION,
+  InspectionResponseSchema, isInferenceResult, MOCK_CONFIGURATION, PCB_CONFIGURATION,
   type InspectionAccepted, type InspectionJob, type AssetResponse,
 } from '@vip/contracts';
 import {
@@ -53,11 +53,11 @@ describe('asynchronous inspections with real MongoDB and Redis', () => {
     panel = await readFile(new URL('../../../fixtures/inspections/panel.png', import.meta.url));
   });
 
-  async function upload(bytes: Buffer) {
+  async function upload(bytes: Buffer, mimeType: 'image/png' | 'image/jpeg' = 'image/png') {
     const boundary = 'inspection-fixture';
     const response = await app.inject({ method: 'POST', url: '/api/v1/assets',
       headers: { 'content-type': `multipart/form-data; boundary=${boundary}` },
-      payload: Buffer.concat([Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="image"; filename="fixture.png"\r\nContent-Type: image/png\r\n\r\n`),
+      payload: Buffer.concat([Buffer.from(`--${boundary}\r\nContent-Disposition: form-data; name="image"; filename="fixture.${mimeType === 'image/png' ? 'png' : 'jpg'}"\r\nContent-Type: ${mimeType}\r\n\r\n`),
         bytes, Buffer.from(`\r\n--${boundary}--\r\n`)]),
     });
     expect(response.statusCode, response.body).toBe(201);
@@ -658,6 +658,33 @@ describe('asynchronous inspections with real MongoDB and Redis', () => {
     expect(observations).toContain('vip_inspection_terminals_total{status="completed"} 1');
   });
 
+  it.each(['result', 'failure'] as const)('fences a delayed %s write when its lease expires before Mongo evaluates it', async mode => {
+    const submission = await accepted();
+    const originalUpdate = inspections.collection.updateOne.bind(inspections.collection);
+    let snapshot: InspectionRecord | undefined;
+    vi.spyOn(inspections.collection, 'updateOne').mockImplementation(async (...args) => {
+      if (!snapshot && !Array.isArray(args[1]) && ['completed', 'failed'].includes(String(args[1].$set?.status))) {
+        snapshot = await inspections.findById(submission.id).lean().orFail();
+        expect(snapshot.status).toBe('processing');
+        expect(snapshot.leaseExpiresAt).toBeDefined();
+        // Delay the already-created filter, as a stalled command or selection
+        // retry can do. No reconciler changes ownership on the test's behalf.
+        await delay(Math.max(0, snapshot.leaseExpiresAt!.getTime() - Date.now()) + 25);
+      }
+      return originalUpdate(...args);
+    });
+    const provider: InferenceProvider = mode === 'result' ? new MockInferenceProvider() : {
+      async infer() { throw new InferenceError('INFERENCE_FAILED', false); },
+    };
+    const processor = createInspectionProcessor({ ...dependencies(provider),
+      policy: { ...policy, leaseMs: 500, attemptTimeoutMs: 250 } });
+    await processor({ id: 'delayed-write', data: payload(submission.id) });
+    expect(snapshot).toBeDefined();
+    expect(snapshot!.leaseExpiresAt!.getTime()).toBeLessThan(Date.now());
+    expect(await inspections.findById(submission.id).lean().orFail()).toEqual(snapshot);
+    expect(await metrics.registry.metrics()).toContain('vip_inspection_attempts_finished_total{outcome="stale"} 1');
+  });
+
   it('preserves a committed result when delivery fails before BullMQ acknowledgement', async () => {
     const submission = await accepted();
     const processor = createInspectionProcessor(dependencies());
@@ -686,6 +713,60 @@ describe('asynchronous inspections with real MongoDB and Redis', () => {
     const record = await inspections.findById(submission.id).lean().orFail();
     expect(record).toMatchObject({ status: 'failed', attemptCount: 3 });
     expect(record.failure?.code).toBe('ATTEMPTS_EXHAUSTED');
+  });
+
+  it.each(['mock', 'trained'] as const)('preserves committed %s inference when Mongo result acknowledgement is lost', async mode => {
+    if (mode === 'trained') {
+      await app.close();
+      app = buildApp({ assets: { model: assets, storage }, inspections: { assets, inspections, trainedEnabled: true }, dispatchQueue: queue });
+      asset = await upload(await readFile(new URL('../../../fixtures/pcb/5810_t_007.jpg', import.meta.url)), 'image/jpeg');
+    }
+    const response = mode === 'mock' ? await submit('lost-result-ack') : await app.inject({
+      method: 'POST', url: '/api/v1/inspections', headers: { 'idempotency-key': 'lost-result-ack' },
+      payload: { assetId: asset.id, provider: PCB_CONFIGURATION, candidatePatch: true },
+    });
+    expect(response.statusCode, response.body).toBe(202);
+    const submission = response.json<InspectionAccepted>();
+    const mockInfer = vi.fn<InferenceProvider['infer']>((image, signal) => new MockInferenceProvider().infer(image, signal));
+    // A contract fixture isolates durable trained dispatch; it is not a live model measurement.
+    const trainedInfer = vi.fn<InferenceProvider['infer']>(async () => ({
+      contractVersion: 'v1', ...PCB_CONFIGURATION, backend: 'trained', simulated: false, durationMs: 3,
+      providerTimingMs: { decodePreprocess: 0.5, modelInference: 1, responsePostprocess: 0.5, requestTotal: 2 },
+      detections: [{ id: 'lost-ack-prediction', classId: 'mouse_bite', label: 'mouse_bite', confidence: 0.8,
+        boundingBox: { x: 0.1, y: 0.2, width: 0.3, height: 0.4 } }],
+    }));
+    const processor = createInspectionProcessor({ ...dependencies({ infer: mockInfer }),
+      providers: { 'visual-inspection-dl': { infer: trainedInfer } } });
+    const originalUpdate = inspections.collection.updateOne.bind(inspections.collection);
+    let committedBeforeLostAcknowledgement = false;
+    vi.spyOn(inspections.collection, 'updateOne').mockImplementation(async (...args) => {
+      const result = await originalUpdate(...args);
+      if (!committedBeforeLostAcknowledgement && !Array.isArray(args[1]) && args[1].$set?.status === 'completed') {
+        expect(result.modifiedCount).toBe(1);
+        committedBeforeLostAcknowledgement = true;
+        throw new Error('Mongo result committed but acknowledgement was lost');
+      }
+      return result;
+    });
+    await expect(processor({ id: 'lost-result-ack', data: payload(submission.id) })).rejects.toThrow('DATABASE_UNAVAILABLE');
+    expect(committedBeforeLostAcknowledgement).toBe(true);
+    const committed = await inspections.findById(submission.id).lean().orFail();
+    expect(committed).toMatchObject({ status: 'completed', attemptCount: 1, dispatchGeneration: 0,
+      requested: mode === 'mock' ? MOCK_CONFIGURATION : PCB_CONFIGURATION });
+    expect(isInferenceResult(committed.result)).toBe(true);
+    expect(committed.result.simulated).toBe(mode === 'mock');
+    expect(committed.failure).toBeUndefined();
+    expect(committed.attemptId).toBeUndefined();
+    expect(committed.leaseExpiresAt).toBeUndefined();
+    await processor({ id: 'redelivery-after-lost-result-ack', data: payload(submission.id) });
+    await reconciler.reconcile();
+    expect(await inspections.findById(submission.id).lean().orFail()).toEqual(committed);
+    expect(await inspections.countDocuments()).toBe(1);
+    expect(mockInfer).toHaveBeenCalledTimes(mode === 'mock' ? 1 : 0);
+    expect(trainedInfer).toHaveBeenCalledTimes(mode === 'trained' ? 1 : 0);
+    expect((await app.inject({ method: 'GET', url: submission.url })).json()).toMatchObject({
+      status: 'completed', result: committed.result, attemptCount: 1,
+    });
   });
 
   it('recovers a failure after inference but before result persistence', async () => {
