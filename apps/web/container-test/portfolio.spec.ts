@@ -44,7 +44,7 @@ test('portfolio fixtures: real upload, canvas corrections, persisted reopen, por
   await expect(page.getByRole('heading', { name: '3 detections', exact: true })).toBeVisible();
   await expect(page.getByTestId('detection-box')).toHaveCount(3);
   const before = await (await page.request.get(`/api/v1${path}`)).json();
-  await expect(page.getByText('Simulated inference', { exact: true })).toBeVisible();
+  await expect(page.getByText('Simulated demo', { exact: true })).toBeVisible();
   await capture(page, 'inspection');
 
   await page.getByRole('button', { name: 'Edit local draft' }).click();

@@ -118,6 +118,12 @@ try {
   assert.equal(browserRecord.review.revision, 2);
   report.browserWorkflow = browser;
   report.browserWarmed = JSON.parse(await readFile(resolve(directory, 'browser-warmed.json'), 'utf8'));
+  // Exercise the existing mock workflow against the same opt-in six-service
+  // stack, proving that enabling trained inference preserves the demo.
+  await pnpmCommand(['--filter', '@vip/web', 'exec', 'playwright', 'test', '--config', 'playwright.container.config.ts'], {
+    env: test.environment, echo: true, timeout: 240_000,
+  });
+  report.checks.existingContainerBrowser = true;
 
   const fixtures = ['5810_t_007.jpg', '6581_b_043.jpg', '6529_t_006.jpg', '6040_b_034.jpg'];
   let resourceProbe;

@@ -250,9 +250,9 @@ and [reliability evidence](docs/reliability.md).
 - At-least-once attempts can repeat inference. No exactly-once execution promise.
 - Reviews retain the latest snapshot and bounded operation receipts, not an immutable audit history.
 - Unsaved drafts exist in memory. Browser/mobile navigation warnings are best effort.
-- Future real inference can implement the provider boundary; camera ingestion, S3/cloud and
-  orchestration remain optional work, not implemented capabilities.
+- Optional trained inference supports identified 300×300 PCB candidate patches;
+  full-board search, camera ingestion, S3/cloud and orchestration remain outside scope.
 
 No repository license has been selected. No license or redistribution grant is
 implied for the whole project; see [portfolio/repository presentation notes](docs/portfolio-summary.md).
-This is release preparation, not a published or tagged release.
+The integration delivery provides a reproducible local demo; there is no hosted public application.
