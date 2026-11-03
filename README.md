@@ -1,6 +1,6 @@
 # Visual Inspection Platform
 
-[![CI](https://github.com/ThePhysic/visual-inspection-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/ThePhysic/visual-inspection-platform/actions/workflows/ci.yml)
+[![Upstream CI](https://github.com/ThePhysic/visual-inspection-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/ThePhysic/visual-inspection-platform/actions/workflows/ci.yml) · [Integration CI](https://github.com/ThePhysic/visual-inspection-platform-pcb/actions/workflows/ci.yml)
 
 **Upload an image, inspect predictions, correct annotations, and reopen a saved human review.**
 

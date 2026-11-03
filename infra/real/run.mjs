@@ -8,13 +8,15 @@ import { command, pnpmCommand, root } from '../docker/disposable.mjs';
 import { compatibility, verifyRelease } from './verify-release.mjs';
 import { runProviderProbe } from './provider-probe.mjs';
 import { realEnvironment, waitForFreshHealthyService } from './environment.mjs';
+import { runRealBusyApplicationRetry } from './busy-probe.mjs';
+import { runSlowModelRecovery } from './slow-probe.mjs';
 
 const flags = new Set(process.argv.slice(2));
 assert.ok([...flags].every(flag => ['--ci-mongodb', '--keep'].includes(flag)), 'Use optional --ci-mongodb / --keep');
-await verifyRelease(); // Pin/source/digests checked before Docker mutation.
+const verifiedRelease = await verifyRelease(); // Pin/source/digests checked before Docker mutation.
 const provider = { providerId: 'visual-inspection-dl', modelId: 'pcb-ind-ssdlite', modelVersion: compatibility.release,
   taxonomyVersion: compatibility.taxonomy, artifactDigest: compatibility.artifactDigest, confidenceThreshold: compatibility.threshold };
-const test = await realEnvironment({ ciMongoCompatibility: flags.has('--ci-mongodb') });
+const test = await realEnvironment({ ciMongoCompatibility: flags.has('--ci-mongodb'), dlDirectory: verifiedRelease.dlRoot });
 const directory = resolve(root, 'docs/real-inference');
 await mkdir(directory, { recursive: true });
 const report = { schemaVersion: 'v1', startedAt: new Date().toISOString(), project: test.project, passed: false,
@@ -168,6 +170,8 @@ try {
   await resourceSnapshot('after-benchmark');
 
   const outageAsset = await upload(fixtures[0]);
+  report.realBusyApplicationRetry = await runRealBusyApplicationRetry({ test, submit, getInspection, completed, assetId: outageAsset.id });
+  report.checks.realBusyApplicationRetry = true;
   await test.disruptive(['stop', 'inference']);
   await until(async () => !(await json('/api/v1/inference-modes')).trained.available, 'model unavailable observation');
   await json('/api/v1/ready');
@@ -182,6 +186,9 @@ try {
   report.outage = { failedInspectionId: failed.id, failure: failed.failure, attempts: failed.attemptCount,
     apiStayedReady: true, acceptedWhileUnavailable: true, retryInspectionId: retryRecord.id };
   report.checks.outageExhaustionAndLinkedRetry = true;
+
+  report.slowModelRecovery = await runSlowModelRecovery({ test, submit, getInspection, completed, outageAssetId: outageAsset.id });
+  report.checks.realSlowApplicationRecovery = true;
 
   await test.disruptive(['stop', 'worker']);
   const heldKey = randomUUID(); const held = await submit(outageAsset.id, heldKey);

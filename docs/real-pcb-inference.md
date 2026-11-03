@@ -10,12 +10,12 @@ remain application data and never update weights.
 Use sibling clones named `visual-inspection-platform` and `visual-inspection-dl`.
 Private delivery copies preserve each original repository's history; their
 upstream public remotes are unchanged. The final platform delivery is tagged
-`pcb-integration-v1`; the acceptance report records the exact tested source commit.
+`pcb-integration-v1.1`; the acceptance report records the exact tested source commit.
 
 ```powershell
-git clone --branch pcb-integration-v1 https://github.com/ThePhysic/visual-inspection-platform-pcb.git visual-inspection-platform
+git clone --branch pcb-integration-v1.1 https://github.com/ThePhysic/visual-inspection-platform-pcb.git visual-inspection-platform
 git clone https://github.com/ThePhysic/visual-inspection-dl-pcb.git visual-inspection-dl
-git -C visual-inspection-dl checkout e1e84e2eac9c91e5bd8021aea20a6ec712616285
+git -C visual-inspection-dl checkout badae041458688f8743ce6d6f433f01a13451d0e
 cd visual-inspection-platform
 node infra/real/verify-release.mjs
 ```
@@ -23,7 +23,8 @@ node infra/real/verify-release.mjs
 The pinned DL checkout adds reciprocal documentation to serving source revision
 `399a8da7407689a0ffd7dc9bde074600dd8dcbcc`. The compatibility file is
 [`infra/real/compatibility.json`](../infra/real/compatibility.json). Verification
-checks the exact clean tracked checkout and the weights/evaluation hashes before
+checks the exact clean tracked checkout, rejects untracked serving files under
+`src` that would enter the Docker build, and checks the weights/evaluation hashes before
 the acceptance runner builds anything. Serving independently verifies canonical
 metadata and bundle contents when loading.
 
@@ -39,6 +40,15 @@ metadata and bundle contents when loading.
 
 A changed release requires explicit new configuration, compatibility review, and
 tests. Relabeling different weights with the pinned identity is unsupported.
+
+To use another checkout location, set a literal `DL_REPOSITORY_DIR` path in the
+platform's `.env` or export it in the shell. The exported value takes precedence;
+an explicitly empty value selects the default sibling path, as Compose's `:-`
+expansion does. Relative paths resolve from the platform directory. Preflight and
+the real acceptance runner select the same checkout; the runner passes the exact
+verified absolute path to every Compose command. Variable interpolation in this
+`.env` setting and custom `COMPOSE_ENV_FILES` / `COMPOSE_DISABLE_ENV_FILE` settings
+are rejected by preflight rather than risking verification of a different source.
 
 ## Run either mode
 

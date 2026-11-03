@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import { mkdir, writeFile, unlink } from 'node:fs/promises';
 import { createServer } from 'node:net';
-import { resolve } from 'node:path';
+import { isAbsolute, resolve } from 'node:path';
 import { setTimeout as pause } from 'node:timers/promises';
 import { command, root } from '../docker/disposable.mjs';
 
@@ -70,7 +70,13 @@ async function freePort() {
   return port;
 }
 
-export async function realEnvironment({ ciMongoCompatibility = false } = {}) {
+export function realComposeEnvironment(webPort, dlDirectory, additional = {}) {
+  assert.ok(typeof dlDirectory === 'string' && isAbsolute(dlDirectory), 'Compose requires the exact verified absolute DL directory');
+  return { ...additional, WEB_PORT: String(webPort), DL_REPOSITORY_DIR: dlDirectory };
+}
+
+export async function realEnvironment({ ciMongoCompatibility = false, dlDirectory } = {}) {
+  realComposeEnvironment(0, dlDirectory); // Validate before creating any test resources.
   const owner = randomUUID().replaceAll('-', '');
   const project = `vip-real-${owner}`;
   const webPort = await freePort();
@@ -94,7 +100,7 @@ export async function realEnvironment({ ciMongoCompatibility = false } = {}) {
   const composeArgs = ['compose', '-p', project, '-f', 'compose.yaml',
     ...(ciMongoCompatibility ? ['-f', 'compose.ci.yaml'] : []), '-f', 'compose.real.yaml', '-f', file];
   const compose = (args, options = {}) => command('docker', [...composeArgs, ...args], {
-    ...options, env: { ...options.env, WEB_PORT: String(webPort) },
+    ...options, env: realComposeEnvironment(webPort, dlDirectory, options.env),
   });
 
   async function verifyOwnership() {
@@ -114,7 +120,10 @@ export async function realEnvironment({ ciMongoCompatibility = false } = {}) {
   }
   const disruptive = async args => { await verifyOwnership(); return compose(args, { echo: true }); };
   return { project, owner, compose, disruptive, verifyOwnership,
-    baseURL: `http://127.0.0.1:${webPort}`, environment: { CONTAINER_BASE_URL: `http://127.0.0.1:${webPort}` },
+    baseURL: `http://127.0.0.1:${webPort}`, environment: {
+      CONTAINER_BASE_URL: `http://127.0.0.1:${webPort}`,
+      PCB_DEMO_PATCH: resolve(root, 'fixtures/pcb/5810_t_007.jpg'),
+    },
     async verifyMongoCompatibility() {
       if (!ciMongoCompatibility) return;
       await compose(['exec', '-T', 'mongodb', 'mongosh', '--quiet', '--eval',
