@@ -131,13 +131,14 @@ Use the pinned Node/pnpm versions from `.node-version` and `package.json`:
 
 ```powershell
 pnpm install --frozen-lockfile
+pnpm --filter @vip/web exec playwright install chromium
 pnpm lint
 pnpm typecheck
 pnpm test
 pnpm build
 pnpm test:ci:integration
 pnpm test:reliability
-node infra/real/run.mjs --ci-mongodb
+pnpm test:real --ci-mongodb
 ```
 
 The isolated real runner verifies the release, builds the six-service stack, probes

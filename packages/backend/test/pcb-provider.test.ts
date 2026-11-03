@@ -132,6 +132,29 @@ describe('bounded real HTTP adapter', () => {
     abort.abort(new Error('caller cancelled'));
     await expect(pending).rejects.toThrow('caller cancelled');
   });
+  it('classifies an actual refused TCP connection as retryable without invoking a fallback', async () => {
+    const url = await serve(() => {});
+    await closeServers.pop()!(); // Keep the allocated origin, but remove its listener.
+    await expect(new PcbInferenceProvider({ url }).infer(image(), new AbortController().signal)).rejects.toMatchObject({
+      code: 'PROVIDER_UNAVAILABLE', retryable: true, providerOutcome: 'unavailable',
+    });
+  });
+  it.each(['complete malformed JSON', 'interrupted TCP response'] as const)(
+    'distinguishes a %s body from a provider contract failure', async kind => {
+      const url = await serve((_request, response) => {
+        response.writeHead(200, { 'Content-Type': 'application/json',
+          ...(kind === 'interrupted TCP response' ? { 'Content-Length': '1000' } : {}) });
+        response.flushHeaders(); response.write('{"schema_version":');
+        if (kind === 'interrupted TCP response') setTimeout(() => { response.destroy(); }, 10);
+        else response.end();
+      });
+      await expect(new PcbInferenceProvider({ url }).infer(image(), new AbortController().signal)).rejects.toMatchObject(
+        kind === 'interrupted TCP response'
+          ? { code: 'PROVIDER_UNAVAILABLE', retryable: true, providerOutcome: 'unavailable' }
+          : { code: 'INVALID_INFERENCE_RESULT', retryable: false, providerOutcome: 'invalid_response' },
+      );
+    },
+  );
   it.each(['malformed', 'excessive', 'streamed excessive', 'wrong media type'])('rejects %s successful responses terminally', async kind => {
     const url = await serve((_request, response) => {
       if (kind === 'malformed') { response.writeHead(200, { 'Content-Type': 'application/json' }); response.end('{'); }
