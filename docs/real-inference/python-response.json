@@ -39,9 +39,9 @@
     }
   ],
   "timing_ms": {
-    "decode_preprocess": 10.680593999495613,
-    "model_inference": 64.47813999875507,
-    "response_postprocess": 0.7556999989901669,
-    "request_total": 76.32857399948989
+    "decode_preprocess": 24.651457000800292,
+    "model_inference": 74.46467799854872,
+    "response_postprocess": 0.8256979999714531,
+    "request_total": 100.36820300047111
   }
 }

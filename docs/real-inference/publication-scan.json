@@ -1,11 +1,11 @@
 {
   "tool": "Gitleaks cached container, network disabled, read-only repository mounts, --redact --log-opts=--all",
   "platform": {
-    "commitsScanned": 28,
+    "commitsScanned": 33,
     "rawFindings": 0
   },
   "dl": {
-    "commitsScanned": 61,
+    "commitsScanned": 62,
     "rawFindings": 10,
     "verifiedPublicSourceChecksums": 10,
     "unresolvedFindings": 0,

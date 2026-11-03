@@ -1,16 +1,18 @@
 # Real PCB integration acceptance report
 
 Status: functional acceptance passed on the final application source revision
-`664e9b09d16c956f51103bd2c2b4b14ddba80a36`. The machine-readable
-[acceptance record](acceptance.json) has all nine checks true and no errors.
+`b007a855a882230e029b80ae5c8ea340a83ecb4f`. The refreshed machine-readable
+[acceptance record](acceptance.json) has all eleven checks true and no errors.
+This report supersedes the original v1 measurements. The [second audit](REAUDIT.md)
+records reproduced defects, their fixes, and additional coverage.
 
 ## Revision and release scope
 
 - Platform baseline: `e7463b8cf7af03505185cfd5c03e839fcd151406`.
 - Integration began at `32b688fe97093629647eb10e5ca69c3ccbc982ab`; final tested
-  application/deployment source is `664e9b09d16c956f51103bd2c2b4b14ddba80a36`.
+  application/deployment source is `b007a855a882230e029b80ae5c8ea340a83ecb4f`.
   Subsequent delivery changes contain documentation and captured evidence only.
-- DL compatible checkout: `e1e84e2eac9c91e5bd8021aea20a6ec712616285`; serving
+- DL compatible checkout: `badae041458688f8743ce6d6f433f01a13451d0e`; serving
   source `399a8da7407689a0ffd7dc9bde074600dd8dcbcc`.
 - Released model: `pcb-ind-ssdlite-v1`, taxonomy `pcb-ind-v4-1`, threshold `0.20`.
 - Artifact digest: `9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e`.
@@ -22,16 +24,16 @@ Status: functional acceptance passed on the final application source revision
 | --- | --- |
 | `pnpm typecheck` | Passed across contracts, backend, API, worker and web |
 | `pnpm lint` | Passed, zero warnings |
-| `pnpm test` | 389 tests passed; one existing filesystem-dependent 8.3 alias test skipped; benchmark/ownership/recovery checks 14 passed |
-| `node --test infra/real/environment.test.mjs` | 4 ownership/mount/fresh-health checks passed, also included in `pnpm test` |
-| `pnpm test:ci:integration` | Final source: 149 MongoDB/API integration tests and 18 Chromium browser tests passed; production build passed |
+| `pnpm test` | 396 tests passed; one existing filesystem-dependent 8.3 alias test skipped; 24 Node benchmark/deployment/recovery checks passed |
+| `pnpm test:ci:integration` | Audit: 153 MongoDB/API integration tests and 20 Chromium browser tests passed; production build passed. The final upload-state correction additionally passed both new component regressions and the full unit suite. |
 | `pnpm test:reliability` | Passed: production packaging, non-root/read-only storage, Redis outage/recovery, interrupted Mongo result persistence, restarts, down/up recreation, storage maintenance safeguards |
-| `pnpm test:real --ci-mongodb` | Final source: actual released CPU model, typed busy response, trained browser workflow, 20 browser measurements, both existing container browser workflows, 30 API measurements, outage exhaustion/linked retry, Redis/worker recovery, SIGKILL lease recovery and down/up review persistence all passed |
+| `pnpm test:real --ci-mongodb` | Final source: actual released CPU model, typed busy capacity probe, worker busy/retry recovery, worker HTTP timeout/recovery, trained browser review and 20 browser measurements, both existing container browser workflows, 30 API measurements, outage exhaustion/linked retry, Redis/worker recovery, SIGKILL lease recovery and down/up review persistence all passed |
 | DL `.venv-cpu/Scripts/python.exe -m ruff check .` | Passed |
 | DL `.venv-cpu/Scripts/python.exe -m ruff format --check .` | 29 files already formatted |
-| DL `.venv-cpu/Scripts/python.exe -m pytest -q --tb=short` | 214 passed, 15 dependency deprecation warnings, 83.22 seconds |
+| DL `.venv-cpu/Scripts/python.exe -m pytest -q --tb=short` | 214 passed; dependency deprecation warnings remain |
 | `node infra/real/verify-release.mjs` | Exact DL checkout and released weight/evaluation hashes verified |
 | DL `docker build --tag vip-pcb-integration-dl:cpu .` | Existing CPU Dockerfile built successfully |
+| Fresh local Git clones, original mock command followed by optional real Compose command | Passed without any DL clone for mock; then passed with `.env`-only `DL_REPOSITORY_DIR="../alternate dl"`, verified build context and read-only bundle source, and preserved mock result. [Checkout evidence](alternate-checkout.json) records exact source revisions and commands. |
 
 Windows sandbox permissions prevented Docker/keyring access, generated-file writes,
 child-process spawning and pytest temporary-directory use on initial attempts.
@@ -47,11 +49,12 @@ An initial crash test encountered cached Docker health immediately after unpause
 The final harness observes a fresh successful probe without restarting Python;
 the optional worker also starts independently of model readiness.
 
-At final-run start, one tracked evidence file differed from the source commit:
-the previous run's `python-response.json` timing fields. Application, tests,
-deployment and runner sources matched the recorded commit. The final response,
-screenshots and timing files were regenerated by that run. This is disclosed by
-`platformTrackedChangesAtRun: 1`; it is not a claim of a clean working tree.
+At final-run start, all tracked files matched the recorded source commit
+(`platformTrackedChangesAtRun: 0`). An untracked draft audit document was present;
+it was not an application or build input. The final response, screenshots and
+timing files were regenerated by that run. The separate checkout smoke cloned
+the exact committed source locally; it did not claim a post-publication network
+clone of the new tag.
 
 ## Measurement environment and interpretation
 
@@ -85,18 +88,18 @@ Milliseconds, nearest-rank percentiles. API rows have **n=30**, concurrency one:
 
 | Boundary | p50 | p95 |
 | --- | ---: | ---: |
-| Asset upload through accepted asset response | 20.49 | 24.90 |
-| Inspection POST through durable 202 response | 10.95 | 14.19 |
-| Created timestamp to worker claim | 7.00 | 11.00 |
-| Worker processing before result commit | 59.00 | 86.00 |
-| Worker → Python HTTP, transfer and JSON decode | 53.37 | 78.21 |
-| Python decode/preprocess | 1.39 | 3.01 |
-| Python model call | 47.73 | 68.64 |
-| Python response postprocess | 0.66 | 1.44 |
-| Python request handler total | 50.19 | 71.80 |
-| Conditional MongoDB result commit | 2.41 | 3.57 |
-| Full upload → API-observed trained completion, 100 ms polling | 152.62 | 166.32 |
-| Full upload click → visible browser Completed heading, **n=20**, 2 s polling | 2421.05 | 2438.81 |
+| Asset upload through accepted asset response | 23.67 | 28.10 |
+| Inspection POST through durable 202 response | 12.72 | 15.28 |
+| Created timestamp to worker claim | 8.00 | 16.00 |
+| Worker processing before result commit | 69.00 | 117.00 |
+| Worker → Python HTTP, transfer and JSON decode | 63.47 | 104.87 |
+| Python decode/preprocess | 1.62 | 2.94 |
+| Python model call | 56.19 | 92.26 |
+| Python response postprocess | 0.87 | 1.91 |
+| Python request handler total | 59.90 | 97.44 |
+| Conditional MongoDB result commit | 2.79 | 3.95 |
+| Full upload → API-observed trained completion, 100 ms polling | 155.08 | 274.80 |
+| Full upload click → visible browser Completed heading, **n=20**, 2 s polling | 2429.97 | 2441.18 |
 
 Upload timing includes the harness reading the small local fixture and decoding
 the response. Created-to-claim includes insertion, rather than measuring pure
@@ -106,24 +109,33 @@ excludes ASGI serialization and networking. Browser timing includes Playwright
 observation overhead, and excludes file selection and readiness checks. Percentile
 columns are separate distributions and must not be added together.
 
-The first prediction after readiness took **82.85 ms HTTP** (**n=1**). Fresh
-six-container creation through healthy status took **19.50 seconds** with cached
+The first prediction after readiness took **109.72 ms HTTP** (**n=1**). Fresh
+six-container creation through healthy status took **20.08 seconds** with cached
 images. These boundaries exclude image building, and neither is a distribution of
-pure model loading time. Warm HTTP max was **79.36 ms** in this run. Based on these
+pure model loading time. Warm HTTP max was **117.00 ms** in this run. Based on these
 observations, the existing **8 s HTTP / 10 s attempt / 30 s lease** and 45 s worker
 shutdown grace were retained; slower devices or unusually slow requests can still
 exhaust the finite budget. These measurements establish no SLA.
 
-The API batch completed **6.48 inspection workflows/second**, concurrency one,
+The API batch completed **6.02 inspection workflows/second**, concurrency one,
 with **0/30 failed workflows** and **0 busy application attempts**. The JSON field
 `requestsPerSecond` counts completed inspection workflows, not individual HTTP
 requests. The separate three-concurrent-request capacity probe returned **1/3
 success and 2/3 busy**; it is not a throughput benchmark. Container CPU and memory
 snapshots are preserved in `resourceSamples`; no peak-resource claim is made.
-The three model-container samples observed **271.8–274.0 MiB** memory usage;
-the midpoint sample showed **125.88% Docker CPU** (about 1.26 logical CPUs),
-while the two idle-boundary samples showed 0.23%. These are three observations,
+The three model-container samples observed **311.9–316.1 MiB** memory usage;
+the midpoint sample showed **146.34% Docker CPU** (about 1.46 logical CPUs),
+while the two idle-boundary samples showed 0.20% and 0.42%. These are three observations,
 not resource distributions or maximum usage.
+
+Separate live fault probes now demonstrate application-level behavior: a genuine
+incomplete JPEG upload holds Python admission, yielding typed `inference_busy`
+through the real worker adapter. A queued busy failure was observed on attempt
+two and trained completion on attempt three, without fallback. Pausing the owned
+Python container produced a durable `PROVIDER_TIMEOUT` on attempt one, then
+trained completion on attempt two after unpause. Restoration through fresh
+health and observed completion took 6.54 seconds in this single fault probe;
+it is not a latency percentile or an SLA.
 
 The model-outage inspection was accepted while the API remained ready, failed
 after exactly **three** real attempts with no predictions, and completed through

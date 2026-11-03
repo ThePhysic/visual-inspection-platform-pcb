@@ -1,0 +1,294 @@
+{
+  "project": "vip-clean-ce7b588d611a4521838f7dabe24c50ab",
+  "baseURL": "http://127.0.0.1:57731",
+  "passed": true,
+  "checks": {
+    "mockWithoutDlClone": true,
+    "envOnlyAlternateCheckoutWithSpaces": true,
+    "verifiedContextEqualsComposeContext": true,
+    "mockPreservedAcrossOptIn": true,
+    "realFromPinnedLocalClones": true
+  },
+  "commands": [
+    {
+      "executable": "docker",
+      "args": [
+        "ps",
+        "-aq",
+        "--filter",
+        "label=com.docker.compose.project=vip-clean-ce7b588d611a4521838f7dabe24c50ab"
+      ],
+      "cwd": "clean parent"
+    },
+    {
+      "executable": "git",
+      "args": [
+        "clone",
+        "--no-hardlinks",
+        "--branch",
+        "integration/real-pcb",
+        "platform-source-clone",
+        "<fresh-parent>\\visual-inspection-platform"
+      ],
+      "cwd": "clean parent"
+    },
+    {
+      "executable": "git",
+      "args": [
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "git",
+      "args": [
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "compose",
+        "-p",
+        "vip-clean-ce7b588d611a4521838f7dabe24c50ab",
+        "up",
+        "-d",
+        "--build",
+        "--wait",
+        "--wait-timeout",
+        "180"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "ps",
+        "-aq",
+        "--filter",
+        "label=com.docker.compose.project=vip-clean-ce7b588d611a4521838f7dabe24c50ab"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "inspect",
+        "c5a6cb2a3e03",
+        "00cd2fabbf05",
+        "469c197ca64b",
+        "ccf06ef36e98",
+        "759f1e39f1f0"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "volume",
+        "inspect",
+        "7f3a217eb9766f5d97dbeecdb749e130cb5ee46e54fd471c67fb8a1dfc69316d"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "ps",
+        "-aq",
+        "--filter",
+        "label=com.docker.compose.project=vip-clean-ce7b588d611a4521838f7dabe24c50ab"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "inspect",
+        "c5a6cb2a3e03",
+        "00cd2fabbf05",
+        "469c197ca64b",
+        "ccf06ef36e98",
+        "759f1e39f1f0"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "volume",
+        "inspect",
+        "7f3a217eb9766f5d97dbeecdb749e130cb5ee46e54fd471c67fb8a1dfc69316d"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "compose",
+        "-p",
+        "vip-clean-ce7b588d611a4521838f7dabe24c50ab",
+        "down"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "git",
+      "args": [
+        "clone",
+        "--no-hardlinks",
+        "--branch",
+        "integration/platform-pcb",
+        "dl-source-clone",
+        "<fresh-parent>\\alternate dl"
+      ],
+      "cwd": "clean parent"
+    },
+    {
+      "executable": "git",
+      "args": [
+        "-C",
+        "<fresh-parent>\\alternate dl",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "node",
+      "args": [
+        "infra/real/verify-release.mjs"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "compose",
+        "-p",
+        "vip-clean-ce7b588d611a4521838f7dabe24c50ab",
+        "-f",
+        "compose.yaml",
+        "-f",
+        "compose.real.yaml",
+        "config",
+        "--format",
+        "json"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "compose",
+        "-p",
+        "vip-clean-ce7b588d611a4521838f7dabe24c50ab",
+        "-f",
+        "compose.yaml",
+        "-f",
+        "compose.real.yaml",
+        "up",
+        "-d",
+        "--build",
+        "--wait",
+        "--wait-timeout",
+        "180"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "ps",
+        "-aq",
+        "--filter",
+        "label=com.docker.compose.project=vip-clean-ce7b588d611a4521838f7dabe24c50ab"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "inspect",
+        "bceb94c3fa81",
+        "9b039e6c07dd",
+        "24e0e4939d5e",
+        "08165808d51d",
+        "af3952489bf9",
+        "f9a048e44cac"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "volume",
+        "inspect",
+        "aa8373ad20477b9e00fee6aef9edf2e9e36ff8f8d3419ecbe9a7bffe1976ead0"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "ps",
+        "-aq",
+        "--filter",
+        "label=com.docker.compose.project=vip-clean-ce7b588d611a4521838f7dabe24c50ab"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "inspect",
+        "bceb94c3fa81",
+        "9b039e6c07dd",
+        "24e0e4939d5e",
+        "08165808d51d",
+        "af3952489bf9",
+        "f9a048e44cac"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "volume",
+        "inspect",
+        "aa8373ad20477b9e00fee6aef9edf2e9e36ff8f8d3419ecbe9a7bffe1976ead0"
+      ],
+      "cwd": "fresh platform clone"
+    },
+    {
+      "executable": "docker",
+      "args": [
+        "compose",
+        "-p",
+        "vip-clean-ce7b588d611a4521838f7dabe24c50ab",
+        "-f",
+        "compose.yaml",
+        "-f",
+        "compose.real.yaml",
+        "down",
+        "--volumes",
+        "--remove-orphans"
+      ],
+      "cwd": "fresh platform clone"
+    }
+  ],
+  "platformRevision": "b007a855a882230e029b80ae5c8ea340a83ecb4f",
+  "mockInspectionId": "6ae954c13f18d8249e3e8c0e",
+  "dlRevision": "badae041458688f8743ce6d6f433f01a13451d0e",
+  "trainedInspectionId": "6ae954e4d7abeb9f13ac1038",
+  "digest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+  "scope": "Clean local Git clones of the exact recorded commits, before v1.1 publication; model is the actual released CPU backend. No DL clone existed for original mock start. Literal relative .env path selected the later alternate DL clone; verified context and read-only release source equalled Compose configuration.",
+  "configuration": {
+    "projectDotEnv": "DL_REPOSITORY_DIR=\"../alternate dl\"",
+    "shellDlDirectory": "unset",
+    "defaultSiblingAbsent": true
+  }
+}
