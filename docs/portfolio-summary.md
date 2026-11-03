@@ -1,103 +1,107 @@
 # Portfolio summary
 
-## Project summary
+## Project positioning
 
-Visual Inspection Platform is a full-stack image-inspection and human-review
-application: upload a canonicalized image, process an asynchronous inspection,
-edit normalized bounding boxes, save corrections, and reopen them through history.
-It uses deterministic simulated inference so the software workflow is independently
-demonstrable without model training or access to proprietary systems.
+Visual Inspection Platform — Real PCB Inference Integration connects a released
+PyTorch detector to a durable TypeScript application and revisioned human review.
+A Node worker calls an internal FastAPI CPU service, validates model provenance
+and geometry, then commits immutable original predictions. Reviewers can correct
+all eight PCB classes, save a separate review and reopen it from history.
+
+The default deterministic simulated demo remains independently runnable with five
+services, two mock classes and no DL clone. Trained mode is an explicit opt-in for
+identified 300×300 PCB candidate patches, with no silent mock substitution during
+a model outage. This is a local portfolio project, not a production inspection
+product or whole-board diagnosis.
 
 **Stack:** React, TypeScript, Vite, React Router, TanStack Query, react-konva;
-Node/Fastify, TypeBox, MongoDB/Mongoose, Redis/BullMQ, Sharp; pnpm workspaces,
-Docker Compose/nginx, Pino, process-local metrics, Vitest/Testing Library,
-Playwright and GitHub Actions.
-
-Implemented features include validated JPEG/PNG ingestion, canonical image
-storage, durable asynchronous acceptance, read-only predictions, interactive
-corrections, persistent current review snapshots, conflict recovery, filtered
-cursor history, linked retries, structured operational diagnostics, and safe
-disposable reliability/benchmark tooling.
+Node/Fastify, TypeBox, MongoDB/Mongoose, Redis/BullMQ, Sharp; Python/FastAPI and
+PyTorch in the independent DL repository; Docker Compose/nginx, Pino,
+Vitest/Testing Library, Playwright and GitHub Actions.
 
 ## Engineering decisions worth discussing
 
-1. **MongoDB-first acceptance:** queued documents carry dispatch intent. A
-   post-response hint optimizes normal scheduling; startup/periodic reconciliation
-   repairs missed work without making Redis a prerequisite for durable 202 acceptance.
+1. **MongoDB-first acceptance:** queued documents carry dispatch intent.
+   Post-response dispatch optimizes scheduling; startup/periodic reconciliation
+   repairs missed work without making Redis a prerequisite for durable acceptance.
 2. **At-least-once attempts with conditional authority:** generation-specific queue
-   IDs, persistent attempt budgets, expiring ownership tokens and conditional
-   completion prevent stale deliveries from replacing the committed result.
-3. **Separate prediction and review data:** the original inference result stays
-   unchanged while a complete review snapshot uses atomic revision/write-sequence
-   checks and bounded operation receipts for ambiguous-response retry safety.
-4. **Canonical geometry:** EXIF orientation is applied before storage. One
-   normalized image coordinate system is shared by inference, responsive canvas
-   rendering and persistence; viewport pixels/Konva scale stay outside domain state.
-5. **Small operational footprint:** one API, one worker and two backing services;
-   internal loopback metrics and disposable fault tests instead of a monitoring
-   stack or extra orchestration services.
+   IDs, persistent attempt budgets, expiring leases and database-time ownership
+   checks prevent stale attempts from replacing a committed result.
+3. **Cross-language provenance validation:** canonical bytes reach a pinned Python
+   release over HTTP. The adapter checks backend, model, taxonomy, release digest,
+   labels, dimensions and boxes rather than trusting a simulated flag alone.
+4. **Separate prediction and review data:** original predictions remain unchanged;
+   a complete review snapshot uses revision/write-sequence checks and bounded
+   operation receipts for conflict handling and ambiguous-response retries.
+5. **Canonical geometry:** EXIF orientation is applied before storage. The adapter,
+   responsive canvas and persistence share normalized image coordinates without
+   rounding original model boxes.
+6. **Independent repositories:** this repository owns application behavior and
+   optional deployment configuration; the [DL repository](https://github.com/ThePhysic/visual-inspection-dl)
+   owns training, evaluation, release artifacts and serving. No training request
+   or automatic learning is triggered by an inspection or saved correction.
 
 ## Evidence and limits
 
-- [Final QA record](release-readiness.md) maps executed checks to workflow,
-  concurrency, recovery and persistence evidence. Tests include real MongoDB/Redis
-  behavior and actual canvas pointer interactions, not only HTTP/Konva mocks.
-- [Reliability evidence](reliability.md) covers abrupt worker interruption before/
-  after inference and persistence, stale-attempt rejection, bounded retries,
-  dependency outages and container recreation. It distinguishes assumptions from
-  observed recovery and does not promise exactly-once execution or disaster recovery.
-- [Measured optimization](performance.md#task-05c-opt-observed-results): median
-  simulated-inspection visibility **4,955 → 113 ms (97.7% reduction)** after prompt
-  dispatch, in a local one-worker sequential workload with eight matched samples
-  and 100 ms polling. Additional 24-sample runs support the normal-path observation.
-  This is orchestration latency, not real-model acceleration; concurrent acceptance
-  and history timing tradeoffs are reported too.
+- [Real CPU acceptance](real-inference/REPORT.md) records the exact revisions,
+  release digest, commands, eleven real-stack checks and measurement definitions.
+  [The second audit](real-inference/REAUDIT.md) records reproduced edge cases and
+  regression fixes, including expired leases and actual busy/timeout recovery.
+- Recorded concurrency-one API observations: upload through trained completion
+  p50/p95 **155.08/274.80 ms**, **n=30**, 100 ms polling, four attributed patches.
+  Browser-visible completion was **2429.97/2441.18 ms**, **n=20**, 2 s polling,
+  repeating a training-set serving fixture. Neither distribution establishes an SLA.
+- [Reliability evidence](reliability.md) covers dependency interruptions, stale
+  attempts, finite retries and container recreation. It distinguishes observed
+  recovery from exactly-once or disaster-recovery guarantees.
+- [Historical mock optimization](performance.md#task-05c-opt-observed-results):
+  median simulated-inspection visibility **4,955 → 113 ms (97.7% reduction)**
+  after prompt dispatch, with eight matched local samples and 100 ms polling.
+  This is a differing simulated workload, not trained-model acceleration.
+- GitHub's default CI checks application correctness on Ubuntu and Windows plus
+  integration/browser/container behavior. Full trained-model acceptance and its
+  timing workload are separately recorded local evidence, not ordinary push CI.
+- The model's frozen ROI holdout evaluation does not measure arbitrary images or
+  application accuracy. Scores are uncalibrated; false alarms, misses and weak
+  rare-class support remain. The project is unaffiliated with Matroid and is not
+  validated for production manufacturing inspection.
 
 ## Résumé bullet candidates
 
-- Built a React/TypeScript and Fastify inspection platform with interactive
-  bounding-box editing, MongoDB-backed review snapshots, optimistic concurrency,
-  and cursor-paginated inspection history.
-- Implemented a Redis/BullMQ pipeline with MongoDB-first acceptance, persistent
-  idempotency, bounded retries and token-guarded result commits; validated recovery
-  using real dependency interruptions and disposable Docker environments.
-- Reduced median simulated-inspection result visibility **97.7% (4,955 to 113 ms)**
-  by adding prompt dispatch with reconciliation fallback, measured in a local
-  one-worker benchmark with matched eight-sample sequential workloads.
+- Integrated a released PyTorch PCB detector with a TypeScript/Fastify application
+  through a private FastAPI service, strict cross-language response validation,
+  immutable model provenance and eight-class human review.
+- Implemented a MongoDB-first Redis/BullMQ pipeline with idempotent acceptance,
+  bounded retries and lease-fenced commits; verified model busy/timeout recovery,
+  worker interruptions and persisted review conflicts with disposable test stacks.
+- Built a React/Konva correction workflow that preserves original predictions
+  while saving revisioned annotations and reopening them through filtered history.
 
-Use the measurement context in interviews or a linked project description.
-Do not replace “simulated-inspection” with “model inference” or claim production
-adoption, commercial users, real accuracy, cloud scale, or exactly-once execution.
+Use linked evidence and its scope in interviews. Do not claim production adoption,
+commercial users, calibrated defect probabilities, whole-board search, cloud scale,
+exactly-once execution, or an inference speedup from the historical mock benchmark.
 
-## Simulated inference versus future ML
-
-The current provider returns checksum-matched curated fixture regions or
-content-seeded fallback output. The two labels and scores are demonstrations.
-The provider boundary accepts canonical bytes/metadata and an abort signal and
-returns output validated by the worker. A future real model would require a new
-implementation, model/taxonomy integration, performance evidence and accuracy
-evaluation; none is supplied by the current project.
-
-## GitHub presentation suggestions (not applied remotely)
+## Repository presentation
 
 Suggested repository description:
 
-> Full-stack visual inspection and human review with simulated inference, resilient asynchronous jobs, revisioned reviews, and Docker Compose.
+> Released PCB inference with a durable TypeScript queue, strict model provenance, immutable predictions and revisioned human review; independent simulated demo included.
 
 Suggested topics: `typescript`, `react`, `fastify`, `mongodb`, `redis`, `bullmq`,
-`docker-compose`, `playwright`, `computer-vision`, `portfolio`.
+`pytorch`, `fastapi`, `docker-compose`, `computer-vision`, `human-in-the-loop`.
 
-The README badge URL is derived from the existing origin
-`https://github.com/ThePhysic/visual-inspection-platform.git` and actual workflow
-`.github/workflows/ci.yml`; no repository URL was invented and no remote settings
-were changed. User review of description, topics and visibility remains manual.
+The README's current CI badge points to
+`ThePhysic/visual-inspection-platform-pcb` and its `integration/real-pcb` default
+branch. The [original SWE repository](https://github.com/ThePhysic/visual-inspection-platform)
+is linked as upstream context, not as the integrated quick-start clone target.
+Description, topics, branch names and visibility are owner-controlled settings;
+documentation changes do not silently change them.
 
-**License:** no root license exists and none was created or changed. If broad
-reuse is desired, MIT is a candidate for owner approval; GitHub's
-[MIT overview](https://choosealicense.com/licenses/mit/) describes its permissive
-terms. [GitHub's licensing guide](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository)
-explains why a public repository and an open-source license are separate decisions.
-Do not advertise this project as MIT-licensed until the owner authorizes and adds it.
+**License:** no whole-repository license has been selected, and public visibility
+does not grant a project-wide redistribution license. PCB-IND fixture attribution
+and pretrained-model terms remain separate; consult the
+[fixture manifest](../fixtures/pcb/README.md) and the DL project's third-party
+documentation. No license file is added by this presentation work.
 
-The [recording plan](demo.md) is ready, but no video or hosted deployment exists.
-No Git commit, tag, release or push is part of this preparation task.
+Use the [demo scripts](demo.md) and authentic trained-result/review/history captures
+linked from the README. No hosted application or video is claimed.

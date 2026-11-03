@@ -1,5 +1,15 @@
 # Real PCB integration acceptance report
 
+Publication note: this is the recorded **v1.1 acceptance run**, not a new
+measurement of the presentation update. The application repository is now public.
+Current setup uses the already-public DL revision
+`399a8da7407689a0ffd7dc9bde074600dd8dcbcc`, whose serving/build inputs and complete
+release tree match this run's former private delivery. The original revisions,
+measurements and captures below remain historical evidence. Follow the
+[current setup guide](../real-pcb-inference.md) and
+[public-checkout verification](../presentation-verification.md) for current
+dependency access and bounded smoke results; no new latency experiment is implied.
+
 Status: functional acceptance passed on the final application source revision
 `b007a855a882230e029b80ae5c8ea340a83ecb4f`. The refreshed machine-readable
 [acceptance record](acceptance.json) has all eleven checks true and no errors.

@@ -1,6 +1,33 @@
-# Two-to-three-minute demonstration
+# Two-to-three-minute demonstrations
 
-## Prepare
+Choose the trained PCB path below to show the integration, or the independent
+simulated path to explain the baseline application. These are scripts and links
+to authentic captures; no video is claimed.
+
+## Trained PCB path
+
+Start the pinned CPU stack using the [real-mode guide](real-pcb-inference.md).
+Have `fixtures/pcb/5810_t_007.jpg` ready. It is a PCB-IND v4 **training-set serving
+fixture**, not a holdout evaluation sample; retain the
+[source, license and split attribution](../fixtures/pcb/README.md).
+
+| Time | Browser action | Suggested narration |
+| --- | --- | --- |
+| 0:00–0:25 | Show the two modes; check availability, select **Trained PCB detector** and the candidate patch; confirm its domain | “The default is a separate simulated demo. This mode calls a pinned released CPU model for an identified 300×300 PCB candidate patch.” |
+| 0:25–0:50 | Upload and inspect; show the trained badge, version, taxonomy and digest | “MongoDB accepts durable intent, and a Node worker calls the private Python service. Failure retries are bounded and never substitute mock predictions.” |
+| 0:50–1:15 | Show original boxes, classes and scores | “These are candidate-patch predictions, not a full-board diagnosis. Scores are uncalibrated, and false positives and missed defects remain.” |
+| 1:15–1:55 | Enter review; reject one prediction, relabel another or add a missed region | “All eight classes support correction. Each original prediction is retained as accepted or rejected; manual additions have no invented confidence. These edits illustrate the controls, not expert ground truth.” |
+| 1:55–2:25 | Save; refresh; reopen through history | “The review has its own revision. Saved corrections survive reopening while original predictions and release identity stay unchanged.” |
+| 2:25–2:45 | Show original predictions again and link the acceptance report | “The recorded tests cover busy responses, timeouts, retries and restart persistence. The application does not retrain itself from these edits.” |
+
+Reference captures: [trained result](real-inference/trained-result.png),
+[saved review](real-inference/trained-review.png), [upload](real-inference/trained-upload.png)
+and [history](real-inference/trained-history.png). The
+[acceptance report](real-inference/REPORT.md) defines measurement boundaries.
+Use isolated existing recovery tests for an optional outage demonstration; do
+not interrupt personal demo services or imply an outage always fits this script.
+
+## Simulated path — prepare
 
 Use the README Docker-only startup command and open http://127.0.0.1:8080.
 Check `docker compose -p vip-demo ps` and complete one inspection before recording.
@@ -12,7 +39,7 @@ Have `fixtures/inspections/machined-panel.png`, `edge-component.png` and
 `clean-panel.png` ready in the file picker. They are original **illustrations**,
 not photographs or manufacturing evidence. See [provenance and prediction map](../fixtures/inspections/README.md).
 
-## Run of show
+## Simulated path — run of show
 
 | Time | Browser action | Suggested narration |
 | --- | --- | --- |
@@ -40,7 +67,7 @@ but stay discoverable in the annotation list.
 - Record a real browser at 1440×1100 or comparable desktop resolution and readable
   zoom. Hide personal tabs, notifications, credentials and unrelated folders.
 - Capture actual pointer dragging, resize handles, drawing, save confirmation,
-  browser refresh and history reopening. Keep the simulated badge visible.
+  browser refresh and history reopening. Keep the chosen mode's badge visible.
 - Use a real screen recorder; capture microphone narration if helpful. No recording
   was created by this task. Trim only idle time; label any cuts or separate takes.
 - Check audio, readability, cursor visibility and that refresh recovered the review.
@@ -49,7 +76,8 @@ but stay discoverable in the annotation list.
 - Optional recovery clip: use the existing controlled isolated tests, never break
   personal demo services or expose fault endpoints for a recording.
 - After reviewing/exporting a real recording, manually add its actual URL to the
-  README. Until then leave **“Recording: not recorded yet”**; there is no dummy link.
+  README. Until then use the demo scripts and authentic captures without a dummy
+  video link or unfinished recording placeholder.
 
 ## Screenshots
 
@@ -60,7 +88,7 @@ pnpm portfolio:capture
 ```
 
 This builds a new generated, ownership-verified Compose project, exercises the
-real workflow, captures three PNGs, records provenance, and cleans up only its own
+simulated application workflow, captures three PNGs, records provenance, and cleans up only its own
 resources. Existing demo/native environments are not used. No HTTP responses or
 Konva events are mocked. Existing private Chromium caches can be selected with
 the standard `PLAYWRIGHT_BROWSERS_PATH` environment variable; ordinary installations

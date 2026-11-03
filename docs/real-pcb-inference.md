@@ -8,20 +8,29 @@ remain application data and never update weights.
 ## Compatible checkouts and release
 
 Use sibling clones named `visual-inspection-platform` and `visual-inspection-dl`.
-Private delivery copies preserve each original repository's history; their
-upstream public remotes are unchanged. The final platform delivery is tagged
-`pcb-integration-v1.1`; the acceptance report records the exact tested source commit.
+Both repositories below are public; cloning and serving require no GitHub account
+or credentials. The application owns integration, persistence and human review;
+the independently runnable DL repository owns training, evaluation, release and
+FastAPI serving. Use the current application branch for this public dependency
+configuration. The historical `pcb-integration-v1.1` tag remains unchanged and
+still records its former private DL dependency.
+
+Mock startup needs only Docker and Git. The trained setup also uses **Node
+24.22.0** for the strict dependency preflight; see the
+[native tooling instructions](development.md#native-application-development).
 
 ```powershell
-git clone --branch pcb-integration-v1.1 https://github.com/ThePhysic/visual-inspection-platform-pcb.git visual-inspection-platform
-git clone https://github.com/ThePhysic/visual-inspection-dl-pcb.git visual-inspection-dl
-git -C visual-inspection-dl checkout badae041458688f8743ce6d6f433f01a13451d0e
+git clone --branch integration/real-pcb https://github.com/ThePhysic/visual-inspection-platform-pcb.git visual-inspection-platform
+git clone https://github.com/ThePhysic/visual-inspection-dl.git visual-inspection-dl
+git -C visual-inspection-dl checkout --detach 399a8da7407689a0ffd7dc9bde074600dd8dcbcc
 cd visual-inspection-platform
 node infra/real/verify-release.mjs
 ```
 
-The pinned DL checkout adds reciprocal documentation to serving source revision
-`399a8da7407689a0ffd7dc9bde074600dd8dcbcc`. The compatibility file is
+The pinned public DL revision is
+`399a8da7407689a0ffd7dc9bde074600dd8dcbcc`. Its serving/build inputs and entire
+release tree are byte-identical to the earlier paired delivery; only README and
+API-reference prose differ. The compatibility file is
 [`infra/real/compatibility.json`](../infra/real/compatibility.json). Verification
 checks the exact clean tracked checkout, rejects untracked serving files under
 `src` that would enter the Docker build, and checks the weights/evaluation hashes before
@@ -54,7 +63,7 @@ are rejected by preflight rather than risking verification of a different source
 
 Docker Desktop with Linux containers or Docker Engine with Compose is required.
 No GPU, cloud account, raw dataset download, or external credential is required
-to run a checked-out project. Private GitHub clones require repository access.
+to clone these public repositories or run the checked-out project.
 The CPU image's first build downloads Python dependencies, not model weights.
 
 Original simulated quick start, from the platform alone:
@@ -163,6 +172,27 @@ See the [acceptance report](real-inference/REPORT.md) for commands actually run,
 sample counts, revisions, pass/fail outcomes and limitations. The DL repository
 retains its independent Python test and serving commands.
 
+For a bounded check without recapturing evidence or running benchmarks:
+
+```powershell
+node infra/real/smoke.mjs
+# Optional: also exercise an actual HTTP timeout and identity-preserving recovery.
+node infra/real/smoke.mjs --recovery
+```
+
+The smoke checks pinned preflight, trained readiness, private CPU topology, one
+real queued inspection, an explicit mock inspection, and an eight-class review
+saved and reopened through the API. It writes only ignored diagnostic output
+under `.tools` and cleans its own disposable stack. On affected Linux kernels,
+add `--ci-mongodb` as described in the
+[MongoDB compatibility guide](ci-mongodb-compatibility.md). The manual
+[Real model smoke workflow](../.github/workflows/real-model-smoke.yml) performs
+this bounded CPU check on demand using an anonymous exact public DL checkout.
+Ordinary [CI](../.github/workflows/ci.yml) continues to run application checks;
+it does **not** run the six-service real-model acceptance/measurement suite.
+Current public-checkout verification is recorded separately in the
+[presentation verification record](presentation-verification.md).
+
 Raw measurements separate asset acceptance, inspection creation, queue wait,
 worker HTTP/JSON time, Python decode/model/postprocess, commit, API-observed
 completion, and actual browser visibility. API observation polls every 100 ms;
@@ -183,7 +213,9 @@ integrated application. Scores are uncalibrated; false alarms, missed defects,
 weak rare-class support and domain shift remain. Human corrections are illustrative
 and require expertise. There is no online learning or retraining from review data.
 
-Project code licensing does not replace the PCB-IND CC BY 4.0 attribution or the
-release's pretrained-model/COCO terms. Consult the DL project's `docs/THIRD_PARTY.md`
-and model card. This portfolio is unaffiliated with Matroid and is not validated
+No whole-repository license has been selected for this application. Dataset and
+model terms remain separate: consult the public DL
+[third-party notices](https://github.com/ThePhysic/visual-inspection-dl/blob/399a8da7407689a0ffd7dc9bde074600dd8dcbcc/docs/THIRD_PARTY.md)
+and [model card](https://github.com/ThePhysic/visual-inspection-dl/blob/399a8da7407689a0ffd7dc9bde074600dd8dcbcc/docs/MODEL_CARD.md).
+This portfolio is unaffiliated with Matroid and is not validated
 for production manufacturing inspection.

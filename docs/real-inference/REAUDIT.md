@@ -1,5 +1,13 @@
 # Post-delivery adversarial re-audit
 
+Publication note: this audit describes the original private delivery and v1.1
+release. The application has since become public. Current instructions use the
+already-public original DL revision with identical serving/build inputs and
+release bytes; they do not require access to the private paired DL repository.
+The v1.1 tag and evidence below are preserved. See the
+[current setup](../real-pcb-inference.md) and
+[public-checkout verification](../presentation-verification.md).
+
 The user requested a second, deeper review of delivery `7bffb3a` after publication.
 Both private repositories and their original CI runs were still clean/passing.
 Passing those checks did not cover all relevant edge cases: this audit reproduced
