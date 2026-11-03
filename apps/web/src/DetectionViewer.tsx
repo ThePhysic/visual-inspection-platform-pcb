@@ -28,7 +28,7 @@ export default function DetectionViewer({ asset, result }: { asset?: AssetRespon
     </div>
     <aside className="detections" aria-labelledby="detections-heading">
       <h3 id="detections-heading">{result.detections.length} {result.detections.length === 1 ? 'detection' : 'detections'}</h3>
-      {!result.detections.length && <p>No objects detected. This is a valid completed result from the simulated model.</p>}
+      {!result.detections.length && <p>{result.simulated ? 'No objects detected. This is a valid completed result from the simulated model.' : 'No predictions above the selected operating threshold. This is a valid completed result; missed defects remain possible.'}</p>}
       <ol>
         {result.detections.map((detection, index) => <li key={detection.id}>
           <button type="button" className="detection-item" aria-pressed={selected === detection.id}
@@ -39,7 +39,7 @@ export default function DetectionViewer({ asset, result }: { asset?: AssetRespon
           </button>
         </li>)}
       </ol>
-      {result.detections.length > 0 && <p className="muted">Select a detection to emphasize its box. Simulated confidence scores do not measure real model accuracy.</p>}
+      {result.detections.length > 0 && <p className="muted">Select a detection to emphasize its box. {result.simulated ? 'Simulated confidence scores do not measure real model accuracy.' : 'Confidence scores are not calibrated probabilities of correctness.'}</p>}
     </aside>
   </div>;
 }

@@ -6,6 +6,8 @@ import {
   ApiErrorResponseSchema,
   HEALTH_PATH,
   HealthResponseSchema,
+  INFERENCE_MODES_PATH,
+  InferenceModesSchema,
   INSPECTIONS_PATH,
   type ApiErrorResponse,
   type HealthResponse,
@@ -23,6 +25,7 @@ export function buildApp(options: Pick<FastifyServerOptions, 'logger'> & {
   notifyAccepted?: (inspectionId: string) => void;
   metrics?: OperationalMetrics;
   allowedHosts?: readonly string[];
+  trainedInference?: { enabled: boolean; ready: () => Promise<boolean> };
 } = {}) {
   const app = Fastify({
     logger: false,
@@ -81,6 +84,19 @@ export function buildApp(options: Pick<FastifyServerOptions, 'logger'> & {
   app.register(multipart, { limits: multipartLimits });
   registerAssetRoutes(app, options.assets, options.dispatchQueue);
   registerInspectionRoutes(app, options.inspections, options.notifyAccepted);
+
+  app.get(INFERENCE_MODES_PATH, {
+    schema: { querystring: Type.Object({}, { additionalProperties: false }),
+      response: { 200: InferenceModesSchema, 400: ApiErrorResponseSchema } },
+  }, async () => {
+    const enabled = options.trainedInference?.enabled === true;
+    // Availability is an observation, not part of durable acceptance or API health.
+    const available = enabled && await options.trainedInference!.ready().catch(() => false);
+    return { trained: { enabled, available,
+      ...(!available ? { reason: enabled
+        ? 'The pinned trained PCB model is not ready. Check the inference service and retry the availability check.'
+        : 'Trained PCB inference is not enabled. Start the optional real-model stack.' } : {}) } };
+  });
 
   app.setNotFoundHandler((request, reply) => {
     const response: ApiErrorResponse = {

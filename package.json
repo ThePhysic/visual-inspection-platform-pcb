@@ -20,6 +20,7 @@
     "dev:worker": "pnpm --filter @vip/backend... build && pnpm --filter @vip/worker dev",
     "test:e2e": "pnpm build && pnpm --filter @vip/web test:e2e",
     "test:reliability": "node infra/docker/test-reliability.mjs",
+    "test:real": "node infra/real/run.mjs",
     "test:ci:integration": "node infra/docker/test-native.mjs",
     "storage:maintenance": "node infra/docker/storage-maintenance.mjs",
     "benchmark": "node infra/benchmark/run.mjs",

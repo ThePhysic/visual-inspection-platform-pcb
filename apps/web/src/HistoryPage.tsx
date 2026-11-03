@@ -33,7 +33,7 @@ export default function HistoryPage() {
   const badCursor = history.error instanceof ApiClientError && ['INVALID_CURSOR', 'INVALID_HISTORY_QUERY'].includes(history.error.code ?? '');
   return <>
     <h1>Inspection history</h1>
-    <p>Reopen inspections and saved reviews. Statuses reflect the last fetch; refresh for newer activity. Inference is simulated.</p>
+    <p>Reopen inspections and saved reviews. Statuses reflect the last fetch; refresh for newer activity. Each inspection keeps its original selected model.</p>
     <div className="history-tools">
       <div><label htmlFor="history-status">Inspection status</label>
         <select id="history-status" value={status ?? 'all'} onChange={event => {
@@ -70,6 +70,7 @@ export default function HistoryPage() {
               Inspection · <time dateTime={item.createdAt}>{new Date(item.createdAt).toLocaleString()}</time>
             </Link></h2>
             <p><strong>{statusLabels[item.status]}</strong> · Updated <time dateTime={item.updatedAt}>{new Date(item.updatedAt).toLocaleString()}</time></p>
+            {item.requested && <p><span className="badge">{item.requested.providerId === 'mock' ? 'Simulated demo' : 'Trained model'}</span> · {item.requested.modelVersion}</p>}
             {item.status === 'completed' && <p>{item.detectionCount} original {item.detectionCount === 1 ? 'detection' : 'detections'} · {item.hasReview ? `Saved review · revision ${item.reviewRevision}` : 'No saved review'}</p>}
             {item.status === 'failed' && <p>{item.failure.message}</p>}
             {item.retriedFrom && <p>Retry attempt · <Link to={`/inspections/${item.retriedFrom}`} state={{ historyStatus: status ?? 'all' }}>View previous attempt</Link></p>}

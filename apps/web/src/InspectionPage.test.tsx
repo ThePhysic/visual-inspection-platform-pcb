@@ -27,7 +27,7 @@ describe('inspection routes and polling', () => {
     expect(screen.getByRole('heading', { name: 'Processing' })).toBeVisible();
     await tick(INSPECTION_POLL_MS + 5);
     expect(screen.getByRole('heading', { name: 'Completed' })).toBeVisible();
-    expect(screen.getByText('Simulated inference')).toBeVisible();
+    expect(screen.getByText('Simulated demo')).toBeVisible();
     expect(screen.getByText('mock-detector · 1.0.0')).toBeVisible();
     await tick(INSPECTION_POLL_MS * 4); expect(getCalls(fetchMock)).toBe(3);
   });

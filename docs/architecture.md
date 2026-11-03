@@ -1,8 +1,9 @@
 # Implemented architecture
 
-This is a single-host, trusted local/demo application. The inference adapter is a
-deterministic simulator, not a trained detector. The diagram contains only current
-components; cloud, external inference, camera and orchestration services are absent.
+This is a single-host, trusted local/demo application. The default inference
+adapter is a deterministic simulator. The optional trained PCB adapter calls the
+sibling DL project's private FastAPI service; see [real PCB inference](real-pcb-inference.md).
+Cloud and camera services are absent. Both modes share the existing queue and database.
 
 ```mermaid
 flowchart LR
@@ -15,6 +16,7 @@ flowchart LR
   Redis --> Worker["Independent Node worker<br/>concurrency 1"]
   Worker -->|conditional claim / result commit| Mongo
   Worker --> Mock["InferenceProvider<br/>deterministic simulated adapter"]
+  Worker -->|optional private HTTP| DL["Sibling DL repository<br/>pinned CPU trained release"]
   API -->|publish / serve| Images["Canonical image volume"]
   Worker -->|read-only| Images
 ```

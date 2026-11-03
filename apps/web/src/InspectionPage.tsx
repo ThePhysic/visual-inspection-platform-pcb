@@ -37,11 +37,12 @@ export default function InspectionPage() {
         {record && <>
           {record.retriedFrom && <p className="notice">This is a new retry attempt. <Link to={`/inspections/${record.retriedFrom}`} state={location.state}>View previous attempt</Link></p>}
           <section className="status-panel" aria-labelledby="status-heading">
+            {record.status !== 'completed' && <p className="badge">{record.requested.providerId === 'mock' ? 'Simulated demo' : 'Trained model'}</p>}
             <div role="status">
               <h2 id="status-heading">{record.status === 'queued' ? 'Queued' : record.status === 'processing' ? 'Processing' : record.status === 'completed' ? 'Completed' : 'Inspection failed'}</h2>
               {record.status === 'queued' && <p>Your inspection is saved and waiting for the worker. This page checks for updates automatically.</p>}
-              {record.status === 'processing' && <p>The worker is inspecting your image with the simulated model. Results will appear automatically.</p>}
-              {record.status === 'completed' && <p>Simulated inference is complete. Original predictions are read-only; corrections can be reviewed and saved separately.</p>}
+              {record.status === 'processing' && <p>The worker is inspecting your image with {record.requested.providerId === 'mock' ? 'the simulated model' : 'the trained PCB model'}. Results will appear automatically.</p>}
+              {record.status === 'completed' && <p>{record.result.simulated ? 'Simulated inference' : 'Trained PCB inference'} is complete. Original predictions are read-only; corrections can be reviewed and saved separately.</p>}
             </div>
             {record.status === 'failed' && <>
               <div role="alert"><p>{record.failure.message}</p><p>Failure code: <code>{record.failure.code}</code>.</p></div>
@@ -52,12 +53,17 @@ export default function InspectionPage() {
           </section>
           {record.status === 'completed' && <>
             <section aria-labelledby="results-heading">
-              <div className="result-heading"><h2 id="results-heading">Inspection results</h2><span className="badge">{record.result.simulated ? 'Simulated inference' : 'Inference result'}</span></div>
+              <div className="result-heading"><h2 id="results-heading">Inspection results</h2><span className="badge">{record.result.simulated ? 'Simulated demo' : 'Trained model'}</span></div>
               <dl className="model-details">
                 <div><dt>Provider</dt><dd>{record.result.providerId}</dd></div>
                 <div><dt>Model</dt><dd>{record.result.modelId} · {record.result.modelVersion}</dd></div>
                 <div><dt>Taxonomy</dt><dd>{record.result.taxonomyVersion}</dd></div>
+                {!record.result.simulated && <div><dt>Release digest</dt><dd><details><summary><code>{record.result.artifactDigest.slice(0, 12)}…</code></summary><code>{record.result.artifactDigest}</code></details></dd></div>}
+                <div><dt>Worker processing</dt><dd>{record.processingDurationMs.toFixed(1)} ms</dd></div>
+                {!record.result.simulated && <div><dt>Worker to model HTTP</dt><dd>{record.result.durationMs.toFixed(1)} ms (transfer and response decoding included)</dd></div>}
+                {!record.result.simulated && <div><dt>Python request timing</dt><dd>{record.result.providerTimingMs.requestTotal.toFixed(1)} ms (service only)</dd></div>}
               </dl>
+              {!record.result.simulated && <aside className="notice"><p>Predictions apply to this PCB candidate patch, not a complete-board diagnosis. Confidence scores are not calibrated probabilities of correctness. False alarms and missed defects remain; review each prediction and add missed defects.</p></aside>}
               {asset.isPending && <p role="status">Loading canonical image metadata…</p>}
               {asset.error && <div role="alert"><p>Image metadata could not be refreshed. Predictions remain available.</p><button type="button" disabled={asset.isFetching} onClick={() => { void asset.refetch({ cancelRefetch: false }); }}>Retry image metadata</button></div>}
               {canEdit(record.result) ? <ReviewWorkspace key={record.id} inspectionId={record.id} asset={asset.data} result={record.result} review={record.review} reviewWriteSequence={record.reviewWriteSequence} />

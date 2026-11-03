@@ -2,9 +2,14 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 import DetectionViewer from './DetectionViewer';
-import { asset, result } from './test/fixtures';
+import { asset, pcbResult, result } from './test/fixtures';
 
 describe('read-only canonical image viewer', () => {
+  it('presents an empty trained response as successful without simulated wording', () => {
+    render(<DetectionViewer asset={{ ...asset, width: 300, height: 300 }} result={{ ...pcbResult, detections: [] }} />);
+    expect(screen.getByText(/No predictions above the selected operating threshold/)).toHaveTextContent('valid completed result');
+    expect(screen.queryByText(/simulated model/)).not.toBeInTheDocument();
+  });
   it.each([[640, 320], [320, 640]])('uses normalized geometry for %i × %i images', (width, height) => {
     render(<DetectionViewer asset={{ ...asset, width, height }} result={result} />);
     const img = screen.getByRole('img', { name: 'Canonical uploaded image' });

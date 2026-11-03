@@ -3,6 +3,7 @@ import {
   readBackendConfig, connectDatabase, createAssetModel, createInspectionModel,
   LocalImageStorage, MockInferenceProvider, startInspectionWorker,
   checkDatabase, EXECUTION_POLICY, OperationalMetrics, operatorPort, startOperatorServer,
+  readInferenceConfig, PcbInferenceProvider, checkTrainedModelReadiness,
 } from '@vip/backend';
 import { startHealthFile } from './health.js';
 
@@ -10,6 +11,7 @@ const logger = pino({ name: 'inspection-worker' });
 
 async function main() {
   const config = readBackendConfig(process.env);
+  const inference = readInferenceConfig(process.env);
   const operationsPort = operatorPort(process.env.WORKER_OPERATOR_PORT);
   const metrics = new OperationalMetrics();
   const connection = await connectDatabase(config.mongodbUri);
@@ -22,6 +24,9 @@ async function main() {
   const consumer = startInspectionWorker(config.redisUrl, {
     inspections, assets, storage: new LocalImageStorage(config.storageDirectory),
     provider: new MockInferenceProvider(), logger, metrics,
+    ...(inference.enabled && inference.url ? {
+      providers: { 'visual-inspection-dl': new PcbInferenceProvider({ url: inference.url, timeoutMs: inference.timeoutMs }) },
+    } : {}),
   });
   const active = new Map<string, number>();
   let lastCompletedAt: number | null = null;
@@ -30,7 +35,9 @@ async function main() {
   consumer.worker.on('failed', job => { if (job?.id) active.delete(job.id); });
   const health = process.env.WORKER_HEALTH_FILE ? startHealthFile(process.env.WORKER_HEALTH_FILE, async () => {
     const mongodb = await checkDatabase(connection).then(() => true, () => false);
+    const trainedModel = inference.enabled && inference.url ? await checkTrainedModelReadiness(inference.url) : undefined;
     return { mongodb, redis: consumer.isConnected(), running: consumer.worker.isRunning() && !consumer.worker.isPaused(),
+      ...(trainedModel !== undefined ? { trainedModelAvailable: trainedModel } : {}),
       oldestActiveAt: active.size ? Math.min(...active.values()) : null, lastCompletedAt };
   }, EXECUTION_POLICY.leaseMs + 10_000) : undefined;
   let closing = false;
@@ -50,7 +57,9 @@ async function main() {
     await consumer.worker.waitUntilReady();
   }
   catch (error) { await shutdown('startup-failure'); throw error; }
-  if (!closing) logger.info('Inspection worker ready; inference is simulated');
+  if (!closing) logger.info(inference.enabled
+    ? 'Inspection worker ready; explicit mock and trained PCB providers configured'
+    : 'Inspection worker ready; inference is simulated');
 }
 
 main().catch(() => { logger.error('Worker startup failed; check dependency configuration'); process.exitCode = 1; });

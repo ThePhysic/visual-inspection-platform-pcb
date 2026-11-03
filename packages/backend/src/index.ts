@@ -5,6 +5,7 @@ export * from './config.js';
 export * from './inspection-model.js';
 export * from './acceptance.js';
 export * from './provider.js';
+export * from './pcb-provider.js';
 export * from './queue.js';
 export * from './execution.js';
 export * from './reconciliation.js';

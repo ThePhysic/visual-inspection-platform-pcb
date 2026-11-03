@@ -1,7 +1,7 @@
 import { Counter, Histogram, Registry } from '@prometheus-io/client';
 
 const routes = new Set([
-  '/api/v1/health', '/api/v1/ready', '/api/v1/assets', '/api/v1/assets/:id', '/api/v1/assets/:id/content',
+  '/api/v1/health', '/api/v1/ready', '/api/v1/inference-modes', '/api/v1/assets', '/api/v1/assets/:id', '/api/v1/assets/:id/content',
   '/api/v1/inspections', '/api/v1/inspections/:id', '/api/v1/inspections/:id/review', '/api/v1/inspections/:id/retry',
 ]);
 const failureCodes = new Set(['PROVIDER_UNAVAILABLE', 'PROVIDER_TIMEOUT', 'INFERENCE_FAILED', 'INVALID_INFERENCE_RESULT',

@@ -1,8 +1,8 @@
-import { MOCK_LABELS, MAX_DETECTIONS, REVIEW_TAXONOMY_VERSION, isInferenceResult, validReviewAnnotations, type PersistedReview, type SaveReviewRequest, type InferenceResult } from '@vip/contracts';
+import { MOCK_LABELS, PCB_LABELS, labelsForTaxonomy, MAX_DETECTIONS, isInferenceResult, validReviewAnnotations, type PersistedReview, type SaveReviewRequest, type InferenceResult } from '@vip/contracts';
 import { sameBox, validBox, type Box } from './geometry';
 
 export { REVIEW_TAXONOMY_VERSION } from '@vip/contracts';
-export type ClassId = typeof MOCK_LABELS[number]['classId'];
+export type ClassId = typeof MOCK_LABELS[number]['classId'] | typeof PCB_LABELS[number]['classId'];
 interface AnnotationBase {
   readonly id: string;
   readonly classId: ClassId;
@@ -15,7 +15,7 @@ export type ReviewAnnotation = AnnotationBase & (
 );
 export interface ReviewDraft {
   readonly draftVersion: 'v1';
-  readonly taxonomyVersion: typeof REVIEW_TAXONOMY_VERSION;
+  readonly taxonomyVersion: SaveReviewRequest['taxonomyVersion'];
   readonly inspectionId: string;
   readonly annotations: readonly ReviewAnnotation[];
 }
@@ -37,19 +37,20 @@ export type ReviewAction =
   | { type: 'reset' };
 
 export function labelFor(classId: ClassId) {
-  const entry = MOCK_LABELS.find(label => label.classId === classId);
+  const entry = [...MOCK_LABELS, ...PCB_LABELS].find(label => label.classId === classId);
   if (!entry) throw new Error('Unknown annotation class.');
   return entry.label;
 }
 export function canEdit(result: InferenceResult) {
-  return isInferenceResult(result) && result.taxonomyVersion === REVIEW_TAXONOMY_VERSION
-    && result.detections.every(detection => MOCK_LABELS.some(entry => entry.classId === detection.classId && entry.label === detection.label));
+  const labels = labelsForTaxonomy(result.taxonomyVersion);
+  return isInferenceResult(result) && Boolean(labels)
+    && result.detections.every(detection => labels!.some(entry => entry.classId === detection.classId && entry.label === detection.label));
 }
 export function createReviewState({ inspectionId, result, review }: { inspectionId: string; result: InferenceResult; review?: PersistedReview | undefined }): ReviewState {
   if (!canEdit(result)) throw new Error('Unsupported review taxonomy.');
-  if (review && !validReviewAnnotations(review.annotations, result)) throw new Error('Invalid saved review.');
+  if (review && (review.taxonomyVersion !== result.taxonomyVersion || !validReviewAnnotations(review.annotations, result))) throw new Error('Invalid saved review.');
   const draft: ReviewDraft = {
-    draftVersion: 'v1', taxonomyVersion: REVIEW_TAXONOMY_VERSION, inspectionId,
+    draftVersion: 'v1', taxonomyVersion: result.taxonomyVersion as SaveReviewRequest['taxonomyVersion'], inspectionId,
     annotations: review ? review.annotations.map((annotation): ReviewAnnotation => {
       const common = { id: annotation.id, classId: annotation.classId, boundingBox: { ...annotation.boundingBox }, label: labelFor(annotation.classId) };
       return annotation.origin === 'manual' ? { ...common, origin: 'manual' }
@@ -82,7 +83,8 @@ export function reviewReducer(state: ReviewState, action: ReviewAction): ReviewS
   if (action.type === 'mode') return { ...state, mode: action.mode };
   if (action.type === 'select') return { ...state, selectedId: state.draft.annotations.some(item => item.id === action.id) ? action.id : undefined, mode: 'select' };
   if (action.type === 'add') {
-    if (state.draft.annotations.length >= MAX_DETECTIONS || !validBox(action.box) || !action.id || state.draft.annotations.some(item => item.id === action.id)) return state;
+    if (!labelsForTaxonomy(state.draft.taxonomyVersion)?.some(entry => entry.classId === action.classId)
+      || state.draft.annotations.length >= MAX_DETECTIONS || !validBox(action.box) || !action.id || state.draft.annotations.some(item => item.id === action.id)) return state;
     const annotation: ReviewAnnotation = { id: action.id, origin: 'manual', classId: action.classId, label: labelFor(action.classId), boundingBox: { ...action.box } };
     return { ...state, draft: { ...state.draft, annotations: [...state.draft.annotations, annotation] }, selectedId: action.id, mode: 'select' };
   }
@@ -94,7 +96,9 @@ export function reviewReducer(state: ReviewState, action: ReviewAction): ReviewS
   }
   const annotations = state.draft.annotations.map(annotation => {
     if (annotation.id !== action.id) return annotation;
-    if (action.type === 'class') return annotation.classId === action.classId ? annotation : { ...annotation, classId: action.classId, label: labelFor(action.classId) };
+    if (action.type === 'class') return annotation.classId === action.classId
+      || !labelsForTaxonomy(state.draft.taxonomyVersion)?.some(entry => entry.classId === action.classId)
+      ? annotation : { ...annotation, classId: action.classId, label: labelFor(action.classId) };
     if (action.type === 'box') return !validBox(action.box) || sameBox(annotation.boundingBox, action.box) ? annotation : { ...annotation, boundingBox: { ...action.box } };
     if (action.type === 'disposition' && annotation.origin === 'prediction') return annotation.disposition === action.disposition ? annotation : { ...annotation, disposition: action.disposition };
     return annotation;

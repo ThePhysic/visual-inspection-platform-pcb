@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { Value } from 'typebox/value';
 import {
-  SaveReviewRequestSchema, canonicalReviewAnnotations, isInferenceResult, isPersistedReview,
+  SaveReviewRequestSchema, canonicalReviewAnnotations, isResultForConfiguration, isReviewForResult,
   validReviewAnnotations, type SaveReviewRequest, type PersistedReview, type SavedReviewResponse,
 } from '@vip/contracts';
 import { type InspectionModel, type InspectionRecord } from './inspection-model.js';
@@ -11,8 +11,8 @@ export const REVIEW_RECEIPT_LIMIT = 32;
 function conflict(): never { throw new ApiError(409, 'REVIEW_REVISION_CONFLICT', 'A newer review exists. Load the latest saved review before saving.'); }
 function currentReview(record: InspectionRecord): PersistedReview | undefined {
   if (record.status !== 'completed') throw new ApiError(409, 'INSPECTION_NOT_COMPLETED', 'Only completed inspections can be reviewed.');
-  if (!isInferenceResult(record.result) || (record.review !== undefined
-    && (!isPersistedReview(record.review) || !validReviewAnnotations(record.review.annotations, record.result)))) {
+  if (!isResultForConfiguration(record.result, record.requested) || (record.review !== undefined
+    && !isReviewForResult(record.review, record.result))) {
     throw new ApiError(503, 'DATABASE_FAILURE', 'The inspection is unavailable for review.');
   }
   return record.review as PersistedReview | undefined;
@@ -33,7 +33,7 @@ export async function saveReview(model: InspectionModel, inspectionId: string, r
     const record = await model.findById(inspectionId).lean().exec();
     if (!record) throw new ApiError(404, 'INSPECTION_NOT_FOUND', 'Inspection not found.');
     const previous = currentReview(record);
-    if (!validReviewAnnotations(request.annotations, record.result)) {
+    if (request.taxonomyVersion !== record.result.taxonomyVersion || !validReviewAnnotations(request.annotations, record.result)) {
       throw new ApiError(400, 'INVALID_REVIEW', 'Review annotations must use the supported taxonomy, valid boxes, and exactly one disposition per original prediction.');
     }
     const annotations = canonicalReviewAnnotations(request.annotations);
@@ -47,7 +47,7 @@ export async function saveReview(model: InspectionModel, inspectionId: string, r
     const unchanged = previous && JSON.stringify(canonicalReviewAnnotations(previous.annotations)) === JSON.stringify(annotations);
     const now = new Date();
     const review: PersistedReview = unchanged ? previous : {
-      contractVersion: 'v1', taxonomyVersion: 'mock-v1', revision: (previous?.revision ?? 0) + 1,
+      contractVersion: 'v1', taxonomyVersion: request.taxonomyVersion, revision: (previous?.revision ?? 0) + 1,
       savedAt: now.toISOString(), annotations: request.annotations,
     };
     if (!Number.isSafeInteger(review.revision) || request.expectedWriteSequence === Number.MAX_SAFE_INTEGER) conflict();

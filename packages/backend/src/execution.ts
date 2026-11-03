@@ -3,8 +3,8 @@ import { addAbortSignal } from 'node:stream';
 import { Value } from 'typebox/value';
 import { Worker, UnrecoverableError, type ConnectionOptions, type Job } from 'bullmq';
 import {
-  InspectionJobSchema, ProviderConfigurationSchema, MOCK_LABELS,
-  isInferenceResult, MAX_IMAGE_PIXELS, type InspectionJob, type InspectionFailure,
+  InspectionJobSchema, ProviderConfigurationSchema,
+  isResultForConfiguration, MAX_IMAGE_PIXELS, type InspectionJob, type InspectionFailure, type ProviderConfiguration,
 } from '@vip/contracts';
 import { type AssetModel } from './database.js';
 import { type InspectionModel } from './inspection-model.js';
@@ -83,6 +83,7 @@ export interface ExecutionDependencies {
   assets: AssetModel;
   storage: LocalImageStorage;
   provider: InferenceProvider;
+  providers?: Partial<Record<ProviderConfiguration['providerId'], InferenceProvider>>;
   logger: PipelineLogger;
   policy?: ExecutionPolicy;
   shutdown?: AbortSignal;
@@ -119,6 +120,13 @@ export function createInspectionProcessor(dependencies: ExecutionDependencies) {
     try {
       const context = { requestId: record.requestId, inspectionId: record._id.toString(), jobId: job.id,
         assetId: record.assetId.toString(), dispatchGeneration: job.data.generation,
+        providerId: record.requested?.providerId === 'mock' ? 'mock'
+          : record.requested?.providerId === 'visual-inspection-dl' ? 'visual-inspection-dl' : 'invalid',
+        modelVersion: record.requested?.modelVersion === '1.0.0' ? '1.0.0'
+          : record.requested?.modelVersion === 'pcb-ind-ssdlite-v1' ? 'pcb-ind-ssdlite-v1' : 'invalid',
+        backend: record.requested?.providerId === 'mock' ? 'mock'
+          : record.requested?.providerId === 'visual-inspection-dl' ? 'trained' : 'invalid',
+        queueWaitMs: Math.max(0, now.getTime() - record.createdAt.getTime()),
         ...(record.retriedFrom ? { retriedFrom: record.retriedFrom.toString() } : {}), attemptId, attemptCount: record.attemptCount };
       logger.info({ ...context, from: 'queued', to: 'processing' }, 'Inspection claimed');
       const owned = () => ({ _id: record._id, status: 'processing' as const, attemptId,
@@ -126,9 +134,15 @@ export function createInspectionProcessor(dependencies: ExecutionDependencies) {
       let result: unknown;
       try {
         result = await withDeadline(async signal => {
-          if (!Value.Check(ProviderConfigurationSchema, record.requested)) throw new InferenceError('INVALID_INSPECTION', false);
+          const requested: unknown = record.requested;
+          if (!Value.Check(ProviderConfigurationSchema, requested)) throw new InferenceError('INVALID_INSPECTION', false);
           const image = await loadImage(assets, storage, record.assetId.toString(), signal);
+          if (requested.providerId === 'visual-inspection-dl'
+            && (record.candidatePatch !== true || image.width !== 300 || image.height !== 300)) throw new InferenceError('INVALID_ASSET', false, 'invalid_image');
           signal.throwIfAborted();
+          const selected = requested.providerId === 'mock' ? dependencies.providers?.mock ?? provider
+            : dependencies.providers?.[requested.providerId];
+          if (!selected) throw new InferenceError('PROVIDER_UNAVAILABLE', true, 'unavailable');
           const started = performance.now();
           let observed = false;
           const observe = (state: 'returned' | 'error' | 'cancelled') => {
@@ -139,14 +153,11 @@ export function createInspectionProcessor(dependencies: ExecutionDependencies) {
           };
           const cancelled = () => { observe('cancelled'); };
           signal.addEventListener('abort', cancelled, { once: true });
-          try { const output = await provider.infer(image, signal); observe('returned'); return output; }
+          try { const output = await selected.infer(image, signal); observe('returned'); return output; }
           catch (error) { observe('error'); throw error; }
           finally { signal.removeEventListener('abort', cancelled); }
         }, policy.attemptTimeoutMs, dependencies.shutdown);
-        if (!isInferenceResult(result) || result.providerId !== record.requested.providerId
-          || result.modelId !== record.requested.modelId || result.modelVersion !== record.requested.modelVersion
-          || result.taxonomyVersion !== 'mock-v1' || !result.simulated
-          || result.detections.some(detection => !MOCK_LABELS.some(label => label.classId === detection.classId && label.label === detection.label))) {
+        if (!isResultForConfiguration(result, record.requested)) {
           throw new InferenceError('INVALID_INFERENCE_RESULT', false);
         }
         result = structuredClone(result);
@@ -164,6 +175,7 @@ export function createInspectionProcessor(dependencies: ExecutionDependencies) {
         metrics?.failure(retry ? 'retry' : 'terminal', failure.code);
         if (!retry) metrics?.terminal('failed', date.getTime() - record.createdAt.getTime());
         logger.warn({ ...context, from: 'processing', to: retry ? 'queued' : 'failed', failureCode: failure.code,
+          providerOutcome: failure.providerOutcome,
           providerDurationMs, attemptDurationMs: Math.max(0, performance.now() - attemptStarted),
           processingDurationMs: Math.max(0, date.getTime() - now.getTime()) },
           retry ? 'Inspection retry scheduled' : 'Inspection failed');
@@ -175,6 +187,7 @@ export function createInspectionProcessor(dependencies: ExecutionDependencies) {
       // must never turn an already committed result into a failure or retry.
       const finished = new Date();
       const processingDurationMs = Math.max(0, finished.getTime() - now.getTime());
+      const commitStarted = performance.now();
       try {
         const changed = await inspections.updateOne({ ...owned(), result: { $exists: false } }, {
           $set: { status: 'completed', updatedAt: finished, completedAt: finished, result, processingDurationMs },
@@ -184,6 +197,7 @@ export function createInspectionProcessor(dependencies: ExecutionDependencies) {
         outcome = 'completed';
         metrics?.terminal('completed', finished.getTime() - record.createdAt.getTime());
         logger.info({ ...context, from: 'processing', to: 'completed', processingDurationMs, providerDurationMs,
+          commitDurationMs: Math.max(0, performance.now() - commitStarted),
           attemptDurationMs: Math.max(0, performance.now() - attemptStarted) }, 'Inspection completed');
       } catch {
         logger.error({ ...context, failureCode: 'DATABASE_UNAVAILABLE' }, 'Inspection result persistence unavailable');

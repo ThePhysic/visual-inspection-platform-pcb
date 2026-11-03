@@ -2,7 +2,7 @@ import { Types } from 'mongoose';
 import { Type, type Static } from 'typebox';
 import { Value } from 'typebox/value';
 import { DEFAULT_HISTORY_PAGE_SIZE, HistoryQuerySchema, InspectionStatusSchema, isInspectionHistoryResponse,
-  type HistoryQuery, type InspectionHistoryResponse } from '@vip/contracts';
+  type HistoryQuery, type InspectionHistoryResponse, type ProviderConfiguration } from '@vip/contracts';
 import { type InspectionModel } from './inspection-model.js';
 import { ApiError, databaseFailure } from './errors.js';
 
@@ -39,10 +39,10 @@ export async function inspectionHistory(model: InspectionModel, query: HistoryQu
     const records = await model.aggregate<{
       _id: Types.ObjectId; assetId: Types.ObjectId; createdAt: Date; updatedAt: Date;
       status: string; retriedFrom?: Types.ObjectId; detectionCount?: number;
-      reviewRevision?: number; failure?: unknown;
+      reviewRevision?: number; failure?: unknown; requested?: ProviderConfiguration;
     }>([
       { $match: match }, { $sort: { createdAt: -1, _id: -1 } }, { $limit: limit + 1 },
-      { $project: { _id: 1, assetId: 1, createdAt: 1, updatedAt: 1, status: 1, retriedFrom: 1,
+      { $project: { _id: 1, assetId: 1, createdAt: 1, updatedAt: 1, status: 1, retriedFrom: 1, requested: 1,
         reviewRevision: '$review.revision',
         detectionCount: { $cond: [{ $eq: ['$status', 'completed'] }, { $size: '$result.detections' }, '$$REMOVE'] },
         failure: { $cond: [{ $eq: ['$status', 'failed'] }, { code: '$failure.code', message: '$failure.message' }, '$$REMOVE'] },
@@ -53,6 +53,7 @@ export async function inspectionHistory(model: InspectionModel, query: HistoryQu
       createdAt: record.createdAt.toISOString(), updatedAt: record.updatedAt.toISOString(),
       previewUrl: `/api/v1/assets/${record.assetId.toString()}/content`,
       hasReview: record.status === 'completed' && record.reviewRevision !== undefined,
+      ...(record.requested ? { requested: record.requested } : {}),
       ...(record.retriedFrom ? { retriedFrom: record.retriedFrom.toString() } : {}),
       ...(record.status === 'completed' ? { detectionCount: record.detectionCount,
         ...(record.reviewRevision !== undefined ? { reviewRevision: record.reviewRevision } : {}) } : {}),

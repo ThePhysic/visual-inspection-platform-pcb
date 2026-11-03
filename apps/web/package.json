@@ -9,6 +9,7 @@
     "typecheck": "tsc --noEmit && tsc --project tsconfig.node.json",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:trained": "playwright test --config playwright.trained.config.ts",
     "build": "tsc --noEmit && tsc --project tsconfig.node.json && vite build"
   },
   "dependencies": {

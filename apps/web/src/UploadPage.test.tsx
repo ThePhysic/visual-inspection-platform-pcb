@@ -1,10 +1,10 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
-import { MAX_UPLOAD_BYTES } from '@vip/contracts';
+import { MAX_UPLOAD_BYTES, PCB_CONFIGURATION } from '@vip/contracts';
 import { onlineManager } from '@tanstack/react-query';
 import { renderApp } from './test/render';
-import { accepted, apiError, asset, completed } from './test/fixtures';
+import { accepted, apiError, asset, completed, pcbCompleted } from './test/fixtures';
 
 const image = () => new File(['image bytes'], 'panel.png', { type: 'image/png' });
 function server() {
@@ -169,5 +169,82 @@ describe('upload and inspection submission', () => {
     expect(fetchMock.mock.calls.filter(([path]) => path === '/api/v1/inspections')).toHaveLength(1);
     finish(Response.json(accepted, { status: 202 }));
     expect(await screen.findByRole('heading', { name: 'Completed' })).toBeVisible();
+  });
+});
+
+describe('explicit trained PCB mode', () => {
+  function trainedServer(dimensions = 300) {
+    const fallback = server().getMockImplementation()!;
+    return vi.fn<typeof fetch>(async (path, options) => {
+      if (path === '/api/v1/inference-modes') return Response.json({ trained: { enabled: true, available: true } });
+      if (path === '/api/v1/assets' && options?.method === 'POST') return Response.json({ ...asset, width: dimensions, height: dimensions }, { status: 201 });
+      if (path === accepted.url) return Response.json(pcbCompleted);
+      return fallback(path, options);
+    });
+  }
+  async function selectTrained(user: ReturnType<typeof userEvent.setup>) {
+    await user.click(screen.getByRole('button', { name: 'Check trained model availability' }));
+    await waitFor(() => { expect(screen.getByRole('radio', { name: 'Trained PCB detector' })).toBeEnabled(); });
+    await user.click(screen.getByRole('radio', { name: 'Trained PCB detector' }));
+  }
+  it('keeps trained mode unavailable until readiness is verified and requires an explicit candidate-patch confirmation', async () => {
+    const fetchMock = trainedServer(); vi.stubGlobal('fetch', fetchMock);
+    const user = userEvent.setup(); renderApp();
+    expect(screen.getByRole('radio', { name: 'Simulated demo' })).toBeChecked();
+    expect(screen.getByRole('radio', { name: 'Trained PCB detector' })).toBeDisabled();
+    expect(fetchMock).not.toHaveBeenCalled();
+    await selectTrained(user);
+    await user.upload(screen.getByLabelText('Image file'), image());
+    expect(screen.getByRole('button', { name: 'Upload and inspect' })).toBeDisabled();
+    await user.click(screen.getByRole('checkbox', { name: /I confirm this is a real 300/ }));
+    await user.click(screen.getByRole('button', { name: 'Upload and inspect' }));
+    expect(await screen.findByRole('heading', { name: 'Completed' })).toBeVisible();
+    expect(screen.getByText('Trained model', { exact: true })).toBeVisible();
+    const request = fetchMock.mock.calls.find(([path]) => path === '/api/v1/inspections')!;
+    expect(JSON.parse(request[1]!.body as string)).toEqual({ assetId: asset.id, provider: PCB_CONFIGURATION, candidatePatch: true });
+  });
+  it('prevents non-300×300 canonical images from reaching trained inference', async () => {
+    const fetchMock = trainedServer(600); vi.stubGlobal('fetch', fetchMock);
+    const user = userEvent.setup(); renderApp(); await selectTrained(user);
+    await user.click(screen.getByRole('checkbox', { name: /I confirm this is a real 300/ }));
+    await user.upload(screen.getByLabelText('Image file'), image());
+    await user.click(screen.getByRole('button', { name: 'Upload and inspect' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('canonical image has different dimensions');
+    expect(fetchMock.mock.calls.filter(([path]) => path === '/api/v1/inspections')).toHaveLength(0);
+    expect(screen.getByRole('radio', { name: 'Trained PCB detector' })).toBeChecked();
+  });
+  it('keeps the independent demo available when readiness fails without claiming the model is ready', async () => {
+    const fetchMock = server(); const implementation = fetchMock.getMockImplementation()!;
+    fetchMock.mockImplementation(async (path, options) => {
+      if (path === '/api/v1/inference-modes') throw new TypeError('unavailable');
+      return implementation(path, options);
+    });
+    vi.stubGlobal('fetch', fetchMock); const user = userEvent.setup(); renderApp();
+    await user.click(screen.getByRole('button', { name: 'Check trained model availability' }));
+    expect(await screen.findByText(/availability could not be verified/)).toBeVisible();
+    expect(screen.getByRole('radio', { name: 'Trained PCB detector' })).toBeDisabled();
+    expect(screen.getByRole('radio', { name: 'Simulated demo' })).toBeChecked();
+    await user.upload(screen.getByLabelText('Image file'), image());
+    await user.click(screen.getByRole('button', { name: 'Upload and inspect' }));
+    expect(await screen.findByRole('heading', { name: 'Completed' })).toBeVisible();
+  });
+  it('retries trained acceptance with the same immutable provider, attestation, asset, and key', async () => {
+    const fetchMock = trainedServer(); const implementation = fetchMock.getMockImplementation()!;
+    let creates = 0;
+    fetchMock.mockImplementation(async (path, options) => {
+      if (path === '/api/v1/inspections' && ++creates === 1) throw new TypeError('lost response');
+      return implementation(path, options);
+    });
+    vi.stubGlobal('fetch', fetchMock); const user = userEvent.setup(); renderApp(); await selectTrained(user);
+    await user.click(screen.getByRole('checkbox', { name: /I confirm this is a real 300/ }));
+    await user.upload(screen.getByLabelText('Image file'), image());
+    await user.click(screen.getByRole('button', { name: 'Upload and inspect' }));
+    await screen.findByRole('alert');
+    await user.click(screen.getByRole('button', { name: 'Retry inspection submission' }));
+    expect(await screen.findByRole('heading', { name: 'Completed' })).toBeVisible();
+    const requests = fetchMock.mock.calls.filter(([path]) => path === '/api/v1/inspections');
+    expect(requests).toHaveLength(2); expect(requests[0]?.[1]?.body).toBe(requests[1]?.[1]?.body);
+    expect(requests[0]?.[1]?.headers).toEqual(requests[1]?.[1]?.headers);
+    expect(fetchMock.mock.calls.filter(([path]) => path === '/api/v1/assets')).toHaveLength(1);
   });
 });

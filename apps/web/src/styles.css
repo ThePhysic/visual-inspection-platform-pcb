@@ -18,6 +18,10 @@ section, .notice { margin-top: 1.5rem; padding: clamp(1rem, 3vw, 1.75rem); backg
 .notice p { margin-bottom: 0; }
 label { display: block; font-weight: 650; margin-bottom: 0.5rem; }
 input[type=file] { display: block; width: 100%; font: inherit; padding: 0.8rem; border: 1px solid #aebfcb; border-radius: 0.35rem; background: #f8fafb; }
+.inference-mode { border: 1px solid #cbd7df; border-radius: 0.35rem; margin: 0 0 1.25rem; padding: 1rem; }
+.inference-mode legend { font-weight: 700; }
+.inference-mode input { margin-right: 0.45rem; }
+.candidate-attestation { margin-top: 1rem; }
 .file-details, .muted, figcaption { color: #425e70; font-size: 0.9rem; overflow-wrap: anywhere; }
 .healthy { color: #146137; font-weight: 600; }
 dt { font-weight: 600; }

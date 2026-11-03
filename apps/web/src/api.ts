@@ -1,9 +1,10 @@
 import {
-  HEALTH_PATH, ASSETS_PATH, INSPECTIONS_PATH, isHealthResponse, isInferenceResult,
+  HEALTH_PATH, ASSETS_PATH, INSPECTIONS_PATH, isHealthResponse, isResultForConfiguration,
   AssetResponseSchema, InspectionAcceptedSchema, InspectionResponseSchema, ApiErrorResponseSchema,
   type HealthResponse, type AssetResponse, type InspectionAccepted, type InspectionResponse,
   SavedReviewResponseSchema, isPersistedReview, validReviewAnnotations, type SaveReviewRequest, type SavedReviewResponse,
   isInspectionHistoryResponse, type HistoryQuery, type InspectionHistoryResponse,
+  InferenceModesResponseSchema, type InferenceModesResponse, type ProviderConfiguration,
 } from '@vip/contracts';
 import { Value } from 'typebox/value';
 
@@ -24,6 +25,8 @@ const errorMessages: Record<string, string> = {
   INSPECTION_NOT_FOUND: 'This inspection could not be found. Check the link or start a new inspection.',
   IDEMPOTENCY_CONFLICT: 'This submission conflicts with an earlier request. Select the image again to start a new submission.',
   INGESTION_BUSY: 'Image uploading is busy. Please try again.',
+  TRAINED_MODE_UNAVAILABLE: 'The trained PCB model is unavailable. Check model availability and try again.',
+  INVALID_CANDIDATE_PATCH: 'Trained mode requires an explicitly identified 300 × 300 PCB candidate patch. Choose a supported patch or use the simulated demo.',
 };
 
 export class ApiClientError extends Error {
@@ -60,20 +63,28 @@ export async function uploadAsset(file: File, signal: AbortSignal): Promise<Asse
   return body;
 }
 
-export async function submitInspection(assetId: string, key: string, signal: AbortSignal): Promise<InspectionAccepted> {
+export async function submitInspection(assetId: string, key: string, signal: AbortSignal,
+  provider?: ProviderConfiguration, candidatePatch?: true): Promise<InspectionAccepted> {
   const body = await requestJson(INSPECTIONS_PATH, 202, {
     method: 'POST', headers: { 'Content-Type': 'application/json', 'Idempotency-Key': key },
-    body: JSON.stringify({ assetId }), signal,
+    body: JSON.stringify({ assetId, ...(provider ? { provider } : {}), ...(candidatePatch ? { candidatePatch } : {}) }), signal,
   });
   if (!Value.Check(InspectionAcceptedSchema, body) || body.url !== `${INSPECTIONS_PATH}/${body.id}`) incompatible();
+  return body;
+}
+
+export async function fetchInferenceModes(signal: AbortSignal): Promise<InferenceModesResponse> {
+  const body = await requestJson('/api/v1/inference-modes', 200, { signal }, 5000);
+  if (!Value.Check(InferenceModesResponseSchema, body) || (body.trained.available && !body.trained.enabled)) incompatible();
   return body;
 }
 
 export async function fetchInspection(id: string, signal: AbortSignal): Promise<InspectionResponse> {
   const body = await requestJson(`${INSPECTIONS_PATH}/${id}`, 200, { signal });
   if (!Value.Check(InspectionResponseSchema, body) || body.id !== id.toLowerCase()
-    || (body.status === 'completed' && (!isInferenceResult(body.result) || (body.review !== undefined
-      && (!isPersistedReview(body.review) || !validReviewAnnotations(body.review.annotations, body.result)))))) incompatible();
+    || (body.status === 'completed' && (!isResultForConfiguration(body.result, body.requested) || (body.review !== undefined
+      && (!isPersistedReview(body.review) || body.review.taxonomyVersion !== body.result.taxonomyVersion
+        || !validReviewAnnotations(body.review.annotations, body.result)))))) incompatible();
   return body;
 }
 

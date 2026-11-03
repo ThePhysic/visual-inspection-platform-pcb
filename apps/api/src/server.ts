@@ -3,10 +3,12 @@ import { readConfig } from './config.js';
 import { connectDatabase, createAssetModel } from './database.js';
 import { LocalImageStorage } from './storage.js';
 import sharp from 'sharp';
-import { createInspectionModel, InspectionQueue, InspectionReconciler, OperationalMetrics, operatorPort, startOperatorServer, sampleQueue } from '@vip/backend';
+import { createInspectionModel, InspectionQueue, InspectionReconciler, OperationalMetrics, operatorPort, startOperatorServer, sampleQueue,
+  readInferenceConfig, checkTrainedModelReadiness } from '@vip/backend';
 
 async function main() {
   const config = readConfig(process.env);
+  const inference = readInferenceConfig(process.env);
   const operationsPort = operatorPort(process.env.API_OPERATOR_PORT);
   const metrics = new OperationalMetrics();
   sharp.cache({ memory: 32, files: 0, items: 32 });
@@ -24,7 +26,9 @@ async function main() {
     throw error;
   }
   const redisStatus: Pick<InspectionQueue, 'healthy'> = { healthy: () => queue.healthy() };
-  const app = buildApp({ logger: true, metrics, allowedHosts: config.allowedHosts, assets: { model, storage, uploadConcurrency: config.uploadConcurrency }, inspections: { inspections, assets: model }, dispatchQueue: redisStatus,
+  const app = buildApp({ logger: true, metrics, allowedHosts: config.allowedHosts, assets: { model, storage, uploadConcurrency: config.uploadConcurrency },
+    inspections: { inspections, assets: model, trainedEnabled: inference.enabled }, dispatchQueue: redisStatus,
+    trainedInference: { enabled: inference.enabled, ready: () => inference.url ? checkTrainedModelReadiness(inference.url) : Promise.resolve(false) },
     notifyAccepted: id => { reconciler.notify(id); } });
   const queue = new InspectionQueue(config.redisUrl, app.log);
   const reconciler = new InspectionReconciler(inspections, queue, app.log, undefined, metrics);

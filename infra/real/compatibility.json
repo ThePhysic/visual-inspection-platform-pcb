@@ -1,0 +1,10 @@
+{
+  "dlRevision": "e1e84e2eac9c91e5bd8021aea20a6ec712616285",
+  "servingSourceRevision": "399a8da7407689a0ffd7dc9bde074600dd8dcbcc",
+  "release": "pcb-ind-ssdlite-v1",
+  "artifactDigest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+  "weightsSha256": "28271a688aa7335521bb7725423fd6ea6622f3d1964bfaed83dd97b4f0ff34d9",
+  "evaluationSha256": "acc89d13a50caf389f74bc2cb200b0558fcbe6f6ead6e7f94f6e5ab5817b2dfd",
+  "taxonomy": "pcb-ind-v4-1",
+  "threshold": 0.2
+}

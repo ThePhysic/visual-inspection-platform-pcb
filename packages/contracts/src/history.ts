@@ -1,6 +1,6 @@
 import { Type, type Static } from 'typebox';
 import { Value } from 'typebox/value';
-import { InspectionFailureSchema, InspectionStatusSchema, MAX_DETECTIONS } from './inspections.js';
+import { InspectionFailureSchema, InspectionStatusSchema, MAX_DETECTIONS, ProviderConfigurationSchema } from './inspections.js';
 
 export const DEFAULT_HISTORY_PAGE_SIZE = 20;
 export const MAX_HISTORY_PAGE_SIZE = 50;
@@ -18,6 +18,7 @@ const common = {
   id, assetId: id, createdAt: timestamp, updatedAt: timestamp,
   previewUrl: Type.String({ pattern: '^/api/v1/assets/[a-f0-9]{24}/content$' }),
   retriedFrom: Type.Optional(id),
+  requested: Type.Optional(ProviderConfigurationSchema),
 };
 export const InspectionSummarySchema = Type.Union([
   Type.Object({ ...common, status: Type.Union([Type.Literal('queued'), Type.Literal('processing')]),

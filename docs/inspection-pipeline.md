@@ -19,7 +19,7 @@ flowchart LR
   Redis --> Worker
   Worker --> MongoDB
   Worker --> Images
-  Worker --> Provider[InferenceProvider: simulated mock]
+  Worker --> Provider[InferenceProvider: explicit mock or trained PCB]
 ```
 
 `packages/contracts` contains browser-safe TypeBox schemas and semantic inference

@@ -1,0 +1,120 @@
+{
+  "source": "https://zenodo.org/records/19723114",
+  "author": "Hao Yan, Fujian Polytechnic Normal University",
+  "license": "CC-BY-4.0",
+  "manifestDigest": "e33d69b335bf830eec61cfd7cec4348f4f57d87291941f8679b9f57b1fc37d31",
+  "notes": "Unmodified 300x300 candidate patches. Frozen split is the DL study split, not the source archive directory. These selected examples are serving/review demonstrations, not a new evaluation.",
+  "samples": [
+    {
+      "file": "6581_b_043.jpg",
+      "sha256": "ad9b4387f6e8a06ce8a3de22e02eb39baf9c767686f8b38f36acca1c5df86c3d",
+      "sourcePath": "YOLO/images/val/6581_b_043.jpg",
+      "frozenSplit": "test",
+      "selection": [
+        "evenly spaced sorted split sample"
+      ],
+      "boxes": [
+        [
+          0.0,
+          0.0,
+          288.56655,
+          295.5642
+        ]
+      ],
+      "labels": [
+        3
+      ]
+    },
+    {
+      "file": "6529_t_006.jpg",
+      "sha256": "e433f0637b412229a89c83435d7a68757a7b43fc17922c01b6d15e8d38cb1e09",
+      "sourcePath": "YOLO/images/test/6529_t_006.jpg",
+      "frozenSplit": "test",
+      "selection": [
+        "evenly spaced sorted split sample"
+      ],
+      "boxes": [
+        [
+          126.39015,
+          108.2094,
+          175.26585,
+          161.0706
+        ]
+      ],
+      "labels": [
+        6
+      ]
+    },
+    {
+      "file": "6040_b_034.jpg",
+      "sha256": "41ef9b0c87f72f59dc666cb3578bbb1a2b056f17296d79224b91ea6871c7a1a7",
+      "sourcePath": "YOLO/images/train/6040_b_034.jpg",
+      "frozenSplit": "test",
+      "selection": [
+        "maximum fn in split (6)"
+      ],
+      "boxes": [
+        [
+          0.00015,
+          145.098,
+          22.63845,
+          176.1822
+        ],
+        [
+          137.85765,
+          137.6043,
+          167.39475,
+          157.7733
+        ],
+        [
+          114.75015,
+          282.8994,
+          123.20445,
+          294.7668
+        ],
+        [
+          33.96645,
+          236.98515,
+          44.55675,
+          253.98645
+        ],
+        [
+          176.31555,
+          186.1842,
+          291.77625,
+          300.0
+        ],
+        [
+          45.0657,
+          160.8552,
+          131.9079,
+          234.2106
+        ],
+        [
+          10.52655,
+          257.89455,
+          108.88185,
+          299.99985
+        ]
+      ],
+      "labels": [
+        2,
+        1,
+        2,
+        2,
+        6,
+        6,
+        6
+      ]
+    },
+    {
+      "file": "5810_t_007.jpg",
+      "sha256": "683c337a42c5c99d4b7c2d3de92343984eb8c2c95bb75743161988d5e4a73214",
+      "sourcePath": "YOLO/images/test/5810_t_007.jpg",
+      "frozenSplit": "train",
+      "selection": [
+        "existing standalone serving smoke fixture"
+      ]
+    }
+  ]
+}

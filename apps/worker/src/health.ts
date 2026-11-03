@@ -6,6 +6,7 @@ export interface ConsumerState {
   running: boolean;
   oldestActiveAt: number | null;
   lastCompletedAt: number | null;
+  trainedModelAvailable?: boolean;
 }
 
 export function consumerHealthy(state: ConsumerState, now: number, maximumActiveMs: number) {

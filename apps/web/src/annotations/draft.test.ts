@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { result } from '../test/fixtures';
-import { changedAnnotations, createReviewState, isDirty, reviewReducer } from './draft';
+import { PCB_LABELS, validReviewAnnotations, type InferenceResult } from '@vip/contracts';
+import { pcbResult, result } from '../test/fixtures';
+import { changedAnnotations, createReviewState, isDirty, reviewReducer, savePayload } from './draft';
 
 const initialize = (inspectionId = 'inspection-one') => createReviewState({ inspectionId, result });
 describe('local annotation drafts', () => {
@@ -79,6 +80,43 @@ describe('local annotation drafts', () => {
     expect(reviewReducer(state, { type: 'add', id: 'manual:bad', classId: 'surface-mark', box: { x: 0, y: 0, width: 0, height: 0.2 } })).toBe(state);
   });
   it('does not silently edit an unsupported taxonomy', () => {
-    expect(() => createReviewState({ inspectionId: 'one', result: { ...result, taxonomyVersion: 'unknown' } })).toThrow('Unsupported review taxonomy');
+    expect(() => createReviewState({ inspectionId: 'one', result: { ...result, taxonomyVersion: 'unknown' } as unknown as InferenceResult })).toThrow('Unsupported review taxonomy');
+  });
+});
+
+describe('PCB taxonomy drafts', () => {
+  it.each(PCB_LABELS)('supports $classId relabels, dispositions, geometry, manual additions, and saved-review reopen', entry => {
+    const original = structuredClone(pcbResult);
+    const state = createReviewState({ inspectionId: 'pcb', result: pcbResult });
+    const first = state.draft.annotations[0]!;
+    let edited = reviewReducer(state, { type: 'class', id: first.id, classId: entry.classId });
+    edited = reviewReducer(edited, { type: 'disposition', id: first.id, disposition: 'rejected' });
+    edited = reviewReducer(edited, { type: 'box', id: first.id, box: { x: 0.05, y: 0.05, width: 0.25, height: 0.25 } });
+    const manualId = 'manual:12345678-1234-4123-8123-123456789012';
+    edited = reviewReducer(edited, { type: 'add', id: manualId, classId: entry.classId, box: { x: 0.6, y: 0.6, width: 0.1, height: 0.1 } });
+    const payload = savePayload(edited.draft, 0, 0, '12345678-1234-4123-8123-123456789012');
+    expect(payload.taxonomyVersion).toBe('pcb-ind-v4-1');
+    expect(validReviewAnnotations(payload.annotations, pcbResult)).toBe(true);
+    const reopened = createReviewState({ inspectionId: 'pcb', result: pcbResult, review: {
+      contractVersion: 'v1', taxonomyVersion: payload.taxonomyVersion, annotations: payload.annotations, revision: 1, savedAt: '2026-11-02T00:00:00.000Z',
+    } });
+    expect(reopened.draft.annotations[0]).toMatchObject({ classId: entry.classId, disposition: 'rejected', originalConfidence: 0.8 });
+    const manual = reopened.draft.annotations.find(item => item.id === manualId)!;
+    expect(manual).toMatchObject({ classId: entry.classId, origin: 'manual' });
+    expect(manual).not.toHaveProperty('originalConfidence'); expect(manual).not.toHaveProperty('predictionId');
+    expect(reviewReducer(reopened, { type: 'remove', id: manualId }).draft.annotations).toHaveLength(8);
+    expect(pcbResult).toEqual(original);
+  });
+  it('rejects cross-taxonomy relabels and additions in both directions', () => {
+    const pcb = createReviewState({ inspectionId: 'pcb', result: pcbResult });
+    expect(reviewReducer(pcb, { type: 'class', id: pcb.draft.annotations[0]!.id, classId: 'edge-defect' })).toBe(pcb);
+    expect(reviewReducer(pcb, { type: 'add', id: 'manual:x', classId: 'surface-mark', box: { x: 0, y: 0, width: 1, height: 1 } })).toBe(pcb);
+    const mock = initialize();
+    expect(reviewReducer(mock, { type: 'class', id: mock.draft.annotations[0]!.id, classId: 'scratch' })).toBe(mock);
+  });
+  it('validates a loaded review taxonomy against its associated result', () => {
+    expect(() => createReviewState({ inspectionId: 'pcb', result: pcbResult, review: {
+      contractVersion: 'v1', taxonomyVersion: 'mock-v1', annotations: [], revision: 1, savedAt: '2026-11-02T00:00:00.000Z',
+    } })).toThrow('Invalid saved review');
   });
 });

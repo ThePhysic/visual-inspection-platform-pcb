@@ -46,7 +46,7 @@ export default function ReviewWorkspace(props: {
     try {
       const response = await mutation.mutateAsync(request);
       if (!active.current) return;
-      if (!validReviewAnnotations(response.review.annotations, props.result)) throw new ApiClientError('The service returned an incompatible review. Retry this save.', true);
+      if (response.review.taxonomyVersion !== props.result.taxonomyVersion || !validReviewAnnotations(response.review.annotations, props.result)) throw new ApiClientError('The service returned an incompatible review. Retry this save.', true);
       if (response.outcome === 'superseded') {
         setPending(undefined); setConflict(true); setError('This save was committed, but a newer review has since been saved. Your local draft is retained.');
         return;

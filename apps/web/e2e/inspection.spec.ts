@@ -28,7 +28,7 @@ test('real stack: upload → inspection → predictions, responsive geometry, an
   await expect(page.getByRole('heading', { name: 'Completed', exact: true })).toBeVisible({ timeout: 30_000 });
   await expect(page.getByRole('heading', { name: '1 detection', exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: /Surface mark, 94.0% confidence/ })).toBeVisible();
-  await expect(page.getByText('Simulated inference', { exact: true })).toBeVisible();
+  await expect(page.getByText('Simulated demo', { exact: true })).toBeVisible();
   const box = { x: 12 / 64, y: 16 / 64, width: 20 / 64, height: 12 / 64 };
   await assertBoxGeometry(page, box);
   await page.setViewportSize({ width: 390, height: 844 }); await assertBoxGeometry(page, box);

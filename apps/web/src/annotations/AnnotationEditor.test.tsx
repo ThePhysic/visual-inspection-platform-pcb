@@ -5,7 +5,8 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { type AnnotationCanvasProps } from './AnnotationCanvas';
 import ReviewWorkspace from './ReviewWorkspace';
-import { asset, inspectionId, result } from '../test/fixtures';
+import { PCB_LABELS } from '@vip/contracts';
+import { asset, inspectionId, pcbResult, result } from '../test/fixtures';
 
 const clients: QueryClient[] = [];
 afterEach(() => { clients.forEach(client => client.clear()); clients.length = 0; });
@@ -31,6 +32,27 @@ async function openEditor() {
   return user;
 }
 const renderWorkspace = () => render(<ReviewWorkspace inspectionId={inspectionId} asset={asset} result={result} />);
+
+describe('trained PCB review controls', () => {
+  it('offers exactly the eight model classes for relabeling and human additions', async () => {
+    render(<ReviewWorkspace inspectionId={inspectionId} asset={{ ...asset, width: 300, height: 300 }} result={pcbResult} />);
+    const user = await openEditor();
+    const newClass = screen.getByLabelText('Class for new annotation');
+    expect(within(newClass).getAllByRole('option').map(option => (option as HTMLOptionElement).value)).toEqual(PCB_LABELS.map(entry => entry.classId));
+    await user.click(screen.getByRole('button', { name: 'Select first canvas annotation' }));
+    expect(within(screen.getByLabelText('Annotation class')).getAllByRole('option')).toHaveLength(8);
+    await user.selectOptions(screen.getByLabelText('Annotation class'), 'open');
+    await user.click(screen.getByRole('button', { name: 'Reject prediction' }));
+    expect(screen.getByRole('button', { name: /Annotation 1: open.*rejected/ })).toBeVisible();
+    await user.selectOptions(newClass, 'short');
+    await user.click(screen.getByRole('button', { name: 'Add annotation' }));
+    await user.click(screen.getByRole('button', { name: 'Draw test rectangle' }));
+    expect(screen.getByRole('button', { name: /Annotation 9: short.*Manually added; no model confidence/ })).toBeVisible();
+    await user.click(screen.getByRole('button', { name: 'Remove manual annotation' }));
+    expect(screen.getByRole('heading', { name: '8 annotations' })).toBeVisible();
+    expect(pcbResult.detections[0]!.classId).toBe('mouse_bite');
+  });
+});
 
 describe('local review controls', () => {
   it('keeps the read-only viewer and exposes a clearly unsaved local editor', async () => {

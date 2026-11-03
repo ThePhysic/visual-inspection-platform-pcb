@@ -14,7 +14,8 @@ export interface InferenceProvider {
 }
 
 export class InferenceError extends Error {
-  constructor(public readonly code: InspectionFailure['code'], public readonly retryable: boolean) {
+  constructor(public readonly code: InspectionFailure['code'], public readonly retryable: boolean,
+    public readonly providerOutcome?: 'busy' | 'timeout' | 'unavailable' | 'invalid_response' | 'invalid_image' | 'request_rejected') {
     super(code);
     this.name = 'InferenceError';
   }

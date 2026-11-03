@@ -1,0 +1,40 @@
+# Opt-in: docker compose -f compose.yaml -f compose.real.yaml up --build -d --wait
+# Keep the DL clone beside this repository; no Python code or weights are copied here.
+services:
+  api:
+    environment:
+      PCB_INFERENCE_ENABLED: "true"
+      PCB_INFERENCE_URL: http://inference:8000
+  worker:
+    environment:
+      PCB_INFERENCE_ENABLED: "true"
+      PCB_INFERENCE_URL: http://inference:8000
+    depends_on:
+      inference:
+        condition: service_healthy
+  inference:
+    build:
+      context: ${DL_REPOSITORY_DIR:-../visual-inspection-dl}
+      dockerfile: Dockerfile
+    environment:
+      INSPECTION_DL_BACKEND: trained
+      INSPECTION_DL_DEVICE: cpu
+      INSPECTION_DL_BUNDLE: /models/pcb-ind-ssdlite-v1
+      INSPECTION_DL_THREADS: "4"
+    volumes:
+      - type: bind
+        source: ${DL_REPOSITORY_DIR:-../visual-inspection-dl}/releases/pcb-ind-ssdlite-v1
+        target: /models/pcb-ind-ssdlite-v1
+        read_only: true
+        bind:
+          create_host_path: false
+    # Deliberately no host port. Browser traffic goes through Fastify and the worker.
+    init: true
+    restart: unless-stopped
+    stop_grace_period: 30s
+    healthcheck:
+      test: ["CMD", "python", "-c", "import json,urllib.request; r=json.load(urllib.request.urlopen('http://127.0.0.1:8000/ready',timeout=2)); assert r.get('ready') is True and r.get('backend') == 'trained'"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 30s

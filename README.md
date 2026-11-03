@@ -2,14 +2,44 @@
 
 [![CI](https://github.com/ThePhysic/visual-inspection-platform/actions/workflows/ci.yml/badge.svg)](https://github.com/ThePhysic/visual-inspection-platform/actions/workflows/ci.yml)
 
-**Upload an image, inspect simulated detections, correct annotations, and reopen a saved human review.**
+**Upload an image, inspect predictions, correct annotations, and reopen a saved human review.**
 
 A full-stack portfolio application demonstrating the engineering behind an image
 inspection workflow: reliable asynchronous execution, interactive geometry,
 persistent corrections, and recovery when requests or workers fail.
 
-**Inference is deterministic and simulated.** This project does not train a model,
-recognize real manufacturing defects, or measure computer-vision accuracy.
+**The default demo uses deterministic simulated inference.** Optional trained PCB
+inference calls the independently runnable [DL project](https://github.com/ThePhysic/visual-inspection-dl-pcb)
+through the existing worker. This application does not train models. Dataset
+evaluation, Python-only timings, and integrated application timings are separate.
+
+## Optional real PCB inference
+
+The [integration guide](docs/real-pcb-inference.md) describes the pinned CPU-only
+stack, four attributed 300×300 PCB candidate patches, and repeatable verification.
+Choose **Trained PCB detector** explicitly; model outages produce bounded retries
+or failure, with no simulated substitution. Results retain provider, model,
+taxonomy and release digest. All eight classes support revisioned human review
+while original predictions remain immutable.
+
+The regular five-service quick start below still needs no DL clone or weights.
+Real mode adds one private Python container from the sibling DL repository:
+
+```mermaid
+flowchart LR
+  Browser --> API[Fastify acceptance]
+  API --> Mongo[MongoDB durable intent]
+  API --> Queue[Redis / BullMQ]
+  Queue --> Worker[Node worker]
+  Worker --> Mock[Explicit simulated adapter]
+  Worker --> Python[Private FastAPI trained model]
+  Worker --> Mongo
+  Mongo --> Review[Revisioned human review]
+```
+
+These are candidate-patch predictions, not full-board diagnoses. Scores are
+uncalibrated and false positives and missed defects remain. This project is
+unaffiliated with Matroid and is not validated for production visual inspection.
 
 ## See the workflow
 
@@ -87,7 +117,7 @@ flowchart LR
   API -->|post-response hint / periodic repair| Queue["Redis / BullMQ"]
   Queue --> Worker["Independent worker"]
   Worker -->|conditional claim / result commit| DB
-  Worker --> Provider["Inference adapter · deterministic mock"]
+  Worker --> Provider["Inference adapter · explicit mock or trained PCB"]
   API -->|write / serve| Images["Canonical image volume"]
   Worker -->|read-only| Images
 ```

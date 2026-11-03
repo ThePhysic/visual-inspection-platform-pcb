@@ -1,5 +1,5 @@
 import { useId, useState, type Dispatch } from 'react';
-import { MOCK_LABELS, MAX_DETECTIONS, type AssetResponse, type InferenceResult } from '@vip/contracts';
+import { labelsForTaxonomy, MAX_DETECTIONS, type AssetResponse, type InferenceResult } from '@vip/contracts';
 import { classColor, confidenceLabel } from '../presentation';
 import { changedAnnotations, isDirty, type ClassId, type ReviewAction, type ReviewState } from './draft';
 import AnnotationCanvas from './AnnotationCanvas';
@@ -7,7 +7,8 @@ import AnnotationCanvas from './AnnotationCanvas';
 export default function AnnotationEditor({ asset, state, dispatch, disabled = false, savedRevision = 0, originalResult }: {
   asset: AssetResponse | undefined; state: ReviewState; dispatch: Dispatch<ReviewAction>; disabled?: boolean; savedRevision?: number; originalResult?: InferenceResult;
 }) {
-  const [drawingClass, setDrawingClass] = useState<ClassId>(MOCK_LABELS[0].classId);
+  const labels = labelsForTaxonomy(state.draft.taxonomyVersion)!;
+  const [drawingClass, setDrawingClass] = useState<ClassId>(labels[0]!.classId as ClassId);
   const drawingClassId = useId();
   const annotationClassId = useId();
   const selected = state.draft.annotations.find(annotation => annotation.id === state.selectedId);
@@ -23,7 +24,7 @@ export default function AnnotationEditor({ asset, state, dispatch, disabled = fa
     <div className="editor-tools">
       <div><label htmlFor={drawingClassId}>Class for new annotation</label>
         <select id={drawingClassId} value={drawingClass} onChange={event => { setDrawingClass(event.target.value as ClassId); }}>
-          {MOCK_LABELS.map(entry => <option value={entry.classId} key={entry.classId}>{entry.label}</option>)}
+          {labels.map(entry => <option value={entry.classId} key={entry.classId}>{entry.label}</option>)}
         </select>
       </div>
       <button type="button" disabled={!asset || state.draft.annotations.length >= MAX_DETECTIONS} aria-pressed={state.mode === 'draw'} onClick={() => { dispatch({ type: 'mode', mode: state.mode === 'draw' ? 'select' : 'draw' }); }}>
@@ -66,7 +67,7 @@ export default function AnnotationEditor({ asset, state, dispatch, disabled = fa
           {selected.origin === 'prediction' && <details><summary>Prediction technical details</summary><code>{selected.predictionId}</code></details>}
           <label htmlFor={annotationClassId}>Annotation class</label>
             <select id={annotationClassId} value={selected.classId} onChange={event => { dispatch({ type: 'class', id: selected.id, classId: event.target.value as ClassId }); }}>
-              {MOCK_LABELS.map(entry => <option value={entry.classId} key={entry.classId}>{entry.label}</option>)}
+              {labels.map(entry => <option value={entry.classId} key={entry.classId}>{entry.label}</option>)}
             </select>
           {selected.origin === 'prediction' ? <>
             <p>Original confidence: {confidenceLabel(selected.originalConfidence)}. Disposition: <strong>{selected.disposition}</strong>.</p>
