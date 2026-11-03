@@ -14,7 +14,7 @@
     "dev:web": "pnpm --filter @vip/backend... build && pnpm --filter @vip/web dev",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "pnpm --filter @vip/backend... build && pnpm -r typecheck",
-    "test": "pnpm --filter @vip/backend... build && pnpm -r test && node --test infra/benchmark/core.test.mjs",
+    "test": "pnpm --filter @vip/backend... build && pnpm -r test && node --test infra/benchmark/core.test.mjs infra/real/environment.test.mjs",
     "test:integration": "pnpm --filter @vip/backend... build && pnpm --filter @vip/api test:integration",
     "build": "pnpm -r build",
     "dev:worker": "pnpm --filter @vip/backend... build && pnpm --filter @vip/worker dev",

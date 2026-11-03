@@ -122,6 +122,14 @@ describe('bounded real HTTP adapter', () => {
     });
     expect(calls).toBe(1);
   });
+  it('treats ASGI text/plain 503 admission failures as transient without inventing typed model-busy provenance', async () => {
+    const url = await serve((_request, response) => {
+      response.writeHead(503, { 'Content-Type': 'text/plain' }); response.end('Service Unavailable');
+    });
+    await expect(new PcbInferenceProvider({ url }).infer(image(), new AbortController().signal)).rejects.toMatchObject({
+      code: 'PROVIDER_UNAVAILABLE', retryable: true, providerOutcome: 'unavailable',
+    });
+  });
   it('bounds elapsed time and propagates caller cancellation', async () => {
     const url = await serve(() => {});
     await expect(new PcbInferenceProvider({ url, timeoutMs: 30 }).infer(image(), new AbortController().signal)).rejects.toMatchObject({

@@ -1,0 +1,47 @@
+{
+  "schema_version": "1",
+  "provider": "visual-inspection-dl",
+  "backend": "trained",
+  "simulated": false,
+  "model_version": "pcb-ind-ssdlite-v1",
+  "taxonomy_version": "pcb-ind-v4-1",
+  "artifact_digest": "9037234654bcc190f6f5dd8cda07e70a119ba19b139b2b99118f4d9f27d7e05e",
+  "image": {
+    "width": 300,
+    "height": 300
+  },
+  "coordinate_system": "xyxy_pixels_original_image",
+  "confidence_threshold": 0.2,
+  "nms_threshold": 0.55,
+  "invalid_predictions_rejected": 0,
+  "detections": [
+    {
+      "class_id": 4,
+      "label": "spurious_copper",
+      "confidence": 0.3841091990470886,
+      "box": {
+        "x_min": 117.01544189453125,
+        "y_min": 108.5731201171875,
+        "x_max": 185.77268981933594,
+        "y_max": 183.71241760253906
+      }
+    },
+    {
+      "class_id": 2,
+      "label": "missing_copper",
+      "confidence": 0.3231322467327118,
+      "box": {
+        "x_min": 115.87749481201172,
+        "y_min": 156.79605102539062,
+        "x_max": 181.33497619628906,
+        "y_max": 190.51608276367188
+      }
+    }
+  ],
+  "timing_ms": {
+    "decode_preprocess": 16.26724899870169,
+    "model_inference": 57.675539999763714,
+    "response_postprocess": 0.6892829987918958,
+    "request_total": 75.17147799990198
+  }
+}

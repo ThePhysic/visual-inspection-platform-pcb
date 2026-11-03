@@ -1,0 +1,11 @@
+{
+  "source": "fixtures/pcb/5810_t_007.jpg",
+  "canonicalization": "Actual API canonicalizeImage JPEG settings",
+  "provenance": "PCB-IND v4 training-set serving fixture, not holdout evidence",
+  "mimeType": "image/jpeg",
+  "extension": "jpg",
+  "width": 300,
+  "height": 300,
+  "byteLength": 7497,
+  "sha256": "1aace0662027ba848c79b4a210cd60c4daf2a91dfc23993f2a8549a501529248"
+}
